@@ -24,6 +24,13 @@ class DashboardController extends Controller
             return redirect()->route('verification.notice');
         }
     
+        if ($user->isStudent()) {
+            $profile = \App\Models\Ai\AiLearningProfile::where('user_id', $user->id)->first();
+            if (! $profile?->onboarding_completed_at && ! $profile?->onboarding_skipped_at) {
+                return redirect()->route('learning.profile');
+            }
+        }
+
         return redirect()->route($user->getDashboardRouteName());
     }
 }

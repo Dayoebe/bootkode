@@ -3,12 +3,9 @@
 namespace App\Livewire\ManualPages;
 
 use Livewire\Component;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Core\User;
 use App\Models\Learning\Course;
 use App\Models\Learning\Lesson;
 use App\Models\Learning\CourseEnrollment;
-use App\Models\Credentials\Certificate;
 use App\Models\Assessment\Assessment;
 use Livewire\Attributes\Layout;
 
@@ -26,57 +23,24 @@ class Guideline extends Component
 
     private function loadStatistics()
     {
-        // User statistics
-        $this->stats['totalUsers'] = User::count();
-        $this->stats['totalInstructors'] = User::where('role', User::ROLE_INSTRUCTOR)->count();
-        $this->stats['totalMentors'] = User::where('role', User::ROLE_MENTOR)->count();
-        $this->stats['totalStudents'] = User::where('role', User::ROLE_STUDENT)->count();
-        $this->stats['totalAdmins'] = User::whereIn('role', [
-            User::ROLE_SUPER_ADMIN, 
-            User::ROLE_ACADEMY_ADMIN
-        ])->count();
-
-        // Course statistics
-        $this->stats['totalCourses'] = Course::where('is_published', true)
-            ->where('is_approved', true)
-            ->count();
+        $this->stats['totalCourses'] = Course::publiclyAvailable()->count();
         
         // Lesson statistics
         $this->stats['totalLessons'] = Lesson::whereHas('section.course', function($q) {
-            $q->where('is_published', true)->where('is_approved', true);
+            $q->publiclyAvailable();
         })->count();
 
         // Assessment statistics
         $this->stats['totalAssessments'] = Assessment::whereHas('course', function($q) {
-            $q->where('is_published', true)->where('is_approved', true);
+            $q->publiclyAvailable();
         })->count();
 
         // Enrollment statistics
         $this->stats['totalEnrollments'] = CourseEnrollment::count();
         $this->stats['completedCourses'] = CourseEnrollment::where('is_completed', true)->count();
         
-        // Certificate statistics
-        $this->stats['issuedCertificates'] = Certificate::where('status', Certificate::STATUS_APPROVED)->count();
-        $this->stats['pendingCertificates'] = Certificate::where('status', Certificate::STATUS_PENDING)->count();
-        
-        // Calculate success rate
-        $this->stats['successRate'] = $this->stats['totalEnrollments'] > 0 ? 
+        $this->stats['successRate'] = $this->stats['totalEnrollments'] > 0 ?
             round(($this->stats['completedCourses'] / $this->stats['totalEnrollments']) * 100, 1) : 0;
-
-        // Calculate average course rating
-        $this->stats['averageRating'] = Course::where('is_published', true)
-            ->where('is_approved', true)
-            ->avg('average_rating') ?: 4.8;
-
-        // Additional metrics for mentoring
-        $this->stats['jobPlacementRate'] = 85; // You can calculate this based on your mentorship success data
-        $this->stats['mentorRating'] = 4.9;
-        
-        // System uptime (you can integrate with your monitoring system)
-        $this->stats['systemUptime'] = 99.9;
-        
-        // Response time for support
-        $this->stats['avgResponseTime'] = '< 24h';
     }
 
     public function selectTab($tab)

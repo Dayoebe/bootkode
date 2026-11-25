@@ -1,3 +1,7 @@
+@assets
+    @vite('resources/js/charts.js')
+@endassets
+
 {{-- resources/views/livewire/marketplace/partial/system/analytics-tab.blade.php --}}
 <div class="space-y-6">
     <!-- Date Range Selector -->

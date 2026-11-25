@@ -69,7 +69,6 @@ class Analytics extends Component
     {
         $startDate = Carbon::now()->subDays($days);
         
-        $totalClicks = 100; // This would come from analytics/tracking system
         $registrations = Referral::where('affiliate_id', $affiliateId)
             ->where('created_at', '>=', $startDate)
             ->count();
@@ -81,12 +80,12 @@ class Analytics extends Component
             ->count();
 
         return [
-            'clicks' => $totalClicks,
+            'clicks' => null,
             'registrations' => $registrations,
             'purchases' => $purchases,
-            'click_to_register_rate' => $totalClicks > 0 ? round(($registrations / $totalClicks) * 100, 2) : 0,
+            'click_to_register_rate' => null,
             'register_to_purchase_rate' => $registrations > 0 ? round(($purchases / $registrations) * 100, 2) : 0,
-            'overall_conversion_rate' => $totalClicks > 0 ? round(($purchases / $totalClicks) * 100, 2) : 0
+            'overall_conversion_rate' => null,
         ];
     }
 
@@ -94,7 +93,6 @@ class Analytics extends Component
     {
         $startDate = Carbon::now()->subDays($days);
         
-        // This would typically come from your analytics system
         return Referral::where('affiliate_id', $affiliateId)
             ->where('created_at', '>=', $startDate)
             ->get()

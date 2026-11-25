@@ -3,6 +3,7 @@
     <div class="bg-themed-secondary shadow-sm border-b border-themed-primary">
         <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6">
             <x-ui.page-header title="Career opportunities" description="Explore current openings, save relevant roles, and track your applications." />
+            <a href="{{ route('career.centre') }}" class="bk-button bk-button-secondary mb-4">Career Centre & evidence review</a>
 
             <p role="status" aria-live="polite" class="mb-4 text-content-muted">{{ $alertMessage }}</p>
             <x-input-error id="job-search-errors" :messages="$errors->all()" role="alert" />
@@ -565,6 +566,7 @@
                                     </button>
 
                                     <x-career.apply-action :job="$selectedJob" :applied="$this->hasAppliedToJob($selectedJob->id)" class="w-full" />
+                                    <a href="{{ route('career.centre', ['job' => $selectedJob->id]) }}" class="bk-button bk-button-secondary w-full">Eligibility & learning options</a>
                                 </div>
                             </div>
                         </div>
@@ -583,7 +585,7 @@
                         <h2 class="text-2xl font-bold text-themed-primary">Apply for Job</h2>
                         <p class="text-themed-secondary">{{ $applicationJob->title }} at {{ $applicationJob->company_name }}</p>
                     </div>
-                    <button wire:click="closeApplicationModal" class="text-themed-secondary hover:text-themed-primary">
+                    <button type="button" aria-label="Close application form" wire:click="closeApplicationModal" class="min-h-11 min-w-11 text-themed-secondary hover:text-themed-primary">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M6 18L18 6M6 6l12 12" />
@@ -592,23 +594,24 @@
                 </div>
 
                 <form wire:submit.prevent="submitApplication" class="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
+                    <x-input-error id="application-eligibility-error" :messages="$errors->get('careerEligibility')" />
                     <div class="space-y-6">
                         <!-- Cover Letter -->
                         <div>
-                            <label class="block text-sm font-semibold text-themed-primary mb-2">Cover Letter *</label>
-                            <textarea aria-label="Write a compelling cover letter explaining why you're the perfect fit for this role" wire:model="coverLetter" rows="8"
+                            <label for="job-cover-letter" class="block text-sm font-semibold text-themed-primary mb-2">Cover Letter *</label>
+                            <textarea id="job-cover-letter" aria-label="Write a compelling cover letter explaining why you're the perfect fit for this role" aria-describedby="job-cover-letter-error" aria-invalid="{{ $errors->has('coverLetter') ? 'true' : 'false' }}" wire:model="coverLetter" rows="8"
                                 placeholder="Write a compelling cover letter explaining why you're the perfect fit for this role..."
                                 class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent resize-none bg-themed-secondary text-themed-primary placeholder-themed-tertiary"></textarea>
-                            @error('coverLetter') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                            @error('coverLetter') <p id="job-cover-letter-error" class="text-red-500 text-sm mt-1" role="alert">{{ $message }}</p> @enderror
                             <p class="text-sm text-themed-secondary mt-1">{{ strlen($coverLetter) }}/2000 characters</p>
                         </div>
 
                         <!-- Resume Upload -->
                         <div>
-                            <label class="block text-sm font-semibold text-themed-primary mb-2">Resume/CV</label>
-                            <input aria-label="Resume" wire:model="resume" type="file" accept=".pdf,.doc,.docx"
+                            <label for="job-resume" class="block text-sm font-semibold text-themed-primary mb-2">Resume/CV</label>
+                            <input id="job-resume" aria-label="Resume" aria-describedby="job-resume-error" aria-invalid="{{ $errors->has('resume') ? 'true' : 'false' }}" wire:model="resume" type="file" accept=".pdf,.doc,.docx"
                                 class="w-full px-4 py-3 border border-themed-primary rounded-lg focus:ring-2 focus:ring-brand focus:border-transparent bg-themed-secondary text-themed-primary">
-                            @error('resume') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                            @error('resume') <p id="job-resume-error" class="text-red-500 text-sm mt-1" role="alert">{{ $message }}</p> @enderror
                             <p class="text-sm text-themed-secondary mt-1">PDF, DOC, or DOCX files up to 5MB</p>
                         </div>
 

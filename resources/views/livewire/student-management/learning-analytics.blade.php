@@ -1,3 +1,7 @@
+@assets
+    @vite('resources/js/charts.js')
+@endassets
+
 <div wire:poll.visible.30s="pollAnalytics" class="mx-auto max-w-7xl space-y-6 p-4 sm:p-6">
     <x-ui.page-header title="Learning analytics" description="Your enrollments, recorded study activity and graded assessment results."><x-slot:actions><x-secondary-button wire:click="refreshData" wire:loading.attr="disabled">Refresh</x-secondary-button><x-secondary-button wire:click="exportReport" wire:loading.attr="disabled">Download activity CSV</x-secondary-button></x-slot:actions></x-ui.page-header>
     <x-ui.flash :messages="$feedback" />

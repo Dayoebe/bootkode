@@ -113,10 +113,9 @@ class BulkEnrollment extends Component
                     'status' => 'pending',
                     'started_at' => null,
                     'completed_at' => null,
-                    'processed_records' => 0,
-                    'successful_enrollments' => 0,
-                    'failed_enrollments' => 0,
-                    'errors' => []
+                    'processed_records' => (int) ($batch->settings['resume_row'] ?? 0),
+                    'successful_enrollments' => (int) ($batch->settings['resume_successful'] ?? 0),
+                    'failed_enrollments' => (int) ($batch->settings['resume_failed'] ?? 0),
                 ]);
 
                 \App\Jobs\ProcessBulkEnrollment::dispatch($batch);
@@ -188,13 +187,8 @@ class BulkEnrollment extends Component
     public function downloadSampleCsv()
     {
         return response()->streamDownload(function () {
-            $csv = "name,email,department,employee_id,institution_role\n";
-            $csv .= "John Doe,john.doe@example.com,IT,EMP001,student\n";
-            $csv .= "Jane Smith,jane.smith@example.com,HR,EMP002,instructor\n";
-            $csv .= "Bob Wilson,bob.wilson@example.com,Finance,EMP003,student\n";
-            
-            echo $csv;
-        }, 'bulk-enrollment-sample.csv');
+            echo "name,email,department,employee_id,institution_role\n";
+        }, 'bulk-enrollment-template.csv');
     }
 
     public function sortBy($field)

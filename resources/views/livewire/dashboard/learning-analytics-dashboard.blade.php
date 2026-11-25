@@ -1,3 +1,7 @@
+@assets
+    @vite('resources/js/charts.js')
+@endassets
+
 {{-- resources/views/livewire/learning-analytics-dashboard.blade.php --}}
 <div x-data="livewireDashboard()"
      x-init="init()"

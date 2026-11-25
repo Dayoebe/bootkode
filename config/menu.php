@@ -95,6 +95,7 @@ return [
             'link_id' => 'learning_hub',
             'children' => [
                 ['label' => 'Learner Journey', 'icon' => 'fas fa-route', 'route_name' => 'learner.journey', 'roles' => [User::ROLE_STUDENT, User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'learner.journey'],
+                ['label' => 'Learning Profile', 'icon' => 'fas fa-sliders', 'route_name' => 'learning.profile', 'roles' => [User::ROLE_STUDENT, User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'learning.profile'],
                 ['label' => 'AI Learning Coach', 'icon' => 'fas fa-robot', 'route_name' => 'ai.learning.coach', 'roles' => [User::ROLE_STUDENT, User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'ai.learning.coach'],
                 ['label' => 'AI Coding Mentor', 'icon' => 'fas fa-code', 'route_name' => 'ai.coding-mentor', 'roles' => [User::ROLE_STUDENT, User::ROLE_INSTRUCTOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN], 'link_id' => 'ai.coding-mentor'],
                 ['label' => 'My Courses', 'icon' => 'fas fa-book', 'route_name' => ('student.enrolled-courses'), 'roles' => [User::ROLE_STUDENT], 'component' => 'enrolled-courses', 'link_id' => 'student.enrolled-courses',],
@@ -175,6 +176,8 @@ return [
             'link_id' => 'career_services',
             'children' => [
                 ['label' => 'Job Board', 'icon' => 'fas fa-search-dollar', 'route_name' => 'search.job', 'roles' => []],
+                ['label' => 'Career Centre', 'icon' => 'fas fa-briefcase', 'route_name' => 'career.centre', 'roles' => []],
+                ['label' => 'Career Review', 'icon' => 'fas fa-clipboard-check', 'route_name' => 'career.review', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
                 ['label' => 'Portfolio Builder', 'icon' => 'fas fa-id-card', 'route_name' => 'portfolio.show', 'roles' => [User::ROLE_STUDENT]],
                 ['label' => 'Resume Generator', 'icon' => 'fas fa-file-alt', 'route_name' => 'resume.builder', 'roles' => [User::ROLE_STUDENT]],
                 ['label' => 'Mock Interviews', 'icon' => 'fas fa-comments', 'route_name' => 'user.interview', 'roles' => [User::ROLE_STUDENT]],
@@ -193,7 +196,6 @@ return [
                 ['label' => 'Learning Materials', 'icon' => 'fas fa-book', 'route_name' => 'content.learning-materials', 'roles' => []],
                 ['label' => 'Video Library', 'icon' => 'fas fa-video', 'route_name' => 'content.video-library', 'roles' => []],
                 ['label' => 'Documentation', 'icon' => 'fas fa-file-alt', 'route_name' => 'content.documentation', 'roles' => []],
-                ['label' => 'Localization', 'icon' => 'fas fa-language', 'route_name' => 'content.localization', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
                 ['label' => 'Content Moderation', 'icon' => 'fas fa-shield-alt', 'route_name' => 'content.moderation', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
                 ['label' => 'All Documents', 'icon' => 'fas fa-file-alt', 'route_name' => 'content.all-documents', 'roles' => []],
                 ['label' => 'Create Document', 'icon' => 'fas fa-plus-circle', 'route_name' => 'content.create-document', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN]],
@@ -357,7 +359,6 @@ return [
                 ['label' => 'Account Management', 'icon' => 'fas fa-user-shield', 'route_name' => 'settings', 'roles' => []],
                 ['label' => 'Notification Preferences', 'icon' => 'fas fa-bell', 'route_name' => 'notification.preferences', 'roles' => []],
                 ['label' => 'Privacy Settings', 'icon' => 'fas fa-lock', 'route_name' => 'privacy.settings', 'roles' => []],
-                ['label' => 'Language & Localization', 'icon' => 'fas fa-language', 'route_name' => 'language.localization', 'roles' => [User::ROLE_SUPER_ADMIN]],
             ]
         ],
 
@@ -388,7 +389,6 @@ return [
                 ['label' => 'All Pages', 'icon' => 'fas fa-list', 'route_name' => 'pages.index', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
                 ['label' => 'Create Page', 'icon' => 'fas fa-plus-circle', 'route_name' => 'pages.create', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
                 ['label' => 'Page Analytics', 'icon' => 'fas fa-chart-line', 'route_name' => 'pages.analytics', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
-                ['label' => 'Page Templates', 'icon' => 'fas fa-palette', 'route_name' => 'pages.templates', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
                 ['label' => 'Media Manager', 'icon' => 'fas fa-photo-video', 'route_name' => 'pages.media', 'roles' => [User::ROLE_CONTENT_EDITOR, User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
                 ['label' => 'SEO Manager', 'icon' => 'fas fa-search', 'route_name' => 'pages.seo', 'roles' => [User::ROLE_ACADEMY_ADMIN, User::ROLE_SUPER_ADMIN]],
                 ['label' => 'Page Settings', 'icon' => 'fas fa-cog', 'route_name' => 'pages.settings', 'roles' => [User::ROLE_SUPER_ADMIN]],
@@ -407,7 +407,6 @@ return [
                 ['label' => 'Support Tickets', 'icon' => 'fas fa-ticket-alt', 'route_name' => 'support.tickets', 'roles' => [User::ROLE_SUPER_ADMIN], 'link_id' => 'support.tickets'],
                 ['label' => 'FAQ Management', 'icon' => 'fas fa-question', 'route_name' => 'faq.management', 'roles' => [User::ROLE_SUPER_ADMIN], 'link_id' => 'faq.management'],
                 ['label' => 'Feedback Management', 'icon' => 'fas fa-comment-dots', 'route_name' => 'feedback.management', 'roles' => [User::ROLE_SUPER_ADMIN], 'link_id' => 'feedback.management'],
-                ['label' => 'Language & Localization', 'icon' => 'fas fa-language', 'route_name' => 'language.localization', 'roles' => [User::ROLE_SUPER_ADMIN], 'link_id' => 'language.localization'],
                 ['label' => 'User Management', 'icon' => 'fas fa-users-cog', 'route_name' => 'user-management', 'roles' => [User::ROLE_SUPER_ADMIN], 'link_id' => 'user-management'],
                 ['label' => 'Roles & Permissions', 'icon' => 'fas fa-user-shield', 'route_name' => 'roles-permissions', 'roles' => [User::ROLE_SUPER_ADMIN], 'link_id' => 'roles-permissions'],
                 ['label' => 'User Activity Logs', 'icon' => 'fas fa-clipboard-list', 'route_name' => 'user.activity', 'roles' => [User::ROLE_SUPER_ADMIN], 'link_id' => 'user.activity'],

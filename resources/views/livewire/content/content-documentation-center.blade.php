@@ -51,7 +51,6 @@
                         'learning-materials' => ['label' => 'Materials', 'icon' => 'fas fa-book', 'full_label' => 'Learning Materials'],
                         'video-library' => ['label' => 'Videos', 'icon' => 'fas fa-video', 'full_label' => 'Video Library'],
                         'documentation' => ['label' => 'Docs', 'icon' => 'fas fa-file-alt', 'full_label' => 'Documentation'],
-                        'localization' => ['label' => 'Localize', 'icon' => 'fas fa-language', 'full_label' => 'Localization'],
                         'moderation' => ['label' => 'Moderate', 'icon' => 'fas fa-shield-alt', 'full_label' => 'Content Moderation'],
                         'all-documents' => ['label' => 'All Docs', 'icon' => 'fas fa-file-alt', 'full_label' => 'All Documents'],
                         'create-document' => ['label' => 'Create', 'icon' => 'fas fa-plus-circle', 'full_label' => 'Create Document'],
@@ -96,8 +95,6 @@
                 @livewire('content.partial.video-library')
             @elseif($activeTab === 'documentation')
                 @livewire('content.partial.documentation')
-            @elseif($activeTab === 'localization')
-                @livewire('content.partial.localization')
             @elseif($activeTab === 'moderation')
                 @livewire('content.partial.content-moderation')
             @elseif($activeTab === 'all-documents')

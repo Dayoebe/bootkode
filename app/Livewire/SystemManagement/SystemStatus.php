@@ -51,7 +51,7 @@ class SystemStatus extends Component
             ->latest('started_at')
             ->first();
 
-        return $latestIncident ? $latestIncident->status : 'operational';
+        return $latestIncident ? $latestIncident->status : 'unknown';
     }
 
     public function render()

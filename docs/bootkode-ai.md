@@ -6,7 +6,7 @@ The AI foundation provides a private AI Coding Mentor and a role-guarded course-
 
 The mentor stores user-owned conversations and messages, limits history and course context sent to the provider, records operational usage, and never executes submitted code. Learners can only use content from enrolled courses; instructors and academy administrators retain the broader course access already established by the application.
 
-The existing AI Learning Coach remains the evidence-based progress overview. Its tutor entry now leads to the persistent mentor rather than producing a simulated local AI answer.
+The existing AI Learning Coach summarizes platform activity with technology-specific heuristics. Its planning scores are not verified competencies; optional diagnostics and corrected evidence projections remain in the learning-ecosystem roadmap. Its tutor entry leads to the persistent mentor rather than producing a simulated local AI answer.
 
 The Course Content Studio creates validated blueprint and lesson stages, optional multiple-choice quizzes and a project rubric, then persists a reviewable draft through `CourseGenerationService`. It records module-level progress for retry and has a separate per-editor daily quota. Generated courses remain unpublished and unapproved; factual claims, references, outcomes and answer keys require human review. See [course-content-system.md](./course-content-system.md) for the source importer, complete configuration and commands.
 
@@ -68,3 +68,19 @@ php artisan bootkode:ai-check
 ```
 
 The command returns exit 0 on verified structured output and exit 1 for configuration/provider/invalid-response failures. Authentication, access, endpoint/model and format errors have safe messages; provider response bodies and keys are excluded. Use a model with [Groq structured-output support](https://console.groq.com/docs/structured-outputs) for course generation. The current working configuration passed real CLI and authenticated-browser checks. Keys remain in the server environment. Coding Mentor now rechecks current roles on every Livewire request. See verification.md for the test/browser matrix.
+
+## Structured learning profile
+
+`learning.profile` introduces optional guided setup and later editing on the existing private `AiLearningProfile`. It captures real category choices, custom interests, self-reported knowledge, one required goal and optional preferences without an AI request. Form writes preserve recorded diagnosis/evidence fields and invalidate their calculation timestamp. No new personal information is sent to the provider by this slice. Apply the additive onboarding migration only after the working-data restoration/backup checks in [validation.md](learning-ecosystem/validation.md); automated and browser verification use independent `_test` databases. See the [implementation ledger](learning-ecosystem/implementation.md) for unfinished matching, diagnostics, demand and generation work.
+
+## Career intelligence
+
+Career Centre guidance and administrator requirement drafts reuse the existing configured provider/model through `CareerAiService`. `BOOTKODE_AI_CAREER_DAILY_REQUESTS` (default 20) is one per-account advisor/extraction budget, separate from the mentor and course-generation budgets. Usage is reserved transactionally before an API call; errors are normalized and operational tokens are retained when supplied. Provider text cannot publish requirements or verify evidence.
+
+Advice requires explicit permission to share the listed minimal owned context. Private proof references, CV files, answers/marking keys and counselling records are excluded; model output remains escaped suggestions and is never written into a CV, competence record or application automatically. Extraction requires literal source excerpts, bounded structured output and manual administrator publication; imported external-provider material is refused pending independently verified processing rights. See the [career ledger](learning-ecosystem/career-intelligence.md) for implementation, controlled-provider test evidence and remaining staging/licensing gates.
+
+## First-deployment operations — 2 November 2026
+
+Course/import/expansion jobs retain staged results and input identity, add unique dispatch per run, and use the configurable `course-content` database/Redis alias with a 600-second job / 960-second reservation window. The 900-second processing lock expires before crash reservation recovery. Bounded cron is supported only when the host permits >=660-second CLI processes; otherwise arrange a permitted runner before enabling these features. Do not switch drivers with pending jobs or treat --max-time as a hard per-job limit.
+
+Résumé assistance preserves its optional OpenAI integration but uses the configured model, a 15-second request cap, per-user five-minute request cache and usage records/daily quota (`BOOTKODE_AI_RESUME_DAILY_REQUESTS`). Requests and credential-bearing failures are not logged. Existing mentor/career/generation budgets remain; per-user quotas do not replace provider account spending caps. No live provider call or billing/availability claim is made by these checks. See the deployment and app-experience reports.

@@ -2,16 +2,23 @@
 
 namespace App\Livewire\Blog;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
 use App\Models\Content\BlogPost;
 use App\Models\Content\BlogCategory;
 use App\Models\Core\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Storage;
+use App\Services\Authorization\PublishingAccess;
 
 class AdminBlogPosts extends Component
 {
-    use WithPagination;
+    use AuthorizesPublishingAdministration, WithPagination;
+
+    protected function publishingAbility(): string
+    {
+        return PublishingAccess::BLOG_POSTS;
+    }
 
     public $search = '';
     public $statusFilter = 'all';

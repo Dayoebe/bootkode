@@ -24,13 +24,19 @@ class JobApplicationService
 
     public function submit(User $user, int $jobId, string $coverLetter, array $responses = [], ?UploadedFile $resume = null): JobApplication
     {
+        $user = app(\App\Services\Career\CareerAccess::class)->owner($user);
         $resumePath = null;
         try {
             return DB::transaction(function () use ($user, $jobId, $coverLetter, $responses, $resume, &$resumePath) {
+                User::whereKey($user->id)->lockForUpdate()->firstOrFail();
                 $job = $this->availableJob($jobId, lock: true);
                 $existing = JobApplication::where('job_id', $job->id)->where('user_id', $user->id)->first();
                 if ($existing) {
                     return $existing;
+                }
+                $eligibility = app(\App\Services\Career\JobEligibilityService::class)->evaluate($user, $job);
+                if (! $eligibility['can_apply']) {
+                    throw \Illuminate\Validation\ValidationException::withMessages(['careerEligibility' => $eligibility['explanation']]);
                 }
                 if ($resume) {
                     $resumePath = $resume->store('private/job-resumes/'.$user->id, 'local');

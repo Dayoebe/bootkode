@@ -9,7 +9,6 @@ use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\Http;
 use Livewire\Attributes\Layout;
 
 #[Layout('layouts.dashboard', ['title' => 'Resume Builder', 'description' => 'Create your professional resume', 'icon' => 'fas fa-file-alt', 'active' => 'resume.builder'])]
@@ -1014,95 +1013,56 @@ class ResumeBuilder extends Component
     // AI Enhancement Methods
     public function generateAISuggestions($section)
     {
-        if (!config('services.openai.key')) {
-            session()->flash('error', 'AI features are not available.');
-            return;
-        }
-
+        $user = app(\App\Services\Career\CareerAccess::class)->account();
+        abort_unless((int) $this->resume->user_id === (int) $user->id, 403);
+        validator(['section' => $section], ['section' => 'required|in:personal,experience,education,skills,projects'])->validate();
         $this->aiProcessing = true;
-
         try {
-            $prompt = $this->buildAIPrompt($section);
-            $response = Http::withToken(config('services.openai.key'))
-                ->post('https://api.openai.com/v1/chat/completions', [
-                    'model' => 'gpt-3.5-turbo',
-                    'messages' => [
-                        ['role' => 'system', 'content' => 'You are a professional resume consultant.'],
-                        ['role' => 'user', 'content' => $prompt]
-                    ],
-                    'max_tokens' => 500,
-                    'temperature' => 0.7,
-                ]);
-
-            if ($response->successful()) {
-                $aiSuggestion = $response->json()['choices'][0]['message']['content'];
-                $this->aiSuggestions[$section] = $aiSuggestion;
-                session()->flash('success', 'AI suggestions generated successfully!');
-            } else {
-                session()->flash('error', 'Failed to generate AI suggestions.');
-            }
-        } catch (\Exception $e) {
-            session()->flash('error', 'AI service is temporarily unavailable.');
+            $this->aiSuggestions[$section] = app(\App\Services\Career\ResumeAiService::class)->suggest($this->buildAIPrompt($section));
+            session()->flash('success', 'AI suggestions generated successfully!');
+        } catch (\Throwable) {
+            session()->flash('error', 'Resume AI is unavailable or its daily limit has been reached. Please try again later.');
+        } finally {
+            $this->aiProcessing = false;
         }
-
-        $this->aiProcessing = false;
     }
 
     protected function buildAIPrompt($section)
     {
-        $sectionData = match($section) {
+        $sectionData = match ($section) {
             'personal' => $this->personalForm['professional_summary'] ?? '',
             'experience' => json_encode($this->resume->work_experience ?? []),
+            'education' => json_encode($this->resume->education ?? []),
             'skills' => json_encode($this->resume->skills ?? []),
-            default => ''
+            'projects' => json_encode($this->resume->projects ?? []),
+            default => '',
         };
 
-        return "Improve the following {$section} section for a professional resume: {$sectionData}. Provide specific, actionable suggestions.";
+        return "Improve the following {$section} section for a professional resume using only these facts: {$sectionData}";
     }
 
     public function enhanceWithAI($section, $field = null)
     {
-        if (!config('services.openai.key')) {
-            session()->flash('error', 'AI features are not available.');
-            return;
-        }
-
+        $user = app(\App\Services\Career\CareerAccess::class)->account();
+        abort_unless((int) $this->resume->user_id === (int) $user->id, 403);
+        validator(['section' => $section, 'field' => $field], [
+            'section' => 'required|in:personal', 'field' => 'nullable|in:professional_summary',
+        ])->validate();
         $this->aiProcessing = true;
-
         try {
-            $currentText = $field ? ($this->{$section . 'Form'}[$field] ?? '') : '';
-            $prompt = "Enhance this {$section} text for a professional resume: {$currentText}";
-            
-            $response = Http::withToken(config('services.openai.key'))
-                ->post('https://api.openai.com/v1/chat/completions', [
-                    'model' => 'gpt-3.5-turbo',
-                    'messages' => [
-                        ['role' => 'system', 'content' => 'You are a professional resume writer. Provide enhanced, professional text.'],
-                        ['role' => 'user', 'content' => $prompt]
-                    ],
-                    'max_tokens' => 300,
-                    'temperature' => 0.7,
-                ]);
-
-            if ($response->successful()) {
-                $enhancedText = $response->json()['choices'][0]['message']['content'];
-                
-                if ($field) {
-                    $formProperty = $section . 'Form';
-                    $this->{$formProperty}[$field] = trim($enhancedText, '"');
-                } else {
-                    $this->aiEnhancedText = $enhancedText;
-                }
-                
-                session()->flash('success', 'Text enhanced with AI!');
+            $text = $field ? (string) ($this->personalForm[$field] ?? '') : '';
+            $suggestion = app(\App\Services\Career\ResumeAiService::class)->suggest('Enhance this professional summary using only these facts: '.$text);
+            if ($field) {
+                $this->personalForm[$field] = $suggestion;
             } else {
-                session()->flash('error', 'Failed to enhance text with AI.');
+                $this->aiEnhancedText = $suggestion;
             }
-        } catch (\Exception $e) {
-            session()->flash('error', 'AI service is temporarily unavailable.');
+            session()->flash('success', 'Text enhanced with AI! Review it before saving.');
+        } catch (\Throwable) {
+            session()->flash('error', 'Resume AI is unavailable or its daily limit has been reached. Please try again later.');
+        } finally {
+            $this->aiProcessing = false;
         }
-
-        $this->aiProcessing = false;
     }
 
     // Export Methods

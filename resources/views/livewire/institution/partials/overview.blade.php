@@ -1,3 +1,7 @@
+@assets
+    @vite('resources/js/charts.js')
+@endassets
+
 <!-- Overview Dashboard with Dark Mode -->
 <div class="space-y-6">
     <!-- Key Metrics Row -->

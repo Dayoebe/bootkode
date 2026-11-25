@@ -1,3 +1,7 @@
+@assets
+    @vite('resources/js/charts.js')
+@endassets
+
    {{-- resources/views/livewire/affiliate/analytics.blade.php --}}
    <div class=" px-4 sm:px-6 lg:px-8 py-8">
     <!-- Header -->
@@ -53,7 +57,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm text-content-muted">Conversion Rate</p>
-                    <p class="text-2xl font-bold text-content">{{ $conversionData['overall_conversion_rate'] }}%</p>
+                    <p class="text-lg font-bold text-content">Not collected</p>
                 </div>
                 <div class="bg-brand/10 p-3 rounded-lg">
                     <i aria-hidden="true" class="fas fa-percentage text-brand text-xl"></i>
@@ -107,7 +111,7 @@
                     <div class="w-8 h-8 bg-action rounded-full flex items-center justify-center text-action-foreground text-sm font-semibold">1</div>
                     <span class="text-sm font-medium">Clicks</span>
                 </div>
-                <span class="text-lg font-bold">{{ number_format($conversionData['clicks']) }}</span>
+                <span class="text-sm font-bold">Not collected</span>
             </div>
 
             <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
@@ -117,7 +121,7 @@
                 </div>
                 <div class="text-right">
                     <span class="text-lg font-bold">{{ number_format($conversionData['registrations']) }}</span>
-                    <p class="text-xs text-content-muted">{{ $conversionData['click_to_register_rate'] }}% conversion</p>
+                    <p class="text-xs text-content-muted">Click tracking unavailable</p>
                 </div>
             </div>
 

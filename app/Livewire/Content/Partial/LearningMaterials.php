@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Content\Partial;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
+use App\Services\Authorization\PublishingAccess;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
@@ -12,7 +14,9 @@ use Illuminate\Support\Facades\Storage;
 
 class LearningMaterials extends Component
 {
-    use WithPagination, WithFileUploads;
+    use AuthorizesPublishingAdministration, WithPagination, WithFileUploads;
+
+    protected function publishingAbility(): string { return PublishingAccess::CONTENT_EDITOR; }
 
     public $search = '';
     public $selectedType = '';

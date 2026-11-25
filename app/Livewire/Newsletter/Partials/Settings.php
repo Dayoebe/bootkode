@@ -2,11 +2,17 @@
 // UPDATED: Settings.php
 namespace App\Livewire\Newsletter\Partials;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
+use App\Services\Authorization\PublishingAccess;
 use Livewire\Component;
 use App\Models\Admin\NewsletterCampaign;
 
 class Settings extends Component
 {
+    use AuthorizesPublishingAdministration;
+
+    protected function publishingAbility(): string { return PublishingAccess::NEWSLETTER_SETTINGS; }
+
     public $settings = [];
 
     protected $rules = [

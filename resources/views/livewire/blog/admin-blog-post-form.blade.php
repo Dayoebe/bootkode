@@ -1,5 +1,8 @@
 {{-- resources/views/livewire/blog/admin-blog-post-form.blade.php --}}
 <div>
+    @assets
+        @vite('resources/js/editors.js')
+    @endassets
     {{-- Error/Success Messages --}}
     @if (session()->has('message'))
         <div class="mb-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg">

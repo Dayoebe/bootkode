@@ -15,6 +15,8 @@ use App\Models\Content\BlogPost;
 use App\Models\Community\Faq;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\Rule;
 use Spatie\Activitylog\Models\Activity;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Computed;
@@ -60,6 +62,11 @@ class SuperAdminDashboard extends Component
         $this->loadAllData();
     }
 
+    public function hydrate(): void
+    {
+        abort_unless(Auth::user()?->canAccessDashboardRole(User::ROLE_SUPER_ADMIN), 403);
+    }
+
     public function loadAllData()
     {
         // Load all dashboard data
@@ -68,12 +75,18 @@ class SuperAdminDashboard extends Component
 
     public function updateTimeframe($timeframe)
     {
+        validator(['timeframe' => $timeframe], [
+            'timeframe' => ['required', Rule::in(['24hours', '7days', '30days', '90days'])],
+        ])->validate();
+
         $this->selectedTimeframe = $timeframe;
         $this->loadAllData();
     }
 
     public function toggleWidget($widget)
     {
+        abort_unless(array_key_exists($widget, $this->showWidgets), 422);
+
         $this->showWidgets[$widget] = !$this->showWidgets[$widget];
     }
 
@@ -314,10 +327,11 @@ class SuperAdminDashboard extends Component
     private function getSystemStatus()
     {
         $status = SystemStatus::latest()->first();
+
         return [
-            'status' => $status->status ?? 'operational',
-            'message' => $status->message ?? 'All systems operational',
-            'updated_at' => $status ? $status->updated_at->diffForHumans() : 'Never',
+            'status' => $status->status ?? 'unknown',
+            'message' => $status->message ?? 'No platform status update has been published.',
+            'updated_at' => $status ? $status->updated_at->diffForHumans() : 'not recorded',
         ];
     }
 
@@ -333,8 +347,20 @@ class SuperAdminDashboard extends Component
 
     private function getStorageUsage()
     {
-        // This would need to be implemented based on your storage setup
-        return ['used' => '2.3 GB', 'total' => '10 GB', 'percentage' => 23];
+        $total = @disk_total_space(storage_path());
+        $free = @disk_free_space(storage_path());
+
+        if (! is_numeric($total) || ! is_numeric($free) || $total <= 0) {
+            return ['used' => null, 'total' => null, 'percentage' => null];
+        }
+
+        $used = $total - $free;
+
+        return [
+            'used' => $this->formatBytes($used),
+            'total' => $this->formatBytes($total),
+            'percentage' => round(($used / $total) * 100, 1),
+        ];
     }
 
     private function getCacheStatus()
@@ -349,14 +375,24 @@ class SuperAdminDashboard extends Component
 
     private function getQueueStatus()
     {
-        // This would need to be implemented based on your queue setup
-        return ['pending' => 5, 'failed' => 0, 'processed' => 1250];
+        return [
+            'pending' => Schema::hasTable('jobs') ? DB::table('jobs')->count() : null,
+            'failed' => Schema::hasTable('failed_jobs') ? DB::table('failed_jobs')->count() : null,
+            'processed' => null,
+        ];
     }
 
     private function getLastBackupTime()
     {
-        // This would need to be implemented based on your backup strategy
-        return now()->subHours(6)->diffForHumans();
+        return null;
+    }
+
+    private function formatBytes(float|int $bytes): string
+    {
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $power = $bytes > 0 ? min((int) floor(log($bytes, 1024)), count($units) - 1) : 0;
+
+        return number_format($bytes / (1024 ** $power), $power > 1 ? 1 : 0).' '.$units[$power];
     }
 
     private function getAverageResponseTime()

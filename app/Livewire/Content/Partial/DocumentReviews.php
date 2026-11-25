@@ -2,13 +2,17 @@
 
 namespace App\Livewire\Content\Partial;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
+use App\Services\Authorization\PublishingAccess;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Learning\Document;
 
 class DocumentReviews extends Component
 {
-    use WithPagination;
+    use AuthorizesPublishingAdministration, WithPagination;
+
+    protected function publishingAbility(): string { return PublishingAccess::CONTENT_EDITOR; }
 
     public $search = '';
     public $selectedStatus = 'pending_review';

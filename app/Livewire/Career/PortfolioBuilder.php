@@ -2,61 +2,64 @@
 
 namespace App\Livewire\Career;
 
+use App\Models\Content\Portfolio;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Livewire\Attributes\Layout;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use App\Models\Content\Portfolio;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
-use Intervention\Image\Facades\Image;
-use Livewire\Attributes\Layout;
 
-
-#[Layout('layouts.dashboard', ['title' => 'Portfolio Builder', 'description' => 'Create and showcase your professional portfolio', 'icon' => 'fas fa-palette', 'active' => 'portfolio.builder'])]
-
+#[Layout('layouts.dashboard', ['title' => 'Project portfolio', 'description' => 'Manage private projects and choose what to publish', 'icon' => 'fas fa-folder-open', 'active' => 'portfolio.builder'])]
 class PortfolioBuilder extends Component
 {
+    use AuthorizesRequests;
     use WithFileUploads;
 
-    // Portfolio data
     public $portfolios = [];
-    public $title = '';
-    public $description = '';
-    public $project_url = '';
-    public $technologies = '';
-    public $category = '';
-    public $status = 'completed';
-    public $start_date = '';
-    public $end_date = '';
-    public $client_name = '';
-    public $image; // Temporary image file
-    public $additional_images = []; // For multiple images
-    public $editingProjectId = null;
+    public string $title = '';
+    public string $description = '';
+    public string $project_url = '';
+    public string $source_code_url = '';
+    public string $technologies = '';
+    public string $category = '';
+    public string $status = 'completed';
+    public string $visibility = 'private';
+    public string $start_date = '';
+    public string $end_date = '';
+    public string $client_name = '';
+    public $image;
+    public array $additional_images = [];
 
-    // UI State
-    public $showForm = false;
-    public $viewMode = 'grid'; // grid, list, masonry
-    public $sortBy = 'created_at';
-    public $sortDirection = 'desc';
-    public $filterCategory = '';
-    public $filterStatus = '';
-    public $searchTerm = '';
-    public $showPreview = false;
-    public $previewProject = null;
-    public $bulkSelected = [];
-    public $showBulkActions = false;
+    #[Locked]
+    public ?int $editingProjectId = null;
 
-    // Portfolio statistics
-    public $totalProjects = 0;
-    public $completedProjects = 0;
-    public $inProgressProjects = 0;
-    public $inPlanningProjects = 0;
-    public $inOnHoldProjects = 0;
+    public bool $showForm = false;
+    public string $viewMode = 'grid';
+    public string $sortBy = 'sort_order';
+    public string $sortDirection = 'asc';
+    public string $filterCategory = '';
+    public string $filterStatus = '';
+    public string $searchTerm = '';
+    public bool $showPreview = false;
 
-    public $totalViews = 0;
+    #[Locked]
+    public ?Portfolio $previewProject = null;
 
-    // Categories and technologies
-    public $categories = [
+    public array $bulkSelected = [];
+    public bool $showBulkActions = false;
+    public int $totalProjects = 0;
+    public int $completedProjects = 0;
+    public int $inProgressProjects = 0;
+    public int $inPlanningProjects = 0;
+    public int $inOnHoldProjects = 0;
+    public int $totalViews = 0;
+
+    public array $categories = [
         'web-development' => 'Web Development',
         'mobile-app' => 'Mobile App',
         'ui-ux-design' => 'UI/UX Design',
@@ -66,582 +69,423 @@ class PortfolioBuilder extends Component
         'video-editing' => 'Video Editing',
         'data-analysis' => 'Data Analysis',
         'machine-learning' => 'Machine Learning',
-        'other' => 'Other'
+        'other' => 'Other',
     ];
 
-    public $techSuggestions = [
-        'React',
-        'Vue.js',
-        'Angular',
-        'Laravel',
-        'Django',
-        'Node.js',
-        'Python',
-        'JavaScript',
-        'TypeScript',
-        'PHP',
-        'MySQL',
-        'PostgreSQL',
-        'MongoDB',
-        'AWS',
-        'Docker',
-        'Kubernetes',
-        'Figma',
-        'Adobe XD',
-        'Photoshop',
-        'Illustrator',
-        'After Effects',
-        'Premiere Pro',
-        'Blender'
+    public array $techSuggestions = [
+        'React', 'Vue.js', 'Angular', 'Laravel', 'Django', 'Node.js', 'Python',
+        'JavaScript', 'TypeScript', 'PHP', 'MySQL', 'PostgreSQL', 'MongoDB',
+        'AWS', 'Docker', 'Kubernetes', 'Figma', 'Adobe XD', 'Photoshop',
+        'Illustrator', 'After Effects', 'Premiere Pro', 'Blender',
     ];
 
-    protected $rules = [
-        'title' => 'required|string|max:255',
-        'description' => 'required|string|min:10',
-        'project_url' => 'nullable|url',
-        'technologies' => 'required|string',
-        'category' => 'required|string',
-        'status' => 'required|in:completed,in-progress,planning,on-hold',
-        'start_date' => 'nullable|date',
-        'end_date' => 'nullable|date|after_or_equal:start_date',
-        'client_name' => 'nullable|string|max:255',
-        'image' => 'nullable|image|max:2048', // 2MB Max
-        'additional_images.*' => 'nullable|image|max:1024',
-    ];
-
-    protected $messages = [
-        'title.required' => 'Project title is required.',
-        'description.min' => 'Description must be at least 10 characters.',
-        'technologies.required' => 'Please specify the technologies used.',
-        'category.required' => 'Please select a project category.',
-    ];
-
-    public function mount()
+    public function boot(): void
     {
-        $this->loadPortfolios();
-        $this->calculateStatistics();
+        abort_unless(
+            Auth::check()
+                && Auth::user()->isStudent()
+                && Auth::user()->is_active
+                && Auth::user()->deactivated_at === null,
+            403
+        );
     }
 
-    public function updated($propertyName)
+    public function mount(): void
     {
-        if (in_array($propertyName, ['sortBy', 'sortDirection', 'filterCategory', 'filterStatus', 'searchTerm'])) {
+        $this->authorize('create', Portfolio::class);
+        $this->loadPortfolios();
+    }
+
+    protected function rules(): array
+    {
+        return [
+            'title' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string', 'min:10', 'max:5000'],
+            'project_url' => ['nullable', 'url:http,https', 'max:255'],
+            'source_code_url' => ['nullable', 'url:http,https', 'max:2048'],
+            'technologies' => ['required', 'string', 'max:1000'],
+            'category' => ['required', 'in:'.implode(',', array_keys($this->categories))],
+            'status' => ['required', 'in:completed,in-progress,planning,on-hold'],
+            'visibility' => ['required', 'in:private,public'],
+            'start_date' => ['nullable', 'date'],
+            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
+            'client_name' => ['nullable', 'string', 'max:255'],
+            'image' => ['nullable', 'image', 'max:2048'],
+            'additional_images.*' => ['nullable', 'image', 'max:1024'],
+        ];
+    }
+
+    protected function messages(): array
+    {
+        return [
+            'description.min' => 'Describe the project in at least 10 characters.',
+            'project_url.url' => 'The demo link must be a safe HTTP or HTTPS URL.',
+            'source_code_url.url' => 'The source-code link must be a safe HTTP or HTTPS URL.',
+            'technologies.required' => 'List at least one technology or tool.',
+            'visibility.in' => 'Choose private or published visibility.',
+        ];
+    }
+
+    public function updated(string $propertyName): void
+    {
+        if (in_array($propertyName, ['sortBy', 'sortDirection', 'filterCategory', 'filterStatus', 'searchTerm'], true)) {
             $this->loadPortfolios();
         }
     }
 
-
-    public function loadPortfolios()
+    public function loadPortfolios(): void
     {
+        $allowedSorts = ['sort_order', 'created_at', 'title', 'status'];
+        $sortBy = in_array($this->sortBy, $allowedSorts, true) ? $this->sortBy : 'sort_order';
+        $direction = $this->sortDirection === 'desc' ? 'desc' : 'asc';
+        $this->sortBy = $sortBy;
+        $this->sortDirection = $direction;
+
         $query = Auth::user()->portfolios();
 
-        // Apply search
-        if ($this->searchTerm) {
-            $query->where(function ($q) {
-                $q->where('title', 'like', '%' . $this->searchTerm . '%')
-                    ->orWhere('description', 'like', '%' . $this->searchTerm . '%')
-                    ->orWhere('technologies', 'like', '%' . $this->searchTerm . '%');
+        if ($this->searchTerm !== '') {
+            $search = mb_substr($this->searchTerm, 0, 100);
+            $query->where(function ($builder) use ($search): void {
+                $builder->where('title', 'like', '%'.$search.'%')
+                    ->orWhere('description', 'like', '%'.$search.'%')
+                    ->orWhere('technologies', 'like', '%'.$search.'%');
             });
         }
 
-        // Apply filters
-        if ($this->filterCategory) {
+        if (array_key_exists($this->filterCategory, $this->categories)) {
             $query->where('category', $this->filterCategory);
         }
 
-        if ($this->filterStatus) {
+        if (in_array($this->filterStatus, ['completed', 'in-progress', 'planning', 'on-hold'], true)) {
             $query->where('status', $this->filterStatus);
         }
 
-        // Apply sorting
-        $query->orderBy($this->sortBy, $this->sortDirection);
-
-        $this->portfolios = $query->get();
+        $this->portfolios = $query->orderBy($sortBy, $direction)->orderBy('id')->get();
         $this->calculateStatistics();
     }
 
-    public function calculateStatistics()
+    public function calculateStatistics(): void
     {
-        $user = Auth::user();
-        $this->totalProjects = $user->portfolios()->count();
-        $this->completedProjects = $user->portfolios()->where('status', 'completed')->count();
-        $this->inProgressProjects = $user->portfolios()->where('status', 'in-progress')->count();
-        $this->inPlanningProjects = $user->portfolios()->where('status', 'planning')->count();
-        $this->inOnHoldProjects = $user->portfolios()->where('status', 'on-hold')->count();
+        $summary = Auth::user()->portfolios()
+            ->selectRaw('COUNT(*) as total')
+            ->selectRaw("SUM(status = 'completed') as completed")
+            ->selectRaw("SUM(status = 'in-progress') as in_progress")
+            ->selectRaw("SUM(status = 'planning') as planning")
+            ->selectRaw("SUM(status = 'on-hold') as on_hold")
+            ->selectRaw('COALESCE(SUM(views_count), 0) as views')
+            ->first();
 
-   
-        $this->totalViews = $user->portfolios()->sum('views_count') ?? 0;
+        $this->totalProjects = (int) ($summary?->total ?? 0);
+        $this->completedProjects = (int) ($summary?->completed ?? 0);
+        $this->inProgressProjects = (int) ($summary?->in_progress ?? 0);
+        $this->inPlanningProjects = (int) ($summary?->planning ?? 0);
+        $this->inOnHoldProjects = (int) ($summary?->on_hold ?? 0);
+        $this->totalViews = (int) ($summary?->views ?? 0);
     }
 
-    public function saveProject()
+    public function saveProject(): void
     {
-        $this->validate();
+        $this->title = trim($this->title);
+        $this->description = trim($this->description);
+        $this->project_url = trim($this->project_url);
+        $this->source_code_url = trim($this->source_code_url);
+        $this->technologies = trim($this->technologies);
+        $this->client_name = trim($this->client_name);
+
+        $validated = $this->validate();
+        $data = [
+            'title' => trim($validated['title']),
+            'description' => trim($validated['description']),
+            'project_url' => $this->nullableTrimmed($validated['project_url'] ?? null),
+            'source_code_url' => $this->nullableTrimmed($validated['source_code_url'] ?? null),
+            'technologies' => trim($validated['technologies']),
+            'category' => $validated['category'],
+            'status' => $validated['status'],
+            'visibility' => $validated['visibility'],
+            'is_public' => $validated['visibility'] === 'public',
+            'start_date' => $validated['start_date'] ?: null,
+            'end_date' => $validated['end_date'] ?: null,
+            'client_name' => $this->nullableTrimmed($validated['client_name'] ?? null),
+        ];
+
+        $storedPaths = [];
 
         try {
-            // Convert empty date strings to null
-            $startDate = !empty($this->start_date) ? $this->start_date : null;
-            $endDate = !empty($this->end_date) ? $this->end_date : null;
+            $project = $this->editingProjectId !== null
+                ? $this->ownedProject($this->editingProjectId, 'update')
+                : null;
 
-            $projectData = [
-                'title' => $this->title,
-                'description' => $this->description,
-                'project_url' => $this->project_url,
-                'technologies' => $this->technologies,
-                'category' => $this->category,
-                'status' => $this->status,
-                'start_date' => $startDate,
-                'end_date' => $endDate,
-                'client_name' => $this->client_name,
-                'slug' => Str::slug($this->title . '-' . Str::random(6)),
-            ];
+            if ($project === null) {
+                $this->authorize('create', Portfolio::class);
+            } elseif ($data['visibility'] === 'public') {
+                $this->authorize('publish', $project);
+            }
 
-            // Handle main image upload with optimization
             if ($this->image) {
-                $imagePath = $this->optimizeAndStoreImage($this->image, 'portfolio/main');
-                $projectData['image_path'] = $imagePath;
+                $data['image_path'] = $this->image->store('portfolio/main', 'public');
+                $storedPaths[] = $data['image_path'];
+            }
+            if ($this->additional_images !== []) {
+                $data['additional_images'] = collect($this->additional_images)
+                    ->map(fn ($image) => $image->store('portfolio/gallery', 'public'))
+                    ->all();
+                $storedPaths = [...$storedPaths, ...$data['additional_images']];
             }
 
-            // Handle additional images
-            $additionalImagePaths = [];
-            if ($this->additional_images) {
-                foreach ($this->additional_images as $additionalImage) {
-                    $path = $this->optimizeAndStoreImage($additionalImage, 'portfolio/gallery');
-                    $additionalImagePaths[] = $path;
+            if ($project !== null) {
+                $oldImage = $project->image_path;
+                $oldAdditionalImages = $project->additional_images ?? [];
+                $project->update($data);
+                if (isset($data['image_path'])) {
+                    $this->deleteImage($oldImage);
                 }
-                $projectData['additional_images'] = json_encode($additionalImagePaths);
-            }
-
-            if ($this->editingProjectId) {
-                // Update existing project
-                $project = Portfolio::find($this->editingProjectId);
-                $oldImagePath = $project->image_path;
-                $oldAdditionalImages = json_decode($project->additional_images, true) ?? [];
-
-                $project->update($projectData);
-
-                // Delete old images if new ones are uploaded
-                if (isset($projectData['image_path']) && $oldImagePath) {
-                    $this->deleteImage($oldImagePath);
-                }
-
-                if (isset($projectData['additional_images']) && $oldAdditionalImages) {
+                if (isset($data['additional_images'])) {
                     $this->deleteAdditionalImages($oldAdditionalImages);
                 }
-
-                session()->flash('message', 'Project updated successfully! 🎉');
+                session()->flash('message', 'Project updated.');
             } else {
-                // Create new project
-                Auth::user()->portfolios()->create($projectData);
-                session()->flash('message', 'Project created successfully! 🚀');
+                $data['slug'] = $this->uniqueSlug($data['title']);
+                $data['sort_order'] = ((int) Auth::user()->portfolios()->max('sort_order')) + 1;
+                Auth::user()->portfolios()->create($data);
+                session()->flash(
+                    'message',
+                    $data['visibility'] === 'public'
+                        ? 'Project created and published to your showcase.'
+                        : 'Project created privately. Publish it only when you are ready to share it.'
+                );
             }
 
             $this->resetForm();
             $this->loadPortfolios();
-
-        } catch (\Exception $e) {
-            session()->flash('error', 'Failed to save project: ' . $e->getMessage());
-            \Log::error('Project save error: ' . $e->getMessage());
+        } catch (AuthorizationException $exception) {
+            throw $exception;
+        } catch (\Throwable $exception) {
+            $this->deleteAdditionalImages($storedPaths);
+            report($exception);
+            $this->addError('project', 'The project could not be saved. Your existing projects were not changed.');
         }
     }
 
-    public function deleteProject($projectId)
+    public function editProject(int $projectId): void
     {
-        $project = Portfolio::find($projectId);
-        if ($project && $project->user_id === Auth::id()) {
-            // Delete associated images
-            $this->deleteImage($project->image_path);
-            
-            if ($project->additional_images) {
-                $additionalImages = json_decode($project->additional_images, true);
-                $this->deleteAdditionalImages($additionalImages);
+        $project = $this->ownedProject($projectId, 'update');
+        $this->editingProjectId = $project->id;
+        $this->title = $project->title;
+        $this->description = $project->description;
+        $this->project_url = $project->project_url ?? '';
+        $this->source_code_url = $project->source_code_url ?? '';
+        $this->technologies = $project->technologies;
+        $this->category = $project->category;
+        $this->status = $project->status;
+        $this->visibility = $project->visibility ?? 'private';
+        $this->start_date = $project->start_date?->format('Y-m-d') ?? '';
+        $this->end_date = $project->end_date?->format('Y-m-d') ?? '';
+        $this->client_name = $project->client_name ?? '';
+        $this->showForm = true;
+        $this->showPreview = false;
+    }
+
+    public function deleteProject(int $projectId): void
+    {
+        $project = $this->ownedProject($projectId, 'delete');
+        $image = $project->image_path;
+        $additionalImages = $project->additional_images ?? [];
+        $project->delete();
+        $this->deleteImage($image);
+        $this->deleteAdditionalImages($additionalImages);
+        $this->loadPortfolios();
+        session()->flash('message', 'Project deleted.');
+    }
+
+    public function moveProject(int $projectId, string $direction): void
+    {
+        abort_unless(in_array($direction, ['up', 'down'], true), 422);
+        $project = $this->ownedProject($projectId, 'reorder');
+
+        DB::transaction(function () use ($project, $direction): void {
+            $projects = Portfolio::query()
+                ->where('user_id', Auth::id())
+                ->orderBy('sort_order')
+                ->orderBy('id')
+                ->lockForUpdate()
+                ->get();
+            $projects->each(fn (Portfolio $item, int $index) => $item->update(['sort_order' => $index + 1]));
+            $index = $projects->search(fn (Portfolio $item) => $item->is($project));
+            $otherIndex = $direction === 'up' ? $index - 1 : $index + 1;
+
+            if ($index === false || ! $projects->has($otherIndex)) {
+                return;
             }
 
-            $project->delete();
-            $this->loadPortfolios();
-            session()->flash('message', 'Project deleted successfully.');
-        }
+            $current = $projects->get($index);
+            $other = $projects->get($otherIndex);
+            $currentOrder = $current->sort_order;
+            $current->update(['sort_order' => $other->sort_order]);
+            $other->update(['sort_order' => $currentOrder]);
+        });
+
+        $this->sortBy = 'sort_order';
+        $this->sortDirection = 'asc';
+        $this->loadPortfolios();
+        session()->flash('message', 'Project order updated.');
     }
 
-    protected function optimizeAndStoreImage($image, $directory)
-{
-    $filename = Str::random(40) . '.' . $image->getClientOriginalExtension();
-    
-    // Store directly in the public directory
-    $path = $image->storeAs('public/' . $directory, $filename);
-    
-    // Remove the 'public/' prefix from the path to return
-    $relativePath = str_replace('public/', '', $path);
-    
-    // Check if Intervention Image is available
-    if (class_exists('Intervention\Image\Facades\Image')) {
-        try {
-            $fullPath = storage_path('app/public/' . $relativePath);
-            
-            // Create the thumbs directory if it doesn't exist
-            $thumbDir = storage_path('app/public/' . $directory . '/thumbs');
-            if (!file_exists($thumbDir)) {
-                mkdir($thumbDir, 0755, true);
-            }
-            
-            // Create thumbnail (300x300)
-            $thumbnail = Image::make($fullPath)->fit(300, 300);
-            $thumbnailPath = 'public/' . $directory . '/thumbs/' . $filename;
-            $thumbnail->save(storage_path('app/' . $thumbnailPath));
-
-            // Create medium size (800x600)
-            $medium = Image::make($fullPath)->resize(800, 600, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
-            $medium->save($fullPath, 85); // Compress to 85% quality
-
-        } catch (\Exception $e) {
-            \Log::error('Image optimization failed: ' . $e->getMessage());
-        }
-    }
-
-    return $relativePath;
-}
-    protected function deleteImage($path)
+    public function duplicateProject(int $projectId): void
     {
-        if ($path) {
-            // Delete main image
-            Storage::disk('public')->delete($path);
-            
-            // Delete thumbnail if it exists
-            if (class_exists('Intervention\Image\Facades\Image')) {
-                $thumbnailPath = str_replace('/main/', '/thumbs/', $path);
-                if (Storage::disk('public')->exists($thumbnailPath)) {
-                    Storage::disk('public')->delete($thumbnailPath);
-                }
-            }
-        }
+        $project = $this->ownedProject($projectId, 'view');
+        $this->authorize('create', Portfolio::class);
+        $copy = $project->replicate(['views_count', 'likes_count']);
+        $copy->title = Str::limit($project->title.' (Copy)', 255, '');
+        $copy->slug = $this->uniqueSlug($copy->title);
+        $copy->visibility = 'private';
+        $copy->is_public = false;
+        $copy->sort_order = ((int) Auth::user()->portfolios()->max('sort_order')) + 1;
+        $copy->image_path = null;
+        $copy->additional_images = null;
+        $copy->views_count = 0;
+        $copy->likes_count = 0;
+        $copy->save();
+        $this->loadPortfolios();
+        session()->flash('message', 'A private copy was created without shared media files.');
     }
 
-    protected function deleteAdditionalImages($images)
+    public function previewProject(int $projectId): void
     {
-        if ($images) {
-            foreach ($images as $imagePath) {
-                $this->deleteImage($imagePath);
-            }
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    public function editProject($projectId)
-    {
-        $project = Portfolio::find($projectId);
-        if ($project && $project->user_id === Auth::id()) {
-            $this->editingProjectId = $project->id;
-            $this->title = $project->title;
-            $this->description = $project->description;
-            $this->project_url = $project->project_url;
-            $this->technologies = $project->technologies;
-            $this->category = $project->category;
-            $this->status = $project->status;
-            $this->start_date = $project->start_date ? $project->start_date->format('Y-m-d') : '';
-            $this->end_date = $project->end_date ? $project->end_date->format('Y-m-d') : '';
-            $this->client_name = $project->client_name;
-            $this->showForm = true;
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-   
-    private function createThumbnail($sourceImage, $originalWidth, $originalHeight, $mimeType, $directory, $filename)
-    {
-        $thumbnailSize = 300;
-        $thumbnailImage = imagecreatetruecolor($thumbnailSize, $thumbnailSize);
-        
-        // Maintain transparency for PNG/GIF/WebP
-        if (in_array($mimeType, ['image/png', 'image/gif', 'image/webp'])) {
-            imagealphablending($thumbnailImage, false);
-            imagesavealpha($thumbnailImage, true);
-            $transparent = imagecolorallocatealpha($thumbnailImage, 255, 255, 255, 127);
-            imagefill($thumbnailImage, 0, 0, $transparent);
-        }
-    
-        // Calculate crop dimensions for square thumbnail
-        $cropSize = min($originalWidth, $originalHeight);
-        $cropX = ($originalWidth - $cropSize) / 2;
-        $cropY = ($originalHeight - $cropSize) / 2;
-    
-        imagecopyresampled(
-            $thumbnailImage, 
-            $sourceImage, 
-            0, 0, $cropX, $cropY,
-            $thumbnailSize, 
-            $thumbnailSize, 
-            $cropSize, 
-            $cropSize
-        );
-    
-        // Save thumbnail
-        $thumbnailPath = storage_path('app/public/' . $directory . '/thumbs/' . $filename);
-        $this->saveImageByType($thumbnailImage, $thumbnailPath, $mimeType);
-        
-        imagedestroy($thumbnailImage);
-    }
-    
-    private function optimizeOriginalImage($sourceImage, $originalWidth, $originalHeight, $mimeType, $fullPath)
-    {
-        $maxWidth = 800;
-        $maxHeight = 600;
-        
-        // Only resize if image is larger than max dimensions
-        if ($originalWidth <= $maxWidth && $originalHeight <= $maxHeight) {
-            return; // No need to resize
-        }
-        
-        $ratio = min($maxWidth / $originalWidth, $maxHeight / $originalHeight);
-        $newWidth = (int)($originalWidth * $ratio);
-        $newHeight = (int)($originalHeight * $ratio);
-    
-        $mediumImage = imagecreatetruecolor($newWidth, $newHeight);
-        
-        // Maintain transparency for PNG/GIF/WebP
-        if (in_array($mimeType, ['image/png', 'image/gif', 'image/webp'])) {
-            imagealphablending($mediumImage, false);
-            imagesavealpha($mediumImage, true);
-            $transparent = imagecolorallocatealpha($mediumImage, 255, 255, 255, 127);
-            imagefill($mediumImage, 0, 0, $transparent);
-        }
-    
-        imagecopyresampled(
-            $mediumImage, 
-            $sourceImage, 
-            0, 0, 0, 0,
-            $newWidth, 
-            $newHeight, 
-            $originalWidth, 
-            $originalHeight
-        );
-    
-        // Save compressed medium image
-        $this->saveImageByType($mediumImage, $fullPath, $mimeType);
-        
-        imagedestroy($mediumImage);
-    }
-    
-    private function saveImageByType($imageResource, $path, $mimeType)
-    {
-        match($mimeType) {
-            'image/jpeg' => imagejpeg($imageResource, $path, 85),
-            'image/png' => imagepng($imageResource, $path, 6),
-            'image/gif' => imagegif($imageResource, $path),
-            'image/webp' => function_exists('imagewebp') ? imagewebp($imageResource, $path, 85) : false,
-            default => false
-        };
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
-
-    public function duplicateProject($projectId)
-    {
-        $project = Portfolio::find($projectId);
-        if ($project && $project->user_id === Auth::id()) {
-            $newProject = $project->replicate();
-            $newProject->title = $project->title . ' (Copy)';
-            $newProject->slug = Str::slug($newProject->title . '-' . Str::random(6));
-            $newProject->created_at = now();
-            $newProject->save();
-
-            $this->loadPortfolios();
-            session()->flash('message', 'Project duplicated successfully!');
-        }
-    }
-
-    public function previewProject($projectId)
-    {
-        $this->previewProject = Portfolio::find($projectId);
+        $this->previewProject = $this->ownedProject($projectId, 'view');
         $this->showPreview = true;
-
-        // Increment view count
-        if ($this->previewProject) {
-            $this->previewProject->increment('views_count');
-        }
     }
 
-    public function closePreview()
+    public function closePreview(): void
     {
         $this->showPreview = false;
         $this->previewProject = null;
     }
 
-    public function toggleBulkSelect($projectId)
+    public function toggleBulkSelect(int $projectId): void
     {
-        if (in_array($projectId, $this->bulkSelected)) {
-            $this->bulkSelected = array_diff($this->bulkSelected, [$projectId]);
-        } else {
-            $this->bulkSelected[] = $projectId;
-        }
-
-        $this->showBulkActions = count($this->bulkSelected) > 0;
+        $this->ownedProject($projectId, 'view');
+        $this->bulkSelected = in_array($projectId, $this->bulkSelected, true)
+            ? array_values(array_diff($this->bulkSelected, [$projectId]))
+            : [...$this->bulkSelected, $projectId];
+        $this->showBulkActions = $this->bulkSelected !== [];
     }
 
-    public function selectAllVisible()
+    public function selectAllVisible(): void
     {
-        $this->bulkSelected = $this->portfolios->pluck('id')->toArray();
-        $this->showBulkActions = true;
+        $visibleIds = collect($this->portfolios)->pluck('id')->map(fn ($id) => (int) $id)->all();
+        $this->bulkSelected = Auth::user()->portfolios()->whereKey($visibleIds)->pluck('id')->map(fn ($id) => (int) $id)->all();
+        $this->showBulkActions = $this->bulkSelected !== [];
     }
 
-    public function clearBulkSelection()
+    public function clearBulkSelection(): void
     {
         $this->bulkSelected = [];
         $this->showBulkActions = false;
     }
 
-    public function bulkDelete()
+    public function bulkDelete(): void
     {
-        Portfolio::whereIn('id', $this->bulkSelected)
-            ->where('user_id', Auth::id())
-            ->each(function ($project) {
-                $this->deleteProject($project->id);
-            });
-
+        $projectIds = collect($this->bulkSelected)
+            ->filter(fn ($id) => is_int($id) || (is_string($id) && ctype_digit($id)))
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->take(100)
+            ->all();
+        $projects = Auth::user()->portfolios()->whereKey($projectIds)->get();
+        $count = $projects->count();
+        foreach ($projects as $project) {
+            $this->authorize('delete', $project);
+            $image = $project->image_path;
+            $additionalImages = $project->additional_images ?? [];
+            $project->delete();
+            $this->deleteImage($image);
+            $this->deleteAdditionalImages($additionalImages);
+        }
         $this->clearBulkSelection();
-        session()->flash('message', count($this->bulkSelected) . ' projects deleted successfully.');
+        $this->loadPortfolios();
+        session()->flash('message', $count.' projects deleted.');
     }
 
     public function exportPortfolio()
     {
-        $projects = Auth::user()
-            ->portfolios()
-            ->orderBy('created_at', 'desc')
-            ->get();
-
+        $this->authorize('create', Portfolio::class);
+        $projects = Auth::user()->portfolios()->orderBy('sort_order')->orderBy('id')->get();
         if ($projects->isEmpty()) {
-            session()->flash('error', 'No portfolio projects found to export.');
+            $this->addError('project', 'There are no projects to export.');
+
             return null;
         }
 
-        $filename = 'portfolio_projects_' . now()->format('Y_m_d_His') . '.csv';
-
-        return response()->streamDownload(function () use ($projects) {
+        return response()->streamDownload(function () use ($projects): void {
             $handle = fopen('php://output', 'w');
-            fputcsv($handle, [
-                'Title',
-                'Category',
-                'Status',
-                'Technologies',
-                'Project URL',
-                'Client',
-                'Start Date',
-                'End Date',
-                'Views',
-                'Created At',
-            ]);
-
+            fputcsv($handle, ['Title', 'Category', 'Status', 'Visibility', 'Technologies', 'Demo URL', 'Source URL']);
             foreach ($projects as $project) {
                 fputcsv($handle, [
-                    $project->title,
-                    $project->category_label,
-                    $project->status_label,
-                    $project->technologies,
-                    $project->project_url,
-                    $project->client_name,
-                    optional($project->start_date)->toDateString(),
-                    optional($project->end_date)->toDateString(),
-                    $project->views_count,
-                    optional($project->created_at)->toDateTimeString(),
+                    $this->csvCell($project->title), $project->category_label, $project->status_label,
+                    $project->visibility, $this->csvCell($project->technologies),
+                    $project->project_url, $project->source_code_url,
                 ]);
             }
-
             fclose($handle);
-        }, $filename, ['Content-Type' => 'text/csv']);
+        }, 'portfolio_projects_'.now()->format('Y_m_d_His').'.csv', ['Content-Type' => 'text/csv']);
     }
 
-    public function resetForm()
+    public function resetForm(): void
     {
         $this->reset([
-            'title',
-            'description',
-            'project_url',
-            'technologies',
-            'category',
-            'status',
-            'start_date',
-            'end_date',
-            'client_name',
-            'image',
-            'additional_images',
-            'editingProjectId'
+            'title', 'description', 'project_url', 'source_code_url', 'technologies',
+            'category', 'start_date', 'end_date', 'client_name', 'image',
+            'additional_images', 'editingProjectId',
         ]);
+        $this->status = 'completed';
+        $this->visibility = 'private';
         $this->showForm = false;
+        $this->resetValidation();
+    }
+
+    private function ownedProject(int $projectId, string $ability): Portfolio
+    {
+        $project = Portfolio::query()->findOrFail($projectId);
+        $this->authorize($ability, $project);
+
+        return $project;
+    }
+
+    private function uniqueSlug(string $title): string
+    {
+        do {
+            $slug = Str::slug($title).'-'.Str::lower(Str::random(8));
+        } while (Portfolio::query()->where('slug', $slug)->exists());
+
+        return $slug;
+    }
+
+    private function nullableTrimmed(?string $value): ?string
+    {
+        $value = trim((string) $value);
+
+        return $value === '' ? null : $value;
+    }
+
+    private function deleteImage(?string $path): void
+    {
+        if ($path) {
+            Storage::disk('public')->delete($path);
+        }
+    }
+
+    private function deleteAdditionalImages(array $images): void
+    {
+        foreach ($images as $path) {
+            $this->deleteImage(is_string($path) ? $path : null);
+        }
+    }
+
+    private function csvCell(?string $value): string
+    {
+        $value = (string) $value;
+
+        return preg_match('/^\s*[=+\-@]/u', $value) === 1 ? "'".$value : $value;
     }
 
     public function render()

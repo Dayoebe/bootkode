@@ -2,29 +2,28 @@
 
 namespace App\Livewire\StudentManagement;
 
-use Livewire\Component;
-use App\Models\Learning\Course;
-use App\Models\Learning\CourseReview;
-use App\Models\Learning\Section;
-use App\Models\Learning\Lesson;
 use App\Models\Assessment\Assessment;
-use App\Models\Assessment\StudentAnswer;
-use App\Models\Learning\CourseEnrollment;
-use App\Models\Learning\DownloadableContent;
-use App\Models\Learning\LessonProgress;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 use App\Models\Credentials\Certificate;
+use App\Models\Learning\Course;
+use App\Models\Learning\CourseEnrollment;
+use App\Models\Learning\CourseReview;
+use App\Models\Learning\DownloadableContent;
+use App\Models\Learning\Lesson;
+use App\Models\Learning\LessonProgress;
+use App\Models\Learning\Section;
 use App\Notifications\CourseCompletionCertificateReady;
 use App\Services\DirectMessagingService;
 use App\Services\OfflineLearningPackService;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Title;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Title;
+use Livewire\Component;
 
 #[Layout('layouts.dashboard')]
 #[Title('Course View')]
@@ -34,32 +33,48 @@ class CourseView extends Component
 
     public function boot(): void
     {
-        if ($this->course instanceof Course) abort_unless(Auth::user()->enrollments()->where('course_id', $this->course->id)->exists()
-            || Auth::user()->courses()->where('courses.id', $this->course->id)->exists(), 403);
+        if ($this->course instanceof Course) {
+            abort_unless(Auth::user()->enrollments()->where('course_id', $this->course->id)->exists()
+                || Auth::user()->courses()->where('courses.id', $this->course->id)->exists(), 403);
+        }
     }
 
     #[\Livewire\Attributes\Locked]
     public $course;
+
     #[\Livewire\Attributes\Locked]
     public $currentLesson;
+
     #[\Livewire\Attributes\Locked]
     public $currentSection;
+
     #[\Livewire\Attributes\Locked]
     public $completedLessons = [];
+
     #[\Livewire\Attributes\Locked]
     public $unlockedSections = [];
+
     #[\Livewire\Attributes\Locked]
     public $sectionCompletionThreshold;
+
     public $reviewRating = 5;
+
     public $reviewComment = '';
+
     #[\Livewire\Attributes\Locked]
     public $overallProgress = 0;
+
     #[\Livewire\Attributes\Locked]
     public $lastViewedLesson = null;
+
     public bool $certificateEarned = false;
+
     public bool $shouldCelebrate = false;
+
     public int $progressVersion = 0;
+
     public int $offlineStorageLimitMb = 500;
+
     public array $offlineContentTypes = OfflineLearningPackService::DEFAULT_TYPES;
 
     public function mount($course)
@@ -81,7 +96,7 @@ class CourseView extends Component
             $preferredLesson = $lessonData['lesson'] ?? null;
         }
 
-        if (!$preferredLesson && request()->boolean('continue')) {
+        if (! $preferredLesson && request()->boolean('continue')) {
             $preferredLesson = $this->lastViewedLesson;
         }
 
@@ -91,7 +106,7 @@ class CourseView extends Component
             $this->dispatch('notify', [
                 'message' => session('success'),
                 'type' => 'success',
-                'icon' => 'fas fa-graduation-cap'
+                'icon' => 'fas fa-graduation-cap',
             ]);
         }
 
@@ -143,23 +158,23 @@ class CourseView extends Component
 
         $query = Course::query()
             ->with([
-                'sections' => fn($sectionQuery) => $sectionQuery
+                'sections' => fn ($sectionQuery) => $sectionQuery
                     ->orderBy('order')
                     ->with([
-                        'lessons' => fn($lessonQuery) => $lessonQuery
+                        'lessons' => fn ($lessonQuery) => $lessonQuery
                             ->published()
                             ->orderBy('order')
                             ->with([
-                                'assessments' => fn($assessmentQuery) => $assessmentQuery
+                                'assessments' => fn ($assessmentQuery) => $assessmentQuery
                                     ->orderBy('order')
                                     ->with([
-                                        'questions' => fn($questionQuery) => $questionQuery->orderBy('order'),
+                                        'questions' => fn ($questionQuery) => $questionQuery->orderBy('order'),
                                     ]),
                             ]),
                     ]),
                 'instructor',
                 'category',
-                'enrollments' => fn($enrollmentQuery) => $enrollmentQuery->where('user_id', Auth::id()),
+                'enrollments' => fn ($enrollmentQuery) => $enrollmentQuery->where('user_id', Auth::id()),
             ])
             ->where('is_published', true)
             ->where('is_approved', true);
@@ -263,18 +278,21 @@ class CourseView extends Component
     {
         if ($preferredLesson instanceof Lesson && $this->isLessonAccessible($preferredLesson)) {
             $this->focusLesson($preferredLesson, $preferredLesson->section);
+
             return;
         }
 
         $firstIncompleteLesson = $this->findFirstIncompleteAccessibleLesson();
         if ($firstIncompleteLesson) {
             $this->focusLesson($firstIncompleteLesson['lesson'], $firstIncompleteLesson['section']);
+
             return;
         }
 
         $firstAccessibleLesson = $this->findFirstAccessibleLesson();
         if ($firstAccessibleLesson) {
             $this->focusLesson($firstAccessibleLesson['lesson'], $firstAccessibleLesson['section']);
+
             return;
         }
 
@@ -309,12 +327,12 @@ class CourseView extends Component
     protected function findFirstIncompleteAccessibleLesson(): ?array
     {
         foreach ($this->course->sections as $section) {
-            if (!in_array($section->id, $this->unlockedSections, true)) {
+            if (! in_array($section->id, $this->unlockedSections, true)) {
                 continue;
             }
 
             foreach ($section->lessons as $lesson) {
-                if (!in_array($lesson->id, $this->completedLessons, true)) {
+                if (! in_array($lesson->id, $this->completedLessons, true)) {
                     return [
                         'lesson' => $lesson,
                         'section' => $section,
@@ -329,7 +347,7 @@ class CourseView extends Component
     protected function findFirstAccessibleLesson(): ?array
     {
         foreach ($this->course->sections as $section) {
-            if (!in_array($section->id, $this->unlockedSections, true)) {
+            if (! in_array($section->id, $this->unlockedSections, true)) {
                 continue;
             }
 
@@ -349,7 +367,7 @@ class CourseView extends Component
     protected function getOrderedLessonMap()
     {
         return $this->course->sections
-            ->flatMap(fn($section) => $section->lessons->map(fn($lesson) => [
+            ->flatMap(fn ($section) => $section->lessons->map(fn ($lesson) => [
                 'lesson' => $lesson,
                 'section' => $section,
             ]))
@@ -360,7 +378,7 @@ class CourseView extends Component
     {
         $orderedLessons = $this->getOrderedLessonMap();
         $currentIndex = $orderedLessons->search(
-            fn($item) => (int) $item['lesson']->id === $lessonId
+            fn ($item) => (int) $item['lesson']->id === $lessonId
         );
 
         if ($currentIndex === false) {
@@ -392,6 +410,7 @@ class CourseView extends Component
 
         if ($currentLessonData && in_array($currentLessonData['section']->id, $this->unlockedSections, true)) {
             $this->focusLesson($currentLessonData['lesson'], $currentLessonData['section']);
+
             return;
         }
 
@@ -401,7 +420,7 @@ class CourseView extends Component
     protected function rememberLastViewedLesson(Lesson $lesson): void
     {
         Cache::put(
-            'user_' . Auth::id() . '_last_lesson_' . $this->course->id,
+            'user_'.Auth::id().'_last_lesson_'.$this->course->id,
             [
                 'lesson_id' => $lesson->id,
                 'section_id' => $lesson->section_id,
@@ -423,7 +442,7 @@ class CourseView extends Component
                 return true;
             }
 
-            if (!$this->canCompleteLessonWithoutAssessments($lessonId)) {
+            if (! $this->canCompleteLessonWithoutAssessments($lessonId)) {
                 return false;
             }
 
@@ -470,7 +489,7 @@ class CourseView extends Component
         $totalLessons = $currentSection->lessons->count();
         $requiredLessons = max(1, (int) ceil($totalLessons * ($this->sectionCompletionThreshold / 100)));
         $completedLessons = $currentSection->lessons
-            ->filter(fn($lesson) => in_array($lesson->id, $this->completedLessons, true))
+            ->filter(fn ($lesson) => in_array($lesson->id, $this->completedLessons, true))
             ->count();
         $remainingLessons = max($requiredLessons - $completedLessons, 0);
 
@@ -478,8 +497,8 @@ class CourseView extends Component
             return "The next section ({$nextSection->title}) is refreshing. Try again now.";
         }
 
-        return "Complete {$remainingLessons} more lesson" . ($remainingLessons === 1 ? '' : 's')
-            . " in {$currentSection->title} to unlock {$nextSection->title}.";
+        return "Complete {$remainingLessons} more lesson".($remainingLessons === 1 ? '' : 's')
+            ." in {$currentSection->title} to unlock {$nextSection->title}.";
     }
 
     #[On('lesson-selected')]
@@ -488,15 +507,16 @@ class CourseView extends Component
         try {
             $lessonData = $this->findLessonInCourse($lessonId);
 
-            if (!$lessonData) {
+            if (! $lessonData) {
                 throw new \RuntimeException('Lesson not found.');
             }
 
-            if (!in_array($lessonData['section']->id, $this->unlockedSections, true)) {
+            if (! in_array($lessonData['section']->id, $this->unlockedSections, true)) {
                 $this->dispatch('notify', [
                     'message' => "Complete at least {$this->sectionCompletionThreshold}% of the previous section to unlock this lesson.",
-                    'type' => 'warning'
+                    'type' => 'warning',
                 ]);
+
                 return;
             }
 
@@ -505,7 +525,7 @@ class CourseView extends Component
         } catch (\Exception $e) {
             $this->dispatch('notify', [
                 'message' => 'Lesson not found.',
-                'type' => 'error'
+                'type' => 'error',
             ]);
         }
     }
@@ -516,34 +536,38 @@ class CourseView extends Component
         $lessonId = (int) $lessonId;
         $currentLessonData = $this->findLessonInCourse($lessonId);
 
-        if (!$currentLessonData) {
+        if (! $currentLessonData) {
             $this->dispatch('notify', [
                 'message' => 'Current lesson could not be resolved.',
-                'type' => 'error'
+                'type' => 'error',
             ]);
+
             return;
         }
 
-        if (!$this->completeLessonProgress($lessonId)) {
+        if (! $this->completeLessonProgress($lessonId)) {
             $this->dispatch('notify', [
                 'message' => 'Pass every required assessment before continuing.',
-                'type' => 'warning'
+                'type' => 'warning',
             ]);
+
             return;
         }
 
         $nextLessonData = $this->findAdjacentLesson($lessonId, 'next');
 
-        if (!$nextLessonData) {
+        if (! $nextLessonData) {
             $this->focusLesson($currentLessonData['lesson'], $currentLessonData['section']);
+
             return;
         }
 
-        if (!in_array($nextLessonData['section']->id, $this->unlockedSections, true)) {
+        if (! in_array($nextLessonData['section']->id, $this->unlockedSections, true)) {
             $this->dispatch('notify', [
                 'message' => $this->getNextSectionUnlockMessage($currentLessonData, $nextLessonData),
-                'type' => 'warning'
+                'type' => 'warning',
             ]);
+
             return;
         }
 
@@ -557,19 +581,30 @@ class CourseView extends Component
     {
         $lessonId = (int) $lessonId;
 
-        if (!$this->completeLessonProgress($lessonId)) {
+        if (! $this->completeLessonProgress($lessonId)) {
             $this->dispatch('notify', [
                 'message' => 'Pass every required assessment before finishing the course.',
-                'type' => 'warning'
+                'type' => 'warning',
             ]);
+
             return;
         }
 
         if ($this->overallProgress < 100) {
             $this->dispatch('notify', [
                 'message' => 'Complete all remaining lessons before finishing the course.',
-                'type' => 'warning'
+                'type' => 'warning',
             ]);
+
+            return;
+        }
+
+        if (! $this->certificateEarned && ! $this->checkAndAwardCertificate()) {
+            $this->dispatch('notify', [
+                'message' => 'Your course completion is saved, but the certificate could not be prepared yet. Try again or request it from Certificates.',
+                'type' => 'error',
+            ]);
+
             return;
         }
 
@@ -585,6 +620,7 @@ class CourseView extends Component
                 return $index;
             }
         }
+
         return 0;
     }
 
@@ -603,7 +639,7 @@ class CourseView extends Component
             } catch (\Exception $e) {
                 $this->dispatch('notify', [
                     'message' => 'Error marking lesson as incomplete.',
-                    'type' => 'error'
+                    'type' => 'error',
                 ]);
             }
         }
@@ -614,10 +650,10 @@ class CourseView extends Component
         $currentIndex = $this->getSectionIndex($currentSection->id);
         $nextSection = $this->course->sections[$currentIndex + 1] ?? null;
 
-        if ($nextSection && !in_array($nextSection->id, $this->unlockedSections, true)) {
+        if ($nextSection && ! in_array($nextSection->id, $this->unlockedSections, true)) {
             $this->dispatch('section-unlocked', [
                 'sectionId' => $nextSection->id,
-                'sectionTitle' => $nextSection->title
+                'sectionTitle' => $nextSection->title,
             ]);
         }
     }
@@ -630,8 +666,9 @@ class CourseView extends Component
     public function calculateSectionProgress($section)
     {
         $totalLessons = $section->lessons->count();
-        if ($totalLessons === 0)
+        if ($totalLessons === 0) {
             return 0;
+        }
 
         $completed = 0;
         foreach ($section->lessons as $lesson) {
@@ -662,7 +699,7 @@ class CourseView extends Component
                 ->where('user_id', Auth::id())
                 ->update([
                     'progress_percentage' => $progress,
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]);
 
             if (Schema::hasTable('course_user')) {
@@ -676,7 +713,7 @@ class CourseView extends Component
                     ]);
             }
         } catch (\Exception $e) {
-            \Log::error('Error updating course progress: ' . $e->getMessage());
+            \Log::error('Error updating course progress: '.$e->getMessage());
         }
     }
 
@@ -704,7 +741,7 @@ class CourseView extends Component
         if ($allPassed && $this->currentLesson && $this->currentLesson->id == $lessonId) {
             $this->dispatch('notify', [
                 'message' => 'All assessments completed! You can now proceed to the next lesson.',
-                'type' => 'success'
+                'type' => 'success',
             ]);
         }
     }
@@ -720,12 +757,13 @@ class CourseView extends Component
     {
         return Assessment::where('lesson_id', $lessonId)->get()->every(fn ($assessment) => $assessment->isPassedByStudent(Auth::id()));
     }
+
     /**
      * Get the last viewed lesson for "Continue Learning" feature
      */
     protected function getLastViewedLesson()
     {
-        $cacheKey = 'user_' . Auth::id() . '_last_lesson_' . $this->course->id;
+        $cacheKey = 'user_'.Auth::id().'_last_lesson_'.$this->course->id;
         $lastViewed = Cache::get($cacheKey);
 
         if ($lastViewed) {
@@ -765,7 +803,7 @@ class CourseView extends Component
 
             $this->dispatch('notify', [
                 'message' => 'Resumed from where you left off!',
-                'type' => 'success'
+                'type' => 'success',
             ]);
         } else {
             // Start from first incomplete lesson
@@ -794,6 +832,7 @@ class CourseView extends Component
             ]);
         }
     }
+
     /**
      * Check if course is fully completed and award certificate
      */
@@ -807,110 +846,144 @@ class CourseView extends Component
             return false; // Not all lessons completed
         }
 
-        if (!app(\App\Services\CertificateService::class)->canRequestCertificate(Auth::id(), $this->course->id)['can_request']) return false;
-
-        // Calculate completion percentage
-        $completionPercentage = 100;
-
         // Check if certificate already exists
         $existingCertificate = Certificate::where('user_id', Auth::id())
             ->where('course_id', $this->course->id)
             ->first();
 
         if ($existingCertificate) {
-            return false; // Certificate already exists
+            $this->certificateEarned = true;
+
+            return true;
         }
 
-        try {
-            // Calculate grade based on assessments
-            $grade = $this->calculateCourseGrade();
+        if (! app(\App\Services\CertificateService::class)->canRequestCertificate(Auth::id(), $this->course->id)['can_request']) {
+            return false;
+        }
 
-            // Get completion date (last completed lesson)
+        $completionPercentage = 100;
+
+        try {
+            $grade = $this->calculateCourseGrade();
             $lastCompletedLesson = Auth::user()->completedLessons()
                 ->whereIn('lesson_id', $totalLessons)
                 ->orderBy('lesson_user.completed_at', 'desc')
                 ->first();
-
             $completionDate = $lastCompletedLesson
                 ? $lastCompletedLesson->pivot->completed_at
                 : now();
 
-            // Create and auto-approve certificate
-            $certificate = Certificate::create([
-                'user_id' => Auth::id(),
-                'course_id' => $this->course->id,
-                'status' => Certificate::STATUS_APPROVED, // Auto-approve
-                'requested_at' => now(),
-                'approved_at' => now(),
-                'approved_by' => $this->course->instructor_id ?? 1, // Auto-approved by instructor or system
-                'completion_date' => $completionDate,
-                'issued_date' => now(),
-                'grade' => $grade,
-                'credits' => $this->course->credits ?? null,
-                'metadata' => [
-                    'completion_percentage' => $completionPercentage,
-                    'total_lessons' => count($totalLessons),
-                    'completed_lessons' => $completedLessons,
-                    'auto_generated' => true,
-                ]
-            ]);
+            [$certificate, $newlyIssued] = DB::transaction(function () use ($completionDate, $completionPercentage, $completedLessons, $grade, $totalLessons): array {
+                $enrollment = CourseEnrollment::where('course_id', $this->course->id)
+                    ->where('user_id', Auth::id())
+                    ->lockForUpdate()
+                    ->firstOrFail();
+                $certificate = Certificate::where('user_id', Auth::id())
+                    ->where('course_id', $this->course->id)
+                    ->lockForUpdate()
+                    ->first();
 
-            // Generate certificate assets (PDF, QR code)
-            if (class_exists(\App\Services\CertificateService::class)) {
-                app(\App\Services\CertificateService::class)->generateCertificateAssets($certificate);
-            }
+                if ($certificate) {
+                    return [$certificate, false];
+                }
 
-            // Send notification to user
-            Auth::user()->notify(new CourseCompletionCertificateReady(
-                $this->course,
-                $certificate,
-                $completionPercentage
-            ));
-
-            // Notify instructor
-            if ($this->course->instructor) {
-                $this->course->instructor->notify(
-                    new \App\Notifications\StudentCompletedCourse(Auth::user(), $this->course, $certificate)
-                );
-            }
-
-            // Update enrollment status
-            CourseEnrollment::where('course_id', $this->course->id)
-                ->where('user_id', Auth::id())
-                ->update([
-                    'is_completed' => true,
-                    'completed_at' => now(),
-                    'progress_percentage' => 100
+                $certificate = Certificate::create([
+                    'user_id' => Auth::id(),
+                    'course_id' => $this->course->id,
+                    'status' => Certificate::STATUS_APPROVED,
+                    'requested_at' => now(),
+                    'approved_at' => now(),
+                    'issued_by' => $this->course->instructor_id,
+                    'completed_at' => $completionDate,
+                    'issued_date' => now(),
+                    'grade' => $grade,
+                    'credits' => $this->course->credits ?? null,
+                    'metadata' => [
+                        'completion_percentage' => $completionPercentage,
+                        'total_lessons' => count($totalLessons),
+                        'completed_lessons' => $completedLessons,
+                        'auto_generated' => true,
+                    ],
                 ]);
 
-            if (Schema::hasTable('course_user')) {
-                DB::table('course_user')
-                    ->where('course_id', $this->course->id)
-                    ->where('user_id', Auth::id())
-                    ->update([
-                        'progress' => 100,
-                        'completed_at' => now(),
-                        'last_accessed_at' => now(),
-                        'updated_at' => now(),
+                $enrollment->update([
+                    'is_completed' => true,
+                    'completed_at' => now(),
+                    'progress_percentage' => 100,
+                ]);
+
+                if (Schema::hasTable('course_user')) {
+                    DB::table('course_user')
+                        ->where('course_id', $this->course->id)
+                        ->where('user_id', Auth::id())
+                        ->update([
+                            'progress' => 100,
+                            'completed_at' => now(),
+                            'last_accessed_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+                }
+
+                return [$certificate, true];
+            });
+
+            if ($newlyIssued) {
+                try {
+                    app(\App\Services\CertificateService::class)->generateCertificateAssets($certificate);
+                } catch (\Throwable $exception) {
+                    \Log::warning('Certificate asset generation deferred after course completion.', [
+                        'certificate_id' => $certificate->id,
+                        'exception_type' => $exception::class,
                     ]);
+                }
+
+                try {
+                    Auth::user()->notify(new CourseCompletionCertificateReady(
+                        $this->course,
+                        $certificate,
+                        $completionPercentage
+                    ));
+                } catch (\Throwable $exception) {
+                    \Log::warning('Learner completion notification could not be delivered.', [
+                        'certificate_id' => $certificate->id,
+                        'exception_type' => $exception::class,
+                    ]);
+                }
+
+                if ($this->course->instructor) {
+                    try {
+                        $this->course->instructor->notify(
+                            new \App\Notifications\StudentCompletedCourse(Auth::user(), $this->course, $certificate)
+                        );
+                    } catch (\Throwable $exception) {
+                        \Log::warning('Instructor completion notification could not be delivered.', [
+                            'certificate_id' => $certificate->id,
+                            'exception_type' => $exception::class,
+                        ]);
+                    }
+                }
             }
 
             $this->certificateEarned = true;
 
             $this->dispatch('notify', [
                 'message' => '🎉 Congratulations! You completed the course and your certificate is ready!',
-                'type' => 'success'
+                'type' => 'success',
             ]);
 
             $this->dispatch('certificate-awarded', [
                 'certificateId' => $certificate->id,
-                'verificationCode' => $certificate->verification_code
+                'verificationCode' => $certificate->verification_code,
             ]);
 
             return true;
 
-        } catch (\Exception $e) {
-            \Log::error('Error awarding certificate: ' . $e->getMessage());
+        } catch (\Throwable $exception) {
+            \Log::error('Certificate persistence failed during course completion.', [
+                'course_id' => $this->course->id,
+                'exception_type' => $exception::class,
+            ]);
+
             return false;
         }
     }
@@ -945,26 +1018,36 @@ class CourseView extends Component
         $averageScore = $totalScore / $assessmentCount;
 
         // Grade scale
-        if ($averageScore >= 97)
+        if ($averageScore >= 97) {
             return 'A+';
-        if ($averageScore >= 93)
+        }
+        if ($averageScore >= 93) {
             return 'A';
-        if ($averageScore >= 90)
+        }
+        if ($averageScore >= 90) {
             return 'A-';
-        if ($averageScore >= 87)
+        }
+        if ($averageScore >= 87) {
             return 'B+';
-        if ($averageScore >= 83)
+        }
+        if ($averageScore >= 83) {
             return 'B';
-        if ($averageScore >= 80)
+        }
+        if ($averageScore >= 80) {
             return 'B-';
-        if ($averageScore >= 77)
+        }
+        if ($averageScore >= 77) {
             return 'C+';
-        if ($averageScore >= 73)
+        }
+        if ($averageScore >= 73) {
             return 'C';
-        if ($averageScore >= 70)
+        }
+        if ($averageScore >= 70) {
             return 'C-';
-        if ($averageScore >= 60)
+        }
+        if ($averageScore >= 60) {
             return 'D';
+        }
 
         return 'F';
     }
@@ -977,31 +1060,34 @@ class CourseView extends Component
     {
         $lessonId = (int) $lessonId;
 
-        if (!in_array($lessonId, $this->completedLessons, true)) {
-            if (!$this->completeLessonProgress($lessonId)) {
+        if (! in_array($lessonId, $this->completedLessons, true)) {
+            if (! $this->completeLessonProgress($lessonId)) {
                 $this->dispatch('notify', [
                     'message' => 'You must pass all required assessments before marking this lesson as complete.',
-                    'type' => 'warning'
+                    'type' => 'warning',
                 ]);
+
                 return;
             }
         }
     }
+
     public function submitReview()
     {
         // Validate
         $this->validate([
             'reviewRating' => 'required|integer|min:1|max:5',
-            'reviewComment' => 'required|string|min:10|max:1000'
+            'reviewComment' => 'required|string|min:10|max:1000',
         ]);
 
         // Check enrollment
-        if (!Auth::user()->enrollments()->where('course_id', $this->course->id)->exists()) {
+        if (! Auth::user()->enrollments()->where('course_id', $this->course->id)->exists()) {
             $this->dispatch('notify', [
                 'message' => 'You must be enrolled to review this course.',
                 'type' => 'error',
-                'icon' => 'fas fa-exclamation-circle'
+                'icon' => 'fas fa-exclamation-circle',
             ]);
+
             return false;
         }
 
@@ -1010,12 +1096,12 @@ class CourseView extends Component
             CourseReview::updateOrCreate(
                 [
                     'user_id' => Auth::id(),
-                    'course_id' => $this->course->id
+                    'course_id' => $this->course->id,
                 ],
                 [
                     'rating' => $this->reviewRating,
                     'comment' => $this->reviewComment,
-                    'is_approved' => true
+                    'is_approved' => true,
                 ]
             );
 
@@ -1027,7 +1113,7 @@ class CourseView extends Component
             $this->dispatch('notify', [
                 'message' => 'Thank you for your review! 🎉',
                 'type' => 'success',
-                'icon' => 'fas fa-check-circle'
+                'icon' => 'fas fa-check-circle',
             ]);
 
             return true;
@@ -1036,11 +1122,13 @@ class CourseView extends Component
             $this->dispatch('notify', [
                 'message' => 'Failed to submit review. Please try again.',
                 'type' => 'error',
-                'icon' => 'fas fa-exclamation-triangle'
+                'icon' => 'fas fa-exclamation-triangle',
             ]);
+
             return false;
         }
     }
+
     public function render()
     {
         return view('livewire.student-management.course-view');

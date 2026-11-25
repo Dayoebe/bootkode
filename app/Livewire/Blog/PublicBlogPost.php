@@ -126,25 +126,22 @@ class PublicBlogPost extends Component
             return;
         }
 
-        $comment = BlogComment::create([
+        BlogComment::create([
             'post_id' => $this->post->id,
             'user_id' => auth()->id(),
             'parent_id' => $this->replyTo,
             'author_name' => auth()->check() ? null : $this->guestName,
             'author_email' => auth()->check() ? null : $this->guestEmail,
             'content' => $this->newComment,
-            'status' => 'approved', // Auto-approve for now, you can add moderation later
+            'status' => 'pending',
             'ip_address' => request()->ip(),
             'user_agent' => request()->userAgent(),
         ]);
 
-        // Update comment count
-        $this->post->increment('comments_count');
-
         // Reset form
         $this->reset(['newComment', 'guestName', 'guestEmail', 'replyTo', 'showCommentForm']);
 
-        session()->flash('message', 'Comment posted successfully!');
+        session()->flash('message', 'Comment submitted for moderation.');
     }
 
     public function render()

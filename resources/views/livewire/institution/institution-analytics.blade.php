@@ -1,3 +1,7 @@
+@assets
+    @vite('resources/js/charts.js')
+@endassets
+
 <div class="space-y-6">
     <!-- Header and Controls -->
     <div class="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">

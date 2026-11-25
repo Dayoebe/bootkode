@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Locked;
+use App\Services\Career\MockInterviewCompletionService;
 
 #[Layout('layouts.dashboard', [
     'title' => 'Mock Interviews',
@@ -55,6 +57,9 @@ class UserMockInterview extends Component
     public $currentQuestionIndex = 0;
     public $currentAnswer = '';
     public $timeRemaining = 0;
+
+    #[Locked]
+    public ?int $questionStartedAt = null;
     
     // Results
     public $showResultsModal = false;
@@ -139,7 +144,8 @@ class UserMockInterview extends Component
                 ->where('status', 'completed')->count();
             $averageScore = MockInterview::where('user_id', $userId)
                 ->where('status', 'completed')
-                ->avg('overall_score') ?? 0;
+                ->whereNotNull('overall_score')
+                ->avg('overall_score');
             $upcomingInterviews = MockInterview::where('user_id', $userId)
                 ->where('status', 'scheduled')
                 ->where('scheduled_at', '>', now())
@@ -148,7 +154,7 @@ class UserMockInterview extends Component
             return [
                 'totalInterviews' => $totalInterviews,
                 'completedInterviews' => $completedInterviews,
-                'averageScore' => (float) $averageScore,
+                'averageScore' => $averageScore !== null ? (float) $averageScore : null,
                 'upcomingInterviews' => $upcomingInterviews,
             ];
         } catch (\Exception $e) {
@@ -156,7 +162,7 @@ class UserMockInterview extends Component
             return [
                 'totalInterviews' => 0,
                 'completedInterviews' => 0,
-                'averageScore' => 0,
+                'averageScore' => null,
                 'upcomingInterviews' => 0,
             ];
         }
@@ -269,6 +275,7 @@ class UserMockInterview extends Component
         $this->currentQuestionIndex = 0;
         $this->currentAnswer = '';
         $this->timeRemaining = $interview->estimated_duration_minutes * 60;
+        $this->questionStartedAt = now()->timestamp;
         $this->showInterviewModal = true;
     }
 
@@ -278,13 +285,17 @@ class UserMockInterview extends Component
             return;
         }
 
+        $this->currentInterview = MockInterview::where('user_id', Auth::id())
+            ->findOrFail($this->currentInterview->id);
         $question = $this->currentInterview->questions[$this->currentQuestionIndex];
         $responses = $this->currentInterview->user_responses ?? [];
         
         $responses[] = [
             'question_id' => $question['id'],
             'answer' => $this->currentAnswer,
-            'response_time' => 0, // Calculate this properly with timer
+            'response_time' => $this->questionStartedAt !== null
+                ? max(0, now()->timestamp - $this->questionStartedAt)
+                : null,
             'timestamp' => now()->toISOString(),
         ];
 
@@ -293,35 +304,25 @@ class UserMockInterview extends Component
         // Move to next question or complete
         $this->currentQuestionIndex++;
         $this->currentAnswer = '';
+        $this->questionStartedAt = now()->timestamp;
 
         if ($this->currentQuestionIndex >= count($this->currentInterview->questions)) {
             $this->completeInterview();
         }
     }
 
-    public function completeInterview()
+    public function completeInterview(MockInterviewCompletionService $completionService)
     {
         if (!$this->currentInterview) {
             return;
         }
 
         $responses = $this->currentInterview->user_responses ?? [];
-        $questionCount = count($this->currentInterview->questions);
-        $responseCount = count($responses);
-        
-        $completionRate = $questionCount > 0 ? ($responseCount / $questionCount) * 100 : 0;
-        
-        // Basic scoring
-        $scores = [
-            'overall_score' => $completionRate * 0.7 + rand(15, 30),
-            'technical_score' => $completionRate * 0.8 + rand(10, 20),
-            'communication_score' => rand(70, 95),
-            'confidence_score' => rand(65, 90),
-            'completion_rate' => $completionRate,
-            'avg_response_time' => collect($responses)->avg('response_time') ?? 0,
-        ];
-
-        $this->currentInterview->complete($responses, $scores);
+        $this->currentInterview = $completionService->completeForUser(
+            $this->currentInterview,
+            (int) Auth::id(),
+            $responses
+        );
 
         $this->showInterviewModal = false;
         $this->viewResults($this->currentInterview->id);

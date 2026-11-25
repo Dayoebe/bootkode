@@ -50,14 +50,26 @@ class InstructorDashboard extends Component
         }
     }
 
+    public function hydrate(): void
+    {
+        abort_unless(Auth::user()?->canAccessDashboardRole(User::ROLE_INSTRUCTOR), 403);
+    }
+
     public function updateTimeframe($timeframe)
     {
+        abort_unless(in_array($timeframe, ['7days', '30days', '90days'], true), 422);
         $this->selectedTimeframe = $timeframe;
     }
 
     public function updateCourseFilter($filter)
     {
+        abort_unless($filter === 'all' || Auth::user()->courses()->whereKey($filter)->exists(), 422);
         $this->selectedCourseFilter = $filter;
+    }
+
+    public function updatedSelectedCourseFilter($filter)
+    {
+        $this->updateCourseFilter($filter);
     }
 
     #[Computed]

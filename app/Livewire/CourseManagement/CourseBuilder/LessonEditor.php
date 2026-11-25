@@ -388,7 +388,7 @@ class LessonEditor extends Component
             'external_links' => $this->external_links,
         ]);
 
-        session()->flash('success', 'Lesson updated successfully!');
+        session()->flash('lesson-editor-success', 'Lesson updated successfully!');
         $this->dispatch('lesson-updated');
     }
 

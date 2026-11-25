@@ -2,6 +2,8 @@
 // UPDATED: Analytics.php
 namespace App\Livewire\Newsletter\Partials;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
+use App\Services\Authorization\PublishingAccess;
 use Livewire\Component;
 use App\Models\Admin\NewsletterCampaign;
 use App\Models\Admin\NewsletterSubscriber;
@@ -10,6 +12,10 @@ use Illuminate\Support\Facades\DB;
 
 class Analytics extends Component
 {
+    use AuthorizesPublishingAdministration;
+
+    protected function publishingAbility(): string { return PublishingAccess::NEWSLETTER_EDITOR; }
+
     public $selectedCampaign = null;
     public $dateRange = '30';
 

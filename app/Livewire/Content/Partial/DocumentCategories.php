@@ -2,11 +2,17 @@
 
 namespace App\Livewire\Content\Partial;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
+use App\Services\Authorization\PublishingAccess;
 use Livewire\Component;
 use App\Models\Learning\DocumentCategory;
 
 class DocumentCategories extends Component
 {
+    use AuthorizesPublishingAdministration;
+
+    protected function publishingAbility(): string { return PublishingAccess::CONTENT_ADMINISTRATION; }
+
     public $search = '';
     public $showCreateModal = false;
     public $showEditModal = false;

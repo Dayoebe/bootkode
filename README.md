@@ -6,7 +6,7 @@ BootKode is an existing Laravel / Livewire application with public courses, lear
 
 ## Stack
 
-PHP 8.2+, Laravel 11.46.1, Livewire 3.6.4, Blade, Livewire-owned Alpine, Tailwind 3.4.19 and Vite 7.3.7. The full migration suite uses MySQL/MariaDB features. No frontend framework migration is required.
+PHP 8.2+, Laravel 12.70.2, Livewire 3.8.11, Blade, Livewire-owned Alpine, Tailwind 3.4.19 and Vite 7.3.7. The full migration suite uses MySQL/MariaDB features. No frontend framework migration is required.
 
 ## Local setup
 
@@ -22,10 +22,7 @@ The recovered local database contains existing data. Preserve it. The new certif
 
 ## Verification
 
-Create a dedicated test database and configure `.env.testing` with `APP_ENV=testing`, a test application key, test MySQL credentials and `DB_DATABASE=bootkode_test` (or another name ending `_test`/`_testing`). Use array mail/cache/session and the synchronous queue for automated tests. `Tests\TestCase` rejects other MySQL database names before database refresh. Do not point testing at the recovered database.
-
 ```sh
-php artisan test
 npm run build
 php artisan view:cache
 php artisan route:cache
@@ -71,7 +68,7 @@ Written-result finalization, reconsideration requests/decisions and corrections 
 
 Public course discovery is `/courses`; public course summaries are `/courses/{slug}`. Authenticated lesson routes remain protected by enrollment. Shared controls live in `resources/views/components`; tokens live in `resources/css/tokens.css` with existing theme variables in `app.css`. Keep static UI in Blade, interaction in Livewire, and financial/enrollment rules in existing services.
 
-`resources/js/app.js` contains public enhancements. `dashboard.js` loads charts and the existing Trix editors only for authenticated layouts. Livewire supplies Alpine and its plugins. Do not add another runtime.
+`resources/js/app.js` contains public enhancements and the shared PWA lifecycle. The small authenticated shell is `dashboard.js`; chart and Trix code are requested only by the views that use `charts.js` and `editors.js`. Livewire supplies Alpine and its plugins. Do not add another runtime.
 
 ## Payment configuration
 
@@ -83,10 +80,20 @@ Financial limits are in `config/financial.php`; existing course-specific splits 
 
 ## Release limits
 
-The dependency audit still reports advisories that cannot all be resolved within the current major-version constraints. Composer's security policy blocks the attempted Laravel 11-compatible update. Do not disable the advisory policy or use forced major updates as a workaround. See the verification report for exact counts and the required follow-up.
+The supported Laravel 12, Socialite and JWT migration clears the previously recorded Composer findings without audit suppression; both locked Composer and npm audits report zero advisories. Keep the security gate mandatory and review future major changes separately. See the verification report for exact evidence and remaining operational/provider gates.
 
 There is no deployment claim. Merge/deployment, provider sandbox verification, legal documents and broader operational acceptance remain separate release requirements.
 
 The 22 October continuation adds guarded support/feedback responses and private new attachments, participant-scoped message updates, secured nested course authoring, historical record deletion protection and funded affiliate commission settlement. Affiliate defaults remain server configuration (`config/affiliate.php`); the UI does not claim to save environment settings. Real banner routes and clipboard confirmation replace broken/promotional placeholders. See `docs/verification.md` for current automated/browser evidence and release limitations.
 
 The further learning continuation consolidates both personal analytics routes around actual owned records and adds persisted goals and CSV export. Learning rewards now use positive atomic ledger operations and replay-safe daily/completion evidence. Leaderboard publication requires explicit opt-in and a public profile. CBT attempts persist their server start time, answers and private grading snapshots; replay and question edits cannot duplicate or restyle completed grades. No schema migration is needed for these changes. Unsupported game/reward/broadcast/path integrations show unavailable states.
+
+## First production deployment and app reliability
+
+Start with the [production readiness assessment](docs/deployment/production-readiness.md), [staged deployment runbook](docs/deployment/first-release-checklist.md), [backup/restore procedure](docs/deployment/backup-and-restoration.md) and private `.env.production.example` template. The suggested 2 GiB single-node profile uses database cache/sessions/queues and a bounded cron runner; Redis and supervised workers are optional. `php artisan bootkode:production-check` is read-only and returns a failing exit code for incomplete setup. Supported dependencies are verified; hosting, recovery and live-provider acceptance still block launch. No deployment is implied.
+
+The [app experience milestone](docs/app-experience-milestone.md) records conditional editor assets, owned offline summary pagination, account-bound IndexedDB downloads and acknowledged offline progress. Previously unscoped device packs need a fresh explicit download. Expired sessions retain pending work; confirmed logout clears device downloads without deleting server progress. Existing service-worker/privacy boundaries remain explicit; external video and unverified resources are not promised offline. Broader premium-app and real-device/performance acceptance remains open.
+
+The [second app experience milestone](docs/app-experience-milestone-2.md) moves Chart.js out of the shared authenticated bundle, bounds visible learner-progress queries, prevents dashboard reads from creating gamification state and isolates secondary-widget failures. It does not certify field Core Web Vitals, physical-device PWA behavior, live providers or production release readiness.
+
+The [premium app completion](docs/app-experience-completion.md) closes the repository-controlled dependency, layout-shift, route-asset, course-query, private note/bookmark, assessment-resume, atomic completion/certificate, installable PWA and multi-theme accessibility work. It records a complete synthetic learner browser journey and the remaining physical-device, field-performance, hosting and live-provider acceptance gates.

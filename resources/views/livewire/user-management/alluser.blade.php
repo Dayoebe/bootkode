@@ -1,3 +1,7 @@
+@assets
+    @vite('resources/js/charts.js')
+@endassets
+
 <div class="p-4 sm:p-6 bg-themed-secondary rounded-lg shadow-sm   transition-colors duration-300 max-w-full overflow-hidden"
      x-data="{ tooltip: '', mouseX: 0, mouseY: 0 }"
      @mousemove="mouseX = $event.clientX; mouseY = $event.clientY">

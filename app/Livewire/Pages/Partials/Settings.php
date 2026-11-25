@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Pages\Partials;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
+use App\Services\Authorization\PublishingAccess;
 use Livewire\Component;
 use App\Models\Content\Page;
 use App\Models\Content\PageMedia;
@@ -10,6 +12,13 @@ use Illuminate\Support\Facades\Artisan;
 
 class Settings extends Component
 {
+    use AuthorizesPublishingAdministration;
+
+    protected function publishingAbility(): string
+    {
+        return PublishingAccess::PAGE_SETTINGS;
+    }
+
     // General Settings
     public $autoGenerateSlugs = true;
     public $enableSeoAnalysis = true;

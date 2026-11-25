@@ -59,7 +59,7 @@ class PaystackService
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer '.$this->secretKey,
                 'Content-Type' => 'application/json',
-            ])->post($this->baseUrl.'/transaction/initialize', $payload);
+            ])->connectTimeout(5)->timeout(15)->post($this->baseUrl.'/transaction/initialize', $payload);
 
             if ($response->successful()) {
                 $responseData = $response->json();
@@ -91,7 +91,7 @@ class PaystackService
             ];
 
         } catch (\Exception $e) {
-            Log::error('Paystack initialization error: '.$e->getMessage());
+            Log::error('Paystack initialization error', ['exception_type' => $e::class]);
 
             return [
                 'success' => false,
@@ -111,7 +111,7 @@ class PaystackService
         try {
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer '.$this->secretKey,
-            ])->get($this->baseUrl."/transaction/verify/{$reference}");
+            ])->connectTimeout(5)->timeout(15)->get($this->baseUrl.'/transaction/verify/'.rawurlencode($reference));
 
             if ($response->successful()) {
                 $data = $response->json()['data'];
@@ -131,7 +131,7 @@ class PaystackService
             ];
 
         } catch (\Exception $e) {
-            Log::error('Paystack verification error: '.$e->getMessage());
+            Log::error('Paystack verification error', ['exception_type' => $e::class]);
 
             return [
                 'success' => false,
@@ -164,7 +164,7 @@ class PaystackService
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer '.$this->secretKey,
                 'Content-Type' => 'application/json',
-            ])->post($this->baseUrl.'/refund', $payload);
+            ])->connectTimeout(5)->timeout(15)->post($this->baseUrl.'/refund', $payload);
 
             if ($response->successful()) {
                 return [
@@ -179,7 +179,8 @@ class PaystackService
                 'data' => $response->json(),
             ];
         } catch (\Exception $e) {
-            Log::error('Paystack refund error: '.$e->getMessage(), [
+            Log::error('Paystack refund error', [
+                'exception_type' => $e::class,
                 'transaction_id' => $transaction->id,
                 'reference' => $transaction->reference,
                 'amount' => $amount,
@@ -261,7 +262,7 @@ class PaystackService
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer '.$this->secretKey,
                 'Content-Type' => 'application/json',
-            ])->post($this->baseUrl.'/transferrecipient', $payload);
+            ])->connectTimeout(5)->timeout(15)->post($this->baseUrl.'/transferrecipient', $payload);
 
             if ($response->successful()) {
                 $data = $response->json()['data'];
@@ -279,7 +280,7 @@ class PaystackService
             ];
 
         } catch (\Exception $e) {
-            Log::error('Create transfer recipient error: '.$e->getMessage());
+            Log::error('Create transfer recipient error', ['exception_type' => $e::class]);
 
             return [
                 'success' => false,
@@ -328,7 +329,7 @@ class PaystackService
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer '.$this->secretKey,
                 'Content-Type' => 'application/json',
-            ])->post($this->baseUrl.'/transfer', $payload);
+            ])->connectTimeout(5)->timeout(15)->post($this->baseUrl.'/transfer', $payload);
 
             if ($response->successful()) {
                 $data = $response->json()['data'];
@@ -352,7 +353,7 @@ class PaystackService
             ];
 
         } catch (\Exception $e) {
-            Log::error('Transfer initiation error: '.$e->getMessage());
+            Log::error('Transfer initiation error', ['exception_type' => $e::class]);
 
             return [
                 'success' => false,
@@ -369,7 +370,7 @@ class PaystackService
         try {
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer '.$this->secretKey,
-            ])->get($this->baseUrl."/transfer/{$transferCode}");
+            ])->connectTimeout(5)->timeout(15)->get($this->baseUrl."/transfer/{$transferCode}");
 
             if ($response->successful()) {
                 $data = $response->json()['data'];
@@ -387,7 +388,7 @@ class PaystackService
             ];
 
         } catch (\Exception $e) {
-            Log::error('Transfer verification error: '.$e->getMessage());
+            Log::error('Transfer verification error', ['exception_type' => $e::class]);
 
             return [
                 'success' => false,
@@ -407,7 +408,7 @@ class PaystackService
         try {
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer '.$this->secretKey,
-            ])->get($this->baseUrl.'/balance');
+            ])->connectTimeout(5)->timeout(15)->get($this->baseUrl.'/balance');
 
             if ($response->successful()) {
                 $balances = $response->json()['data'];
@@ -424,7 +425,7 @@ class PaystackService
             ];
 
         } catch (\Exception $e) {
-            Log::error('Balance fetch error: '.$e->getMessage());
+            Log::error('Balance fetch error', ['exception_type' => $e::class]);
 
             return [
                 'success' => false,
@@ -444,7 +445,7 @@ class PaystackService
         try {
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer '.$this->secretKey,
-            ])->get($this->baseUrl.'/bank?currency=NGN');
+            ])->connectTimeout(5)->timeout(15)->get($this->baseUrl.'/bank?currency=NGN');
 
             if ($response->successful()) {
                 return [
@@ -459,7 +460,7 @@ class PaystackService
             ];
 
         } catch (\Exception $e) {
-            Log::error('Banks fetch error: '.$e->getMessage());
+            Log::error('Banks fetch error', ['exception_type' => $e::class]);
 
             return [
                 'success' => false,
@@ -479,7 +480,7 @@ class PaystackService
         try {
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer '.$this->secretKey,
-            ])->get($this->baseUrl."/bank/resolve?account_number={$accountNumber}&bank_code={$bankCode}");
+            ])->connectTimeout(5)->timeout(15)->get($this->baseUrl."/bank/resolve?account_number={$accountNumber}&bank_code={$bankCode}");
 
             if ($response->successful()) {
                 return [
@@ -495,7 +496,7 @@ class PaystackService
             ];
 
         } catch (\Exception $e) {
-            Log::error('Account resolution error: '.$e->getMessage());
+            Log::error('Account resolution error', ['exception_type' => $e::class]);
 
             return [
                 'success' => false,
@@ -524,7 +525,7 @@ class PaystackService
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer '.$this->secretKey,
                 'Content-Type' => 'application/json',
-            ])->post($this->baseUrl.'/refund', $payload);
+            ])->connectTimeout(5)->timeout(15)->post($this->baseUrl.'/refund', $payload);
 
             if ($response->successful()) {
                 return [
@@ -540,7 +541,7 @@ class PaystackService
             ];
 
         } catch (\Exception $e) {
-            Log::error('Paystack refund error: '.$e->getMessage());
+            Log::error('Paystack refund error', ['exception_type' => $e::class]);
 
             return [
                 'success' => false,

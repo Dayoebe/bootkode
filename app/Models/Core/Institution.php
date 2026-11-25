@@ -542,10 +542,4 @@ class Institution extends Model
         })->count();
     }
 
-    public static function getTotalRevenue()
-    {
-        // This would connect to your billing system
-        // For now, return a placeholder
-        return static::active()->count() * 100; // $100 per active institution
-    }
 }

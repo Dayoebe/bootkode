@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Pages\Partials;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
+use App\Services\Authorization\PublishingAccess;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Content\Page;
@@ -10,7 +12,12 @@ use Carbon\Carbon;
 
 class PagesList extends Component
 {
-    use WithPagination;
+    use AuthorizesPublishingAdministration, WithPagination;
+
+    protected function publishingAbility(): string
+    {
+        return PublishingAccess::PAGE_CONTENT;
+    }
 
     // Filters and Search
     public $search = '';

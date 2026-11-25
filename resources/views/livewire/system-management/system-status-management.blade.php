@@ -289,8 +289,8 @@
                     <i aria-hidden="true" class="fas fa-heartbeat text-brand dark:text-brand text-xl"></i>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm text-themed-secondary">Overall Uptime</p>
-                    <p class="text-2xl font-bold text-themed-primary">99.9%</p>
+                    <p class="text-sm text-themed-secondary">Measured uptime</p>
+                    <p class="text-lg font-bold text-themed-primary">Not connected</p>
                 </div>
             </div>
         </div>

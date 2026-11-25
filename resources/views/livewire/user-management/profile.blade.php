@@ -1,189 +1,128 @@
-<!-- Single root div for the entire component -->
-<div class="space-y-6">
-    <div
-        wire:key="profile-mode-{{ $isEditing ? 'edit' : 'view' }}"
-        x-data="{ activeTab: @js($activeTab) }"
-    >
+<div
+    class="bk-profile"
+    x-data="{ profileTab: @js($activeTab) }"
+>
+    <section class="bk-profile-hero" aria-labelledby="profile-page-title" data-profile-surface="modern">
+        <div class="bk-profile-hero-decoration" aria-hidden="true"><span></span><span></span></div>
 
-        <!-- Header Section -->
-        <div
-            class="relative bg-themed-secondary  rounded-lg lg:rounded-lg shadow-sm lg:shadow-sm border border-themed-primary overflow-hidden mb-6 lg:mb-8 transition-colors duration-300">
-            <!-- Shared decorative field keeps the component markup valid during Livewire navigation. -->
+        <div class="bk-profile-identity">
+            <div class="bk-profile-avatar" aria-hidden="true">
+                @if($user->profile_picture)
+                    <img src="{{ $user->profile_picture }}" alt="">
+                @else
+                    <span>{{ str($user->name)->substr(0, 1)->upper() }}</span>
+                @endif
+                <span class="bk-profile-avatar-status" title="Active account"></span>
+            </div>
 
-            <div class="relative z-10 p-6 lg:p-8">
-                <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 lg:gap-8">
-                    <!-- Profile Info -->
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 flex-1">
-                        <div class="relative group">
-
-
-                            @if($user->profile_picture)
-                                <img src="{{ $user->profile_picture }}" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover"
-                                    alt="{{ $user->name }}">
-                            @else
-                                            <!-- fallback avatar -->
-                                            <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-action
-                                flex items-center justify-center text-action-foreground text-4xl font-bold">
-                                                {{ strtoupper(substr($user->name, 0, 1)) }}
-                                            </div>
-                            @endif
-
-
-
-                        </div>
-
-                        <div class="flex-1 min-w-0">
-                            <h1
-                                class="   font-bold text-themed-primary mb-2 truncate transition-colors duration-300 bk-page-title">
-                                {{ $user->name }}
-                            </h1>
-
-                            <!-- Badges -->
-                            <div class="flex flex-wrap items-center gap-2 mb-3">
-                                <span
-                                    class="px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium bg-action text-action-foreground border border-brand/30 ">
-                                    <i aria-hidden="true" class="fas fa-user-tag mr-1"></i>
-                                    {{ ucfirst(str_replace('_', ' ', $user->role)) }}
-                                </span>
-
-                                @if ($user->email_verified_at)
-                                    <span
-                                        class="px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium bg-green-500/20 border border-green-500/30 text-green-600  flex items-center">
-                                        <i aria-hidden="true" class="fas fa-check-circle mr-1"></i> Verified
-                                    </span>
-                                @else
-                                    <span
-                                        class="px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium bg-yellow-500/20 border border-yellow-500/30 text-yellow-600  flex items-center">
-                                        <i aria-hidden="true" class="fas fa-exclamation-circle mr-1"></i> Unverified
-                                    </span>
-                                @endif
-
-                                @if ($user->is_active)
-                                    <span
-                                        class="px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs sm:text-sm font-medium bg-emerald-500/20 border border-emerald-500/30 text-emerald-600  flex items-center">
-                                        <i aria-hidden="true" class="fas fa-circle mr-1 text-xs"></i> Active
-                                    </span>
-                                @endif
-                            </div>
-
-                            @if ($user->bio)
-                                <p
-                                    class="text-themed-secondary text-sm lg:text-base leading-relaxed transition-colors duration-300">
-                                    {{ $user->bio }}
-                                </p>
-                            @endif
-                        </div>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-                        @if ($isEditing)
-                            <button wire:click="toggleEditMode"
-                                class="px-4 py-2 sm:px-6 sm:py-3 bg-themed-tertiary hover:bg-themed-primary/20 border border-themed-primary text-themed-primary rounded-lg font-medium transition-all duration-300  flex items-center justify-center">
-                                <i aria-hidden="true" class="fas fa-times mr-2"></i> Cancel
-                            </button>
-                            <button wire:click="updateProfile"
-                                class="px-4 py-2 sm:px-6 sm:py-3 bg-action     text-action-foreground rounded-lg font-semibold transition-all duration-300 shadow-sm hover:shadow-emerald-500/25 flex items-center justify-center">
-                                <i aria-hidden="true" class="fas fa-save mr-2"></i> Save Changes
-                            </button>
-                        @else
-                            <button wire:click="toggleEditMode"
-                                class="px-4 py-2 sm:px-6 sm:py-3 bg-action hover:bg-action/90 text-action-foreground rounded-lg font-semibold transition-all duration-300 shadow-sm hover:shadow-accent-themed-primary/25 flex items-center justify-center">
-                                <i aria-hidden="true" class="fas fa-edit mr-2"></i> Edit Profile
-                            </button>
-                            <button type="button" disabled aria-describedby="profile-sharing-unavailable"
-                                class="px-4 py-2 sm:px-6 sm:py-3 bg-themed-tertiary hover:bg-themed-primary/20 border border-themed-primary text-themed-primary rounded-lg font-medium transition-all duration-300  flex items-center justify-center">
-                                <i aria-hidden="true" class="fas fa-share-alt mr-2"></i> Share profile
-                            </button>
-                            <p id="profile-sharing-unavailable" class="max-w-48 text-xs text-content-muted">A public account profile link is not available.</p>
-                        @endif
-                    </div>
+            <div class="min-w-0">
+                <p class="bk-profile-eyebrow"><i class="fas fa-id-card" aria-hidden="true"></i> My BootKode account</p>
+                <h1 id="profile-page-title" class="bk-profile-title">{{ $user->name }}</h1>
+                <div class="bk-profile-badges" aria-label="Account status">
+                    <span><i class="fas fa-user-tag" aria-hidden="true"></i>{{ str($user->role)->replace('_', ' ')->title() }}</span>
+                    <span class="{{ $user->hasVerifiedEmail() ? 'is-positive' : 'is-warning' }}">
+                        <i class="fas {{ $user->hasVerifiedEmail() ? 'fa-circle-check' : 'fa-circle-exclamation' }}" aria-hidden="true"></i>
+                        {{ $user->hasVerifiedEmail() ? 'Email verified' : 'Email verification needed' }}
+                    </span>
+                    <span><i class="fas fa-shield-halved" aria-hidden="true"></i>{{ str($profileVisibility)->title() }} profile</span>
                 </div>
+                <p class="bk-profile-intro">{{ $user->bio ?: 'Add a short introduction so your account reflects the skills and work you are building.' }}</p>
             </div>
         </div>
 
-        <!-- Tab Navigation -->
-        <div
-            class="bg-themed-secondary  rounded-lg border border-themed-primary mb-6 lg:mb-8 overflow-hidden transition-colors duration-300">
-            <nav class="flex overflow-x-auto scrollbar-hide p-2">
-                @php
-                    $tabs = [
-                        'personal' => ['icon' => 'fas fa-user-circle', 'label' => 'Personal Info', 'color' => 'blue'],
-                        'education' => ['icon' => 'fas fa-graduation-cap', 'label' => 'Education', 'color' => 'purple'],
-                        'social' => ['icon' => 'fas fa-share-alt', 'label' => 'Social Links', 'color' => 'pink'],
-                        'activity' => ['icon' => 'fas fa-chart-line', 'label' => 'Activity', 'color' => 'emerald'],
-                        'progress' => ['icon' => 'fas fa-chart-pie', 'label' => 'Progress', 'color' => 'orange'],
-                        'resources' => ['icon' => 'fas fa-bookmark', 'label' => 'Resources', 'color' => 'yellow'],
-                        'wishlist' => ['icon' => 'fas fa-heart', 'label' => 'Wishlist', 'color' => 'red'],
-                        'certificates' => ['icon' => 'fas fa-certificate', 'label' => 'Certificates', 'color' => 'amber'],
-                        'settings' => ['icon' => 'fas fa-cog', 'label' => 'Settings', 'color' => 'gray'],
-                    ];
-
-                    if ($isEditing) {
-                        $tabs = [
-                            'basic' => ['icon' => 'fas fa-user-circle', 'label' => 'Basic Info', 'color' => 'blue'],
-                            'address' => ['icon' => 'fas fa-map-marker-alt', 'label' => 'Address', 'color' => 'green'],
-                            'education' => ['icon' => 'fas fa-graduation-cap', 'label' => 'Education', 'color' => 'purple'],
-                            'social' => ['icon' => 'fas fa-share-alt', 'label' => 'Social Links', 'color' => 'pink'],
-                            'photo' => ['icon' => 'fas fa-camera', 'label' => 'Profile Photo', 'color' => 'red'],
-                        ];
-                    }
-                @endphp
-                <div class="flex flex-wrap gap-2">
-                    @foreach ($tabs as $key => $tab)
-                        <button type="button" @click="activeTab = '{{ $key }}'" :class="{
-                                    'bg-tab-active shadow-lg': activeTab === '{{ $key }}',
-                                    'text-themed-secondary hover:text-themed-primary hover:bg-themed-tertiary': activeTab !== '{{ $key }}'
-                                }"
-                            class="whitespace-nowrap px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-medium text-xs sm:text-sm transition-all duration-300 flex items-center mx-1">
-                            <i aria-hidden="true" class="{{ $tab['icon'] }} mr-2"></i> {{ $tab['label'] }}
-                        </button>
-                    @endforeach
+        <aside class="bk-profile-completion" aria-label="Profile completeness">
+            <div class="bk-profile-completion-heading">
+                <span><i class="fas fa-sparkles" aria-hidden="true"></i></span>
+                <div>
+                    <p>Profile readiness</p>
+                    <strong>{{ $profileCompleteness }}% complete</strong>
                 </div>
-            </nav>
-        </div>
+            </div>
+            <div class="bk-profile-progress" role="progressbar" aria-label="Profile completeness" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ $profileCompleteness }}">
+                <span style="width: {{ $profileCompleteness }}%"></span>
+            </div>
+            <p>{{ $profileCompleteness === 100 ? 'Your core profile fields are complete.' : 'Add missing contact, background, skills, photo, or link details to strengthen your account.' }}</p>
+            <div class="bk-profile-hero-actions">
+                @if($isEditing)
+                    <button type="button" class="bk-button bk-button-secondary" wire:click="toggleEditMode">
+                        <i class="fas fa-xmark" aria-hidden="true"></i> Cancel editing
+                    </button>
+                    <button type="button" class="bk-button bk-button-primary" wire:click="updateProfile" wire:loading.attr="disabled" wire:target="updateProfile,profile_picture">
+                        <i class="fas fa-floppy-disk" aria-hidden="true"></i>
+                        <span wire:loading.remove wire:target="updateProfile">Save profile</span>
+                        <span wire:loading wire:target="updateProfile">Saving…</span>
+                    </button>
+                @else
+                    <button type="button" class="bk-button bk-button-primary" wire:click="toggleEditMode">
+                        <i class="fas fa-pen" aria-hidden="true"></i> Edit profile
+                    </button>
+                    <a class="bk-button bk-button-secondary" href="{{ route('privacy.settings') }}" wire:navigate>
+                        <i class="fas fa-lock" aria-hidden="true"></i> Privacy controls
+                    </a>
+                @endif
+            </div>
+        </aside>
+    </section>
 
-        <!-- Tab Content -->
-        <div
-            class="bg-themed-secondary  rounded-lg border border-themed-primary overflow-hidden shadow-sm lg:shadow-sm transition-colors duration-300">
-            @if ($isEditing)
-                <!-- Edit Mode Content -->
+    <section class="bk-profile-snapshot" aria-label="Account snapshot">
+        <article><span class="bk-profile-snapshot-icon"><i class="fas fa-layer-group" aria-hidden="true"></i></span><div><strong>{{ $learningProgress['total_courses'] }}</strong><span>Enrolled courses</span></div></article>
+        <article><span class="bk-profile-snapshot-icon"><i class="fas fa-circle-check" aria-hidden="true"></i></span><div><strong>{{ $learningProgress['completed_lessons'] }}</strong><span>Lessons completed</span></div></article>
+        <article><span class="bk-profile-snapshot-icon"><i class="fas fa-bookmark" aria-hidden="true"></i></span><div><strong>{{ $learningProgress['saved_resources'] }}</strong><span>Saved resources</span></div></article>
+        <article><span class="bk-profile-snapshot-icon"><i class="fas fa-certificate" aria-hidden="true"></i></span><div><strong>{{ $learningProgress['certificates'] }}</strong><span>Certificate records</span></div></article>
+    </section>
+
+    <div class="bk-profile-workspace">
+        <nav class="bk-profile-nav" aria-label="Profile sections" role="tablist" aria-orientation="vertical">
+            <div class="bk-profile-nav-heading">
+                <span>{{ $isEditing ? 'Edit profile' : 'Account centre' }}</span>
+                <small>{{ $isEditing ? 'Update one section at a time' : 'Profile, learning and preferences' }}</small>
+            </div>
+
+            @php
+                $tabs = $isEditing
+                    ? [
+                        'identity' => ['Identity', 'Name, contact and bio', 'fa-address-card'],
+                        'details' => ['Background', 'Location, education and skills', 'fa-briefcase'],
+                        'links' => ['Links & photo', 'Public links and profile image', 'fa-link'],
+                    ]
+                    : [
+                        'overview' => ['Overview', 'Personal and professional details', 'fa-user'],
+                        'learning' => ['Learning', 'Progress and recent activity', 'fa-chart-line'],
+                        'saved' => ['Saved', 'Resources and course wishlist', 'fa-bookmark'],
+                        'account' => ['Account', 'Appearance, privacy and security', 'fa-shield-halved'],
+                    ];
+            @endphp
+
+            @foreach($tabs as $key => [$label, $description, $icon])
+                <button
+                    type="button"
+                    role="tab"
+                    id="profile-tab-{{ $key }}"
+                    aria-controls="profile-panel-{{ $key }}"
+                    :aria-selected="(profileTab === '{{ $key }}').toString()"
+                    :tabindex="profileTab === '{{ $key }}' ? 0 : -1"
+                    :class="{ 'is-active': profileTab === '{{ $key }}' }"
+                    @click="profileTab = '{{ $key }}'; $wire.switchTab('{{ $key }}')"
+                    @keydown.arrow-down.prevent="($el.nextElementSibling?.matches('[role=tab]') ? $el.nextElementSibling : $el.parentElement.querySelector('[role=tab]'))?.focus()"
+                    @keydown.arrow-right.prevent="($el.nextElementSibling?.matches('[role=tab]') ? $el.nextElementSibling : $el.parentElement.querySelector('[role=tab]'))?.focus()"
+                    @keydown.arrow-up.prevent="($el.previousElementSibling?.matches('[role=tab]') ? $el.previousElementSibling : $el.parentElement.querySelector('[role=tab]:last-of-type'))?.focus()"
+                    @keydown.arrow-left.prevent="($el.previousElementSibling?.matches('[role=tab]') ? $el.previousElementSibling : $el.parentElement.querySelector('[role=tab]:last-of-type'))?.focus()"
+                    @keydown.home.prevent="$el.parentElement.querySelector('[role=tab]')?.focus()"
+                    @keydown.end.prevent="$el.parentElement.querySelector('[role=tab]:last-of-type')?.focus()"
+                >
+                    <span><i class="fas {{ $icon }}" aria-hidden="true"></i></span>
+                    <span><strong>{{ $label }}</strong><small>{{ $description }}</small></span>
+                    <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                </button>
+            @endforeach
+        </nav>
+
+        <div class="bk-profile-content">
+            @if($isEditing)
                 @include('livewire.user-management.profile.edit-profile')
             @else
-                <!-- View Mode Content -->
                 @include('livewire.user-management.profile.view-profile')
             @endif
         </div>
     </div>
-
-    <style>
-        .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-        }
-
-        .backdrop-blur-sm {
-            backdrop-filter: blur(8px);
-        }
-
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0px);
-            }
-
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        .animate-float {
-            animation: float 3s ease-in-out infinite;
-        }
-    </style>
 </div>

@@ -1,3 +1,7 @@
+@assets
+    @vite('resources/js/charts.js')
+@endassets
+
 {{-- Analytics View --}}
 {{-- resources/views/livewire/newsletter/partials/analytics.blade.php --}}
 <div class="space-y-6">

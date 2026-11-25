@@ -1,6 +1,6 @@
 # Route inventory
 
-Generated from `php artisan route:list --json` on 27 October 2026 after the Q&A participation continuation. Middleware and request-time component/service checks determine access; route existence is not proof of functional completion.
+Generated from `php artisan route:list --json` on 27 October 2026 after the Q&A participation continuation, with the portfolio routes refreshed on 4 November 2026. Middleware and request-time component/service checks determine access; route existence is not proof of functional completion.
 
 | Method | URI | Name | Handler | Middleware |
 |---|---|---|---|---|
@@ -266,9 +266,10 @@ Generated from `php artisan route:list --json` on 27 October 2026 after the Q&A 
 | POST | offline-learning/packs/{course}/sync | offline-learning.sync | App\Http\Controllers\OfflineLearningController@sync | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
 | PUT | password | password.update | App\Http\Controllers\Auth\PasswordController@updatePassword | web, Illuminate\Auth\Middleware\Authenticate |
 | GET / HEAD | paystack/callback | paystack.callback | App\Http\Controllers\FinancialController@paystackCallback | web, Illuminate\Auth\Middleware\Authenticate |
-| GET / HEAD | portfolio | portfolio.show | App\Livewire\Career\PortfolioBuilder | web, Illuminate\Auth\Middleware\Authenticate |
+| GET / HEAD | portfolio | portfolio.show | App\Livewire\Career\PortfolioBuilder | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified, App\Http\Middleware\CheckRole:student |
 | GET / HEAD | pricing | pricing | App\Livewire\Pages\Pricing | web |
 | GET / HEAD | projects/{slug} | project.show | App\Http\Controllers\ProjectController@show | web, Illuminate\Auth\Middleware\Authenticate, Illuminate\Auth\Middleware\EnsureEmailIsVerified |
+| GET / HEAD | showcase/{slug} | portfolio.public | App\Http\Controllers\PortfolioShowcaseController | web |
 | GET / HEAD | register | register | App\Http\Controllers\Auth\AuthController@showRegistrationForm | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
 | POST | register |  | App\Http\Controllers\Auth\AuthController@register | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |
 | POST | reset-password | password.store | App\Http\Controllers\Auth\PasswordController@resetPassword | web, Illuminate\Auth\Middleware\RedirectIfAuthenticated |

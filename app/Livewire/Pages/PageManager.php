@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Pages;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
+use App\Services\Authorization\PublishingAccess;
 use Livewire\Component;
 use App\Models\Content\Page;
 use Livewire\Attributes\Layout;
@@ -14,6 +16,13 @@ use Livewire\Attributes\Layout;
 ])]
 class PageManager extends Component
 {
+    use AuthorizesPublishingAdministration;
+
+    protected function publishingAbility(): string
+    {
+        return PublishingAccess::PAGE_CONTENT;
+    }
+
     public $activeTab = 'all-pages';
     
     // Statistics for header display
@@ -39,7 +48,6 @@ class PageManager extends Component
         return match($routeName) {
             'pages.create' => 'create-page',
             'pages.analytics' => 'analytics',
-            'pages.templates' => 'templates',
             'pages.media' => 'media',
             'pages.seo' => 'seo',
             'pages.settings' => 'settings',
@@ -54,7 +62,6 @@ class PageManager extends Component
             'all-pages' => 'pages.index',
             'create-page' => 'pages.create',
             'analytics' => 'pages.analytics',
-            'templates' => 'pages.templates',
             'media' => 'pages.media',
             'seo' => 'pages.seo',
             'settings' => 'pages.settings',

@@ -13,27 +13,46 @@ use Livewire\Component;
 #[Layout('layouts.dashboard', ['title' => 'Lesson assessments'])]
 class StudentAssessmentTaker extends Component
 {
-    use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
     use \App\Livewire\Concerns\RequestsAssessmentMarkReview;
+    use \App\Livewire\Concerns\RequiresAuthenticatedAccount;
     use \App\Livewire\Concerns\WithdrawsQnaSharing;
     use \Livewire\WithFileUploads;
 
-    #[Locked] public Lesson $lesson;
-    #[Locked] public bool $standalone = false;
-    #[Locked] public ?int $assessmentId = null;
-    #[Locked] public ?int $examSessionId = null;
-    #[Locked] public array $questions = [];
-    #[Locked] public ?array $results = null;
-    #[Locked] public ?string $deadline = null;
+    #[Locked]
+    public Lesson $lesson;
+
+    #[Locked]
+    public bool $standalone = false;
+
+    #[Locked]
+    public ?int $assessmentId = null;
+
+    #[Locked]
+    public ?int $examSessionId = null;
+
+    #[Locked]
+    public array $questions = [];
+
+    #[Locked]
+    public ?array $results = null;
+
+    #[Locked]
+    public ?string $deadline = null;
+
     public array $answers = [];
+
     public array $uploads = [];
+
     public bool $showSubmitModal = false;
+
     public string $message = '';
 
     public function boot(): void
     {
-        if (isset($this->lesson)) app(CbtAttemptService::class)->authorizeLesson(auth()->user(), $this->lesson);
-        if ($this->examSessionId && !$this->results) {
+        if (isset($this->lesson)) {
+            app(CbtAttemptService::class)->authorizeLesson(auth()->user(), $this->lesson);
+        }
+        if ($this->examSessionId && ! $this->results) {
             $session = LearningSession::where('user_id', auth()->id())->findOrFail($this->examSessionId);
             abort_unless((int) ($session->metadata['assessment_id'] ?? 0) === (int) $this->assessmentId, 403);
             $this->questions = app(CbtAttemptService::class)->publicQuestions($session);
@@ -51,6 +70,7 @@ class StudentAssessmentTaker extends Component
     {
         $assessment = $this->lesson->assessments()->find($id);
         abort_unless($assessment, 404);
+
         return $assessment;
     }
 
@@ -66,11 +86,19 @@ class StudentAssessmentTaker extends Component
         try {
             $session = app(CbtAttemptService::class)->start(auth()->user(), $assessment, true);
         } catch (\Illuminate\Validation\ValidationException $exception) {
-            if ($assessment->type !== 'qna') throw $exception;
-            $this->addError('submission', 'Your instructor must review the Q&A requirements before this attempt can start.'); return;
+            if ($assessment->type !== 'qna') {
+                throw $exception;
+            }
+            $this->addError('submission', 'Your instructor must review the Q&A requirements before this attempt can start.');
+
+            return;
         } catch (\Symfony\Component\HttpKernel\Exception\HttpException $exception) {
-            if ($exception->getStatusCode() !== 422 || !in_array($assessment->type, ['project', 'assignment', 'qna'], true)) throw $exception;
-            $this->addError('submission', $exception->getMessage()); return;
+            if ($exception->getStatusCode() !== 422 || ! in_array($assessment->type, ['project', 'assignment', 'qna'], true)) {
+                throw $exception;
+            }
+            $this->addError('submission', $exception->getMessage());
+
+            return;
         }
         $this->assessmentId = $id;
         $this->examSessionId = $session->id;
@@ -81,37 +109,52 @@ class StudentAssessmentTaker extends Component
         $this->message = 'Attempt started. Saved answers survive a page reload; use Resume to continue.';
     }
 
-    public function retakeAssessment(int $id): void { $this->startAssessment($id); }
+    public function retakeAssessment(int $id): void
+    {
+        $this->startAssessment($id);
+    }
 
     public function updatedAnswers($value, $key): void
     {
-        abort_unless($this->assessmentId && $this->examSessionId && !$this->results, 422);
+        abort_unless($this->assessmentId && $this->examSessionId && ! $this->results, 422);
         $questionId = (int) explode('.', $key)[0];
         $value = $this->answers[$questionId] ?? null;
         // Unchecking the final option clears the saved answer.
-        if ($value === []) $value = null;
+        if ($value === []) {
+            $value = null;
+        }
         $this->resetValidation('answers.'.$questionId);
         try {
             app(CbtAttemptService::class)->saveAnswer(auth()->user(), $this->assessment($this->assessmentId), $this->examSessionId, $questionId, $value);
         } catch (\Symfony\Component\HttpKernel\Exception\HttpException $exception) {
-            if ($exception->getStatusCode() !== 422) throw $exception;
-            $this->addError('answers.'.$questionId, $exception->getMessage()); return;
+            if ($exception->getStatusCode() !== 422) {
+                throw $exception;
+            }
+            $this->addError('answers.'.$questionId, $exception->getMessage());
+
+            return;
         }
         $this->message = 'Answer saved.';
     }
 
     public function attachFile(int $questionId): void
     {
-        abort_unless($this->assessmentId && $this->examSessionId && !$this->results, 422);
+        abort_unless($this->assessmentId && $this->examSessionId && ! $this->results, 422);
         $this->validate(['uploads.'.$questionId => 'required|file']);
         try {
             app(\App\Services\AssessmentSubmissionService::class)->attach(auth()->user(), $this->assessment($this->assessmentId),
                 $this->examSessionId, $questionId, $this->uploads[$questionId]);
         } catch (\Illuminate\Validation\ValidationException $exception) {
-            $this->addError('uploads.'.$questionId, $exception->validator->errors()->first()); return;
+            $this->addError('uploads.'.$questionId, $exception->validator->errors()->first());
+
+            return;
         } catch (\Symfony\Component\HttpKernel\Exception\HttpException $exception) {
-            if ($exception->getStatusCode() !== 422) throw $exception;
-            $this->addError('uploads.'.$questionId, $exception->getMessage()); return;
+            if ($exception->getStatusCode() !== 422) {
+                throw $exception;
+            }
+            $this->addError('uploads.'.$questionId, $exception->getMessage());
+
+            return;
         }
         unset($this->uploads[$questionId]);
         $this->message = 'File attached to this attempt. Submit the assessment to send it for review.';
@@ -120,12 +163,16 @@ class StudentAssessmentTaker extends Component
 
     public function removeFile(int $questionId, string $fileId): void
     {
-        abort_unless($this->assessmentId && $this->examSessionId && !$this->results, 422);
+        abort_unless($this->assessmentId && $this->examSessionId && ! $this->results, 422);
         try {
             app(\App\Services\AssessmentSubmissionService::class)->remove(auth()->user(), $this->assessment($this->assessmentId), $this->examSessionId, $questionId, $fileId);
         } catch (\Symfony\Component\HttpKernel\Exception\HttpException $exception) {
-            if ($exception->getStatusCode() !== 422) throw $exception;
-            $this->addError('uploads.'.$questionId, $exception->getMessage()); return;
+            if ($exception->getStatusCode() !== 422) {
+                throw $exception;
+            }
+            $this->addError('uploads.'.$questionId, $exception->getMessage());
+
+            return;
         }
         $this->message = 'File removed from this draft.';
         $this->dispatch('bootkode-assessment-focus', id: 'submission-file-'.$questionId);
@@ -133,10 +180,10 @@ class StudentAssessmentTaker extends Component
 
     public function moveOrderingItem(int $questionId, int $position, int $direction): void
     {
-        abort_unless($this->assessmentId && $this->examSessionId && !$this->results && in_array($direction, [-1, 1], true), 422);
+        abort_unless($this->assessmentId && $this->examSessionId && ! $this->results && in_array($direction, [-1, 1], true), 422);
         $question = collect($this->questions)->firstWhere('id', $questionId);
         abort_unless($question && $question['question_type'] === 'ordering', 422);
-        $order = !empty($this->answers[$questionId]) ? $this->answers[$questionId] : range(0, count($question['options']) - 1);
+        $order = ! empty($this->answers[$questionId]) ? $this->answers[$questionId] : range(0, count($question['options']) - 1);
         app(\App\Services\StructuredQuestionService::class)->validate($question, $order);
         abort_unless(isset($order[$position]) && isset($order[$position + $direction]), 422);
         [$order[$position], $order[$position + $direction]] = [$order[$position + $direction], $order[$position]];
@@ -147,10 +194,10 @@ class StudentAssessmentTaker extends Component
 
     public function saveOrdering(int $questionId): void
     {
-        abort_unless($this->assessmentId && $this->examSessionId && !$this->results, 422);
+        abort_unless($this->assessmentId && $this->examSessionId && ! $this->results, 422);
         $question = collect($this->questions)->firstWhere('id', $questionId);
         abort_unless($question && $question['question_type'] === 'ordering', 422);
-        $order = !empty($this->answers[$questionId]) ? $this->answers[$questionId] : range(0, count($question['options']) - 1);
+        $order = ! empty($this->answers[$questionId]) ? $this->answers[$questionId] : range(0, count($question['options']) - 1);
         app(CbtAttemptService::class)->saveAnswer(auth()->user(), $this->assessment($this->assessmentId), $this->examSessionId, $questionId, $order);
         $this->answers[$questionId] = $order;
         $this->message = 'Sequence saved.';
@@ -164,8 +211,13 @@ class StudentAssessmentTaker extends Component
         try {
             $this->results = app(CbtAttemptService::class)->submit(auth()->user(), $this->assessment($this->assessmentId), $this->examSessionId, $answers);
         } catch (\Symfony\Component\HttpKernel\Exception\HttpException $exception) {
-            if ($exception->getStatusCode() !== 422) throw $exception;
-            $this->addError('submission', $exception->getMessage()); $this->showSubmitModal = false; return;
+            if ($exception->getStatusCode() !== 422) {
+                throw $exception;
+            }
+            $this->addError('submission', $exception->getMessage());
+            $this->showSubmitModal = false;
+
+            return;
         }
         $this->questions = [];
         $this->showSubmitModal = false;
@@ -201,12 +253,13 @@ class StudentAssessmentTaker extends Component
         if ($this->assessmentId && $this->results) {
             $this->results = \Illuminate\Support\Arr::except($this->assessment($this->assessmentId)->getStudentResults(auth()->id(), $this->results['attempt_number']), ['answers', 'submitted_at']);
         }
-        $assessments = $this->lesson->assessments()->orderBy('order')->get();
-        $statuses = $assessments->mapWithKeys(fn ($assessment) => [$assessment->id => $assessment->getStudentResults(auth()->id())]);
+        $assessments = $this->lesson->assessments()->with('questions')->orderBy('order')->get();
+        $statuses = app(\App\Services\AssessmentResultService::class)->summaries($assessments, auth()->id());
         $activeIds = LearningSession::where('user_id', auth()->id())->where('activity_type', 'assessment')->whereNull('ended_at')->get()->pluck('metadata.assessment_id')->all();
         $responses = $this->assessmentId && $this->results ? app(\App\Services\AssessmentResultService::class)->responses($this->assessment($this->assessmentId), auth()->user(), $this->results['attempt_number']) : [];
-        $activeSession = $this->examSessionId && !$this->results ? LearningSession::where('user_id', auth()->id())->findOrFail($this->examSessionId) : null;
+        $activeSession = $this->examSessionId && ! $this->results ? LearningSession::where('user_id', auth()->id())->findOrFail($this->examSessionId) : null;
         $attachmentLists = $activeSession ? app(\App\Services\AssessmentSubmissionService::class)->projectedFiles($activeSession) : [];
+
         return view('livewire.student-management.course-view.student-assessment-taker', compact('assessments', 'statuses', 'activeIds', 'responses', 'attachmentLists'));
     }
 }

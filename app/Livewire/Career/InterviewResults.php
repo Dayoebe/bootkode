@@ -11,6 +11,13 @@ use Livewire\Attributes\Layout;
 class InterviewResults extends Component
 {
     public $interview;
+
+    public function boot(): void
+    {
+        if ($this->interview instanceof MockInterview) {
+            $this->authorizeViewingInterview();
+        }
+    }
     
     public function mount($interview)
     {
@@ -19,9 +26,7 @@ class InterviewResults extends Component
             : $interview;
             
         // Check access
-        if ($this->interview->user_id !== Auth::id() && !Auth::user()->canManageCourses()) {
-            abort(403, 'Unauthorized access to this interview.');
-        }
+        $this->authorizeViewingInterview();
         
         // Ensure interview is completed
         if (!$this->interview->isCompleted()) {
@@ -31,6 +36,8 @@ class InterviewResults extends Component
     
     public function retakeInterview()
     {
+        abort_unless($this->interview->user_id === Auth::id(), 403);
+
         if (!$this->interview->allow_retakes || $this->interview->retake_count >= $this->interview->max_retakes) {
             session()->flash('error', 'Retakes not allowed or maximum retakes reached.');
             return;
@@ -45,7 +52,9 @@ class InterviewResults extends Component
         $retakeData['started_at'] = null;
         $retakeData['completed_at'] = null;
         $retakeData['user_responses'] = null;
-        $retakeData['overall_score'] = null;
+        foreach (['overall_score', 'technical_score', 'communication_score', 'confidence_score', 'problem_solving_score', 'cultural_fit_score'] as $scoreField) {
+            $retakeData[$scoreField] = null;
+        }
         
         $retake = Auth::user()->mockInterviews()->create($retakeData);
         $this->interview->increment('retake_count');
@@ -64,11 +73,11 @@ class InterviewResults extends Component
             fputcsv($handle, ['Status', $this->interview->status]);
             fputcsv($handle, ['Type', $this->interview->type]);
             fputcsv($handle, ['Difficulty', $this->interview->difficulty_level]);
-            fputcsv($handle, ['Overall Score', $this->interview->overall_score]);
-            fputcsv($handle, ['Technical Score', $this->interview->technical_score]);
-            fputcsv($handle, ['Communication Score', $this->interview->communication_score]);
-            fputcsv($handle, ['Confidence Score', $this->interview->confidence_score]);
-            fputcsv($handle, ['Problem Solving Score', $this->interview->problem_solving_score]);
+            fputcsv($handle, ['Overall Score', $this->interview->overall_score ?? 'Not assessed']);
+            fputcsv($handle, ['Technical Score', $this->interview->technical_score ?? 'Not assessed']);
+            fputcsv($handle, ['Communication Score', $this->interview->communication_score ?? 'Not assessed']);
+            fputcsv($handle, ['Confidence Score', $this->interview->confidence_score ?? 'Not assessed']);
+            fputcsv($handle, ['Problem Solving Score', $this->interview->problem_solving_score ?? 'Not assessed']);
             fputcsv($handle, ['Completed At', optional($this->interview->completed_at)->toDateTimeString()]);
             fputcsv($handle, []);
 
@@ -87,5 +96,19 @@ class InterviewResults extends Component
     public function render()
     {
         return view('livewire.career.interview-results');
+    }
+
+    private function authorizeViewingInterview(): void
+    {
+        $user = Auth::user();
+
+        abort_unless(
+            $user && (
+                $this->interview->user_id === $user->id
+                || $user->hasAnyRole(['super_admin', 'academy_admin', 'mentor', 'instructor'])
+            ),
+            403,
+            'Unauthorized access to this interview.'
+        );
     }
 }

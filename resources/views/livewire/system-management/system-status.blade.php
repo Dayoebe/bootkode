@@ -4,7 +4,7 @@
         <h1 class=" font-bold text-white bk-page-title">
             <i aria-hidden="true" class="fas fa-server mr-2"></i> System Status
         </h1>
-        <p class="text-brand mt-2">Check the operational status of our services</p>
+        <p class="text-brand mt-2">Review service states recorded by authorised administrators</p>
     </div>
 
     <!-- Services Status Grid -->
@@ -167,12 +167,12 @@
             </h3>
             <div class="space-y-3">
                 <div class="flex items-center justify-between">
-                    <span class="text-themed-secondary">Uptime</span>
-                    <span class="font-semibold text-green-600 dark:text-green-400">99.9%</span>
+                    <span class="text-themed-secondary">Measured uptime</span>
+                    <span class="font-semibold text-themed-primary">Not connected</span>
                 </div>
                 <div class="flex items-center justify-between">
-                    <span class="text-themed-secondary">Last Check</span>
-                    <span class="font-semibold text-themed-primary">Just now</span>
+                    <span class="text-themed-secondary">Status source</span>
+                    <span class="font-semibold text-themed-primary">Recorded incidents</span>
                 </div>
                 <div class="flex items-center justify-between">
                     <span class="text-themed-secondary">Active Incidents</span>

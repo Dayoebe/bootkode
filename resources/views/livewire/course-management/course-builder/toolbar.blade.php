@@ -36,7 +36,7 @@
     </div>
 
     <!-- Data Conflict Warning -->
-    <div x-show="showConflictWarning"
+    <div x-cloak x-show="showConflictWarning"
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0 transform -translate-y-2"
          x-transition:enter-end="opacity-100 transform translate-y-0"
@@ -97,7 +97,7 @@
                 </span>
 
                 <!-- Save Status Indicator -->
-                <span x-show="saveStatus !== 'saved'"
+                <span x-cloak x-show="saveStatus !== 'saved'"
                       class="px-3 py-1.5 text-xs font-semibold rounded-full flex items-center border transition-all duration-300"
                       :class="saveStatus === 'saving' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border-blue-200 dark:border-blue-700' :
                               saveStatus === 'error' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 border-red-200 dark:border-red-700' :

@@ -4,13 +4,13 @@ Audit started 20 October 2026. This is a large existing product: 273 baseline ro
 
 ## Current status
 
-The current consolidated backlog is in [refactor-roadmap.md](refactor-roadmap.md). Course Content Studio and Groq connectivity have later recorded implementation/live acceptance, Q&A/peer participation is implemented for new versioned topics, and community replies/saved job alerts now have actual private portal delivery with optional queued email. Learning result/review/reminder/achievement delivery and clean-checkout CI are implemented; the current npm audit is clear. Dated findings below retain audit history; they do not override those later deliveries. No whole-product or production certification is implied.
+The current consolidated backlog is in [refactor-roadmap.md](refactor-roadmap.md). Course Content Studio and Groq connectivity have later recorded implementation/live acceptance, Q&A/peer participation is implemented for new versioned topics, and community replies/saved job alerts now have actual private portal delivery with optional queued email. Learning result/review/reminder/achievement delivery, clean-checkout CI and the premium app repository work are implemented; current Composer and npm audits are clear. Dated findings below retain audit history; they do not override those later deliveries. No whole-product or production certification is implied.
 
 ## Baseline and safety
 
 - Branch started at `d034cad3` on `main`; work uses `refactor/bootkode-product-coherence`.
 - Pre-existing changes: sidebar collapse markup, local profile tabs, `ProfileTabMarkupTest`, compiled CSS and manifest. Those changes were preserved. During the work, commit `9d4892fa` appeared on the feature branch and included the original source/test edits along with accumulated implementation; it was retained without rewriting history.
-- Runtime PHP 8.4.26; locked Laravel 11.46.1, Livewire 3.6.4, Tailwind 3.4.17, Alpine 3.14.9, Vite 7.0.6. Tailwind 4 plugins are listed but the active PostCSS pipeline uses Tailwind 3. No major upgrade planned.
+- Baseline runtime was PHP 8.4.26 with Laravel 11.46.1. Current lock is Laravel 12.70.2, Livewire 3.8.11, Tailwind 3.4.19 and Vite 7.3.7 after the reviewed supported-stack migration. Tailwind 4 plugins are listed but the active PostCSS pipeline remains Tailwind 3.
 - Baseline `npm run build`: passes; stale Browserslist, PostCSS `from`, and 1.13 MB JavaScript chunk warnings.
 - Baseline `/` HTTP: 200. Local MariaDB recovered database has all 37 migrations applied. Automated tests use `bootkode_test`, never the recovered database.
 - Baseline test results and final results are recorded in `verification.md` when execution completes.
@@ -281,3 +281,75 @@ Soft Skills and Customer Service categories were resolved through the existing s
 All 10 saved courses (81 lessons) have an editorial audit and prepared corrections. Repeated imported legal/challenge appendices are moved out of lesson reading; genuine source notices remain attached materials. Live application is blocked by MariaDB system-tablespace corruption. See [the course audit](course-content-audit-20261028.md) for exact scope, evidence and pending checks.
 
 Database follow-up: all 6,143 regular files were preserved in a separate physical copy. Recovery modes 1–6 on an isolated copy failed at system-space page 0. Course edits remain prepared and unapplied; see the linked audit for preservation paths and recovery limits.
+
+## Personalised learning ecosystem — 2 November 2026
+
+The [implementation ledger](learning-ecosystem/implementation.md) maps the transformation brief to the existing architecture. Reuse the current AI provider, learning profiles, staged course-generation runs, assessment snapshots, certificate eligibility, wallets, notification receipts and institution systems. Technology-specific heuristic diagnoses and broad fallback recommendations are existing limitations, not verified competence or cross-discipline matching.
+
+The first implementation slice adds a private structured learning-profile journey at `learning.profile`. It extends `ai_learning_profiles` with optional category/custom interests, self-reported skills/courses/experience, a starting level and learning preferences, plus explicit completed/skipped timestamps. Registration leads to verified setup; existing learners can skip, return and edit from the dashboard, coach or Learning Hub. Only the goal is required. There is no provider call, competence award, enrollment, payment or certificate mutation in this journey.
+
+Still outstanding: real optional diagnostics, evidence-correct coach projections, catalogue-backed matching/prerequisites, persistent roadmaps, demand grouping/admin digests and learner-safe generation/enrollment orchestration. The overall ecosystem is not complete. Working-database connectivity/restoration and current dependency advisories remain release gates; see verification.md.
+
+## Career intelligence audit and implementation — 2 November 2026
+
+The [career extension ledger](learning-ecosystem/career-intelligence.md) maps the new brief onto the existing job, private-application, resume, portfolio, interview and mentorship domains. New work supplies reviewed requirement contracts, a private evidence review ledger, current eligibility checks, an integrated Career Centre and provider-backed AI drafts/guidance. Self-reported knowledge, named certificates, assessment results, verified assertions and employer decisions are deliberately distinct. Legacy unreviewed listings are labelled unknown and retain their prior application flow; reviewed mandatory requirements are enforced in the real submission service.
+
+External vacancy search previously used random percentages, invented popularity counts, credential-bearing failure logs and cross-user cached saved/open flags. These are corrected with bounded server-side Adzuna search, safe projections/logging, original provider destinations, per-advert source attribution and truthful external-opening state. Provider descriptions can be snippets; they are not silently promoted into complete, authoritative eligibility contracts.
+
+Persistent job-to-skill roadmaps, automatic missing-course demand/generation, richer project/assessment recommendations, employer verification/consented candidate discovery, designated career counselling and employment-outcome analytics remain unfinished. Existing CVs are not newly represented as verified professional histories. No employment, accreditation, income or employer-acceptance guarantee is introduced. Working-database migration, live-provider/licence checks and the existing dependency security gate remain separate release requirements.
+
+## First deployment and premium app audit — 2 November 2026
+
+Current deployment assessment: **71/100, blocked**. Verified code/runtime is Laravel 12.70.2 and the compatible Socialite/JWT set; locked Composer and npm audits report zero advisories. Host cron/runtime, current remote CI, private off-host backup/file/key restoration and provider staging acceptance remain required. The readiness score is a checklist assessment, not a capacity/security guarantee. See [the full assessment](deployment/production-readiness.md).
+
+Implemented: safe production debug/diagnostics, reproducible environment/runbooks/preflight, bounded queue alternatives without mandatory Redis or persistent workers, stage/row recovery and duplicate controls, safer newsletter/API/media IO, conditional editor assets, owned summary pagination, and reliable explicit offline storage/acknowledgements/access checks. Original payments, enrollments, issued certificates and course records are retained. The current database recovered 138 tables / 605 rows and 237 foreign-key checks; two independent restores of the migrated snapshot matched 139 tables / 607 rows. No production deployment or live-provider success is claimed.
+
+The [app experience milestone](app-experience-milestone.md) identifies concrete UI/performance/offline defects and delivered fixes. The existing responsive shell is retained. Remaining work includes larger real-data query profiling, route-specific chart loading, broader account/admin/accessibility/theme acceptance and real slow-network/device/PWA acceptance. The entire nine-phase transformation and earlier career C2–C4 roadmap are not marked complete.
+
+## Premium app continuation — 3 November 2026
+
+[Milestone 2](app-experience-milestone-2.md) closes the identified route-specific chart-delivery gap and the visible learner-progress N+1 path. The always-loaded authenticated dashboard entry is 5,312 bytes instead of 213,564 bytes; Chart.js is a 210,009-byte route asset used by 19 chart views. The six visible course cards use a fixed six-query lesson/progress graph in a dedicated test fixture, upcoming lessons reuse it, study streak uses one bounded query and dashboard reads no longer create gamification state.
+
+Analytics/tasks/achievements/announcements/career/mentorship/reviews/wishlist/system status now fail as individual visible panels while reported exceptions remain available operationally. No working learner fixture was added: the restored snapshot currently has zero course enrollments and zero lesson-completion pivots. The later completion milestone closes the synthetic learner journey, course assessment graph, layout-shift, theme/contrast and supported dependency work; physical-device PWA, field Core Web Vitals, assistive-technology and live-provider acceptance remain open. The release assessment stays blocked.
+
+## Premium app completion — 3 November 2026
+
+[Premium app completion](app-experience-completion.md) closes the repository-controlled continuation items without modifying working learner records. It applies theme/sidebar state before first paint, scopes MathJax and consented analytics, adds one install/update PWA lifecycle, bounds the dense assessment result graph, provides private independent lesson notes/bookmarks, and makes enrollment completion/certificate issuance atomic and replay-safe. A dedicated `_test` browser fixture proves note/bookmark persistence, assessment resume and passing submission, next-lesson progression, course completion and certificate visibility.
+
+The final loopback browser run passes 32 authenticated responsive states at 360–1920px. Maximum observed CLS is 0.0544; 390px and 1440px checks find no duplicate IDs, unnamed buttons, unlabeled fields or undersized tested targets, and all five theme text/accent samples exceed 4.5:1. These controlled measurements are not field RUM, physical-device or full screen-reader certification. Live mail, Paystack, OAuth, AI, external media, hosting, encrypted off-host restoration and remote CI remain release gates; no production deployment is claimed.
+
+## Learner project portfolio and showcase — 4 November 2026
+
+The existing authenticated portfolio builder and `portfolios` records are retained. Verified student accounts can create, edit, reorder, duplicate privately, export and delete their own projects. New projects default to `visibility=private`; publishing is an explicit field choice and legacy `is_public` values alone do not make a project public. Demo and source links accept only HTTP(S), while project and profile text remains escaped.
+
+There was no existing public account-profile route: the current profile surface explicitly reports that no public link is available. The smallest consistent public surface is therefore `portfolio.public` at `/showcase/{slug}`. A valid published project slug opens that learner's showcase only when the owner is active and has Public profile visibility; the response includes only that owner's explicitly published projects. There is no portfolio directory, numeric profile lookup, private-project fallback, or new download route. Working records were not migrated or rewritten during implementation.
+
+## Dashboard shell refresh — 4 November 2026
+
+Phase one of the requested dashboard redesign updates only the shared authenticated sidebar, header and mobile navigation treatment. It adds clearer role/workspace context, stronger active navigation, consistent action controls, repaired navigation-search empty-state logic and mobile drawer focus return. Existing destinations, role visibility, page interiors, records, enrollment, wallet and payment behavior are unchanged. Interior dashboard pages remain a later step and are not represented as redesigned by this phase.
+
+## Role dashboard homepage redesign — 4 November 2026
+
+Phase two applies one professional information hierarchy to the learner, instructor, mentor, content editor, affiliate ambassador, academy admin and super-admin homepages. Each role receives a clear priority, useful primary/secondary CTA, three recorded highlights, reporting controls, detailed operational sections and at least one role-relevant chart or graph. Existing named destinations and domain records are reused; no sample learner, result, traffic or revenue data is added.
+
+The factual audit removed random mentor sessions/ratings/goals and unrelated-learner exposure, hardcoded editor traffic/sentiment/timing suggestions, estimated affiliate clicks/conversions, and default claims of healthy status/storage/queue/backups. Missing signals now say unknown, unavailable or not connected. Mentor names and outcomes are restricted to real mentorship relationships. The broader dashboard interior system, theme/screen-reader acceptance and live production analytics remain iterative work rather than a completed whole-application redesign.
+
+Continuation on 5 November adds an always-present role workspace guide to all seven homepages. Each guide exposes four to six existing, authorised work areas and a three-step operating rhythm, so a new or low-activity account still has useful information and clear next actions before its metrics populate. The links reuse existing named routes and the copy describes capabilities only; no activity, result, health, revenue or learner outcome is fabricated.
+
+The content-depth follow-up adds four role-specific data-explanation cards, a four-item practical checklist and three supporting resources per dashboard. The explanations distinguish enrollments, lessons, submissions, course states, reviews, sessions, publishing records, referrals, commissions, credentials, tickets, activity logs and stored financial records from forecasts or inferred outcomes. Click analytics remains explicitly unavailable, portfolio privacy remains explicit and mentor information remains relationship-scoped.
+
+The visual-depth follow-up replaces the flat homepage treatment across all seven roles with a theme-aware hero, live Lagos-time/browser-status strip, high-contrast priority block, semantic colour rails, multi-tone metric/work-area/briefing cards and restrained hover/focus feedback. The status strip describes only client-observable state and the account privacy boundary; it does not claim provider or platform availability. Static decoration and interaction feedback use the existing token system, with no gradient, ambient animation, fabricated signal, new dependency or authorization change.
+
+## Dashboard profile account centre — 9 November 2026
+
+The legacy profile interior mixed nine local tabs, inline animation, Vue-only directives, password controls outside forms and certificate actions that were not implemented by its Livewire component. It also exposed a cache action that could clear the application cache while describing it as account-local, displayed a hard-coded session count, and presented two-factor authentication as a working toggle without changing any state. Those controls and claims are removed.
+
+The rebuilt profile keeps real personal, professional, learning, saved-resource, wishlist, appearance, privacy, session and account actions. Password and session mutations require the current password through labelled forms. Deactivation now also requires the current password; the existing guarded deletion service behavior remains intact. Every Livewire request rebinds the account from the authenticated session, enum and boolean settings are validated, wishlist deletion starts from the authenticated relationship, and exports derive only the current account. The edit route now honors its existing `?mode=edit` contract. No enrollment, payment, certificate, portfolio-publication or working-database behavior changed.
+
+## Enterprise hardening — 17 November 2026
+
+Blog, page, content and newsletter administration now share an explicit `PublishingAccess` role matrix. Route middleware is the first boundary and persistent Livewire boot authorization is the action boundary, so a hidden menu or an old component snapshot cannot authorize a mutation. Blog image upload requires a verified super admin, academy admin or content editor, is throttled, and no longer returns exception details. Categories, settings, SEO, analytics and other privileged surfaces retain their narrower advertised roles.
+
+Page analytics no longer estimates visitors, sessions, traffic sources, conversions, revenue, device share or Core Web Vitals. `PageAnalyticsProjection` exposes stored lifetime counters and recorded publishing activity; unavailable event-level signals are labelled explicitly. Mock interviews record only responses, completion rate and available response timing. Technical, communication, confidence and overall scores remain null until a reviewed assessment supplies them.
+
+Laravel's active scheduler is now declared only in `routes/console.php`; the unused legacy console kernel was removed. Newsletter, gamification, review analytics, withdrawals, job alerts, CBT reminders and review reminders appear in the active schedule. Withdrawal processing remains disabled by default. Laravel is locked at 12.73.0 and affected Symfony components remain on their compatible patched lines; the unsuppressed Composer audit reports no advisories at this checkpoint.

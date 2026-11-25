@@ -6,6 +6,8 @@ use Livewire\Component;
 use App\Models\Mentorship\MockInterview;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Locked;
+use App\Services\Career\MockInterviewCompletionService;
 
 #[Layout('layouts.dashboard')]
 class StudentInterviewTaker extends Component
@@ -15,7 +17,8 @@ class StudentInterviewTaker extends Component
     public $currentAnswer = '';
     public $responses = [];
     public $timeRemaining;
-    public $startTime;
+    #[Locked]
+    public ?int $startTime = null;
     
     public function mount($interview)
     {
@@ -34,7 +37,7 @@ class StudentInterviewTaker extends Component
             $this->interview->start();
         }
         
-        $this->startTime = now();
+        $this->startTime = now()->timestamp;
         $this->timeRemaining = $this->interview->estimated_duration_minutes * 60;
         
         // Load existing responses if any
@@ -43,12 +46,15 @@ class StudentInterviewTaker extends Component
     
     public function submitAnswer()
     {
+        $this->interview = MockInterview::where('user_id', Auth::id())
+            ->findOrFail($this->interview->id);
+
         if (!isset($this->interview->questions[$this->currentQuestionIndex])) {
             return;
         }
         
         $question = $this->interview->questions[$this->currentQuestionIndex];
-        $responseTime = now()->diffInSeconds($this->startTime);
+        $responseTime = $this->startTime !== null ? max(0, now()->timestamp - $this->startTime) : null;
         
         $this->responses[$question['id']] = [
             'question_id' => $question['id'],
@@ -63,6 +69,7 @@ class StudentInterviewTaker extends Component
         // Move to next question
         $this->currentQuestionIndex++;
         $this->currentAnswer = '';
+        $this->startTime = now()->timestamp;
         
         // If last question, complete interview
         if ($this->currentQuestionIndex >= count($this->interview->questions)) {
@@ -81,38 +88,17 @@ class StudentInterviewTaker extends Component
         }
     }
     
-    public function completeInterview()
+    public function completeInterview(MockInterviewCompletionService $completionService)
     {
-        $scores = $this->calculateScores();
-        
-        $this->interview->complete($this->responses, $scores);
+        $this->interview = $completionService->completeForUser(
+            $this->interview,
+            (int) Auth::id(),
+            $this->responses
+        );
         
         session()->flash('message', 'Interview completed successfully!');
         
         return redirect()->route('interview.results', $this->interview->id);
-    }
-    
-    private function calculateScores()
-    {
-        $totalQuestions = count($this->interview->questions);
-        $answeredQuestions = count($this->responses);
-        
-        $completionRate = ($answeredQuestions / $totalQuestions) * 100;
-        $averageResponseTime = collect($this->responses)->avg('response_time') ?? 0;
-        
-        // Basic scoring - can be enhanced
-        $technicalScore = min(100, $completionRate * 0.8 + (120 - min($averageResponseTime, 120)) / 120 * 20);
-        $communicationScore = rand(70, 95); // Placeholder
-        $confidenceScore = rand(65, 90); // Placeholder
-        
-        return [
-            'overall_score' => ($technicalScore + $communicationScore + $confidenceScore) / 3,
-            'technical_score' => $technicalScore,
-            'communication_score' => $communicationScore,
-            'confidence_score' => $confidenceScore,
-            'completion_rate' => $completionRate,
-            'avg_response_time' => $averageResponseTime,
-        ];
     }
     
     public function render()

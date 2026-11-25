@@ -55,7 +55,6 @@
                     'all-pages' => ['label' => 'All Pages', 'icon' => 'fas fa-list'],
                     'create-page' => ['label' => 'Create Page', 'icon' => 'fas fa-plus-circle'],
                     'analytics' => ['label' => 'Analytics', 'icon' => 'fas fa-chart-line'],
-                    'templates' => ['label' => 'Templates', 'icon' => 'fas fa-palette'],
                     'media' => ['label' => 'Media', 'icon' => 'fas fa-photo-video'],
                     'seo' => ['label' => 'SEO Manager', 'icon' => 'fas fa-search'],
                     'settings' => ['label' => 'Settings', 'icon' => 'fas fa-cog'],
@@ -88,10 +87,6 @@
 
             @case('analytics')
                 <livewire:pages.partials.analytics />
-                @break
-
-            @case('templates')
-                <livewire:pages.partials.templates />
                 @break
 
             @case('media')

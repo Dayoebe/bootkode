@@ -183,3 +183,94 @@ Completed in working records: five new courses across communication, time manage
 Course editorial audit: 10 courses / 81 lessons inspected, corrections and materials prepared. Remaining: recover database access while preserving original records, pass the guarded rehearsal, apply the payload, verify saved content/history and complete authenticated responsive checks. The offline required-notice behavior has focused test coverage. See [the course audit](course-content-audit-20261028.md); do not mark live cleanup complete yet.
 
 Database follow-up: all 6,143 regular files were preserved in a separate physical copy. Recovery modes 1–6 on an isolated copy failed at system-space page 0. Course edits remain prepared and unapplied; see the linked audit for preservation paths and recovery limits.
+
+## Personalised learning programme — 2 November 2026
+
+The [implementation ledger](learning-ecosystem/implementation.md) is the ordered continuation plan for the new brief. Phase 0 audit and the Phase 1a guided-profile implementation are in this branch; completion acceptance is recorded in verification.md. The wider transformation remains open.
+
+Continue with optional diagnostics using the current assessment engine and finalized original result snapshots. Replace the existing heuristic competence/recommendation claims before adding catalogue-backed exact/related/no-match ranking, prerequisite validation and persistent roadmaps. Then introduce demand records/groups and grouped notices, wiring into the existing staged generation/authoring pipeline rather than duplicating it. Learner draft access must explicitly preserve review, payment and publication boundaries. Restore/verify the working database, back up affected records, and clear dependency release gates before a real-data release. No working-data migration is authorized by a test-only rehearsal result.
+
+## Career & Opportunity Intelligence continuation — 2 November 2026
+
+The [career ledger](learning-ecosystem/career-intelligence.md) extends the original learning transformation. The first slice connects reviewed requirements, private evidence claims/review, current eligibility, actual internal application enforcement, provider search repairs, catalogue learning options and bounded configured-provider advice/extraction. It reuses existing resume, portfolio, interview and mentorship workflows.
+
+Next, finish the learning architecture's general matching/prerequisite and persistent-roadmap boundaries, then connect career gaps to shared course-demand/generation records with retries and notifications. Keep semantic/fuzzy matches out of mandatory evidence decisions unless explicitly reviewed. Add designated counselling credentials/access and private records before presenting counsellors as available. Employer discovery needs verification, explicit learner sharing consent and access audit records; it must not reuse private candidate queries from the Career Centre. Preserve real applications and credentials while adding verified outcomes and partnership analytics. Restore/verify the existing database service and back up affected records before applying the career migration to working data.
+
+## Production and app experience milestone — 2 November 2026
+
+- [x] Restore current local database records non-destructively, independently verify SQL restores, rehearse the two existing additive migrations and retain business-table hashes.
+- [x] Apply compatible dependency security fixes without suppressing remaining advisories or forcing major upgrades.
+- [x] Provide production example, read-only preflight, public-root/PHP examples, cron/supervised queue alternatives, safe migration and backup/GitHub guidance.
+- [x] Bound heavy/background IO, retain generation/row checkpoints, prevent duplicate course dispatch, and protect logs/credentials and uncertain mail acknowledgements.
+- [x] Split editor assets, bound the outline controls and paginate offline library summaries.
+- [x] Deliver account-bound IndexedDB packs/queues, explicit event acknowledgements, replay-safe dates/time/rewards, authoritative lesson/assessment rules and safe navigation/resource caching.
+- [x] Test targeted auth, ownership, payments, upload/privacy, queue/recovery, browser offline/history/editor/error flows and current build/cache commands.
+- [ ] Resolve supported Laravel/JWT dependency set; obtain green security CI before first production release.
+- [ ] Confirm provider PHP/cron/pcntl/runtime limits and perform encrypted off-host database/files/key recovery plus live provider staging acceptance.
+- [ ] Profile larger dashboard/course graphs and conditional chart loading; complete broader enrollment/assessment/notes/bookmarks/certificate journeys under throttled networks.
+- [ ] Complete real Android/iOS/PWA installation/lifecycle, eviction/media variants, all-theme keyboard/screen-reader and representative field performance acceptance. No global LCP/INP/CLS target is certified.
+
+This is a completed coherent milestone within the wider premium-app brief, not completion of all nine phases. Earlier learning-ecosystem and career phases retain their existing unfinished status. See [milestone detail](app-experience-milestone.md).
+
+## Premium app milestone 2 — 3 November 2026
+
+- [x] Move Chart.js/helpers out of the shared authenticated entry and request them only from the 19 existing chart views.
+- [x] Bound the six visible learner course/progress cards to a fixed six-query graph and reuse it for upcoming lesson tasks.
+- [x] Remove GET-time gamification initialization and collapse consecutive-day streak reads to one bounded query.
+- [x] Isolate secondary learner-dashboard failures with reported exceptions, typed fallback data, visible preservation copy and retry.
+- [x] Add regression coverage for query count, route asset presence, read-only dashboard behavior, failure isolation and streak query count.
+- [ ] Run the complete discover/enroll/lesson/assessment/notes/bookmarks/certificate journey under throttled/offline/reconnect browser conditions.
+- [ ] Profile and reduce the enrolled course workspace's full assessment/question graph with representative isolated data.
+- [ ] Evaluate route-specific MathJax and third-party analytics loading using measured pages; do not remove required learning content or consent controls speculatively.
+- [ ] Complete field Core Web Vitals, physical Android/iOS PWA lifecycle, all-theme screen-reader/keyboard/contrast and live provider/payment acceptance.
+- [ ] Resolve the supported Laravel/JWT dependency set and obtain a green unsuppressed security gate.
+
+This milestone does not complete the nine-phase brief or change the existing deployment score. Detail and exact limits: [app-experience-milestone-2.md](app-experience-milestone-2.md).
+
+## Premium app completion — 3 November 2026
+
+- [x] Upgrade to Laravel 12.70.2 with compatible Socialite/JWT releases and clear Composer/npm audits without suppressions.
+- [x] Apply theme/sidebar state before first paint, cloak conditional editor/sidebar content and enforce CLS <= 0.1 across the authenticated browser matrix.
+- [x] Scope MathJax to CBT and authenticated marketing analytics to explicit saved consent.
+- [x] Bound dense assessment summaries independently of assessment/question count and retain authored/passing semantics.
+- [x] Add owned independent lesson notes/bookmarks and prove assessment resume, lesson progression and certificate visibility in a complete `_test` browser journey.
+- [x] Lock and atomically persist enrollment completion plus replay-safe certificate issuance; keep soft-deleted certificate numbers unique.
+- [x] Add one shared PWA install/update lifecycle while preserving explicit private-pack caching and never implicitly caching authenticated course HTML.
+- [x] Verify five themes, focus/skip-link behavior, labels, duplicate IDs and touch targets at 390px and 1440px; verify the wider responsive/offline/editor matrix from 360px to 1920px.
+- [ ] Complete physical Android/iOS install/update/eviction acceptance, field LCP/INP/CLS monitoring and representative production-load profiling.
+- [ ] Complete host/cron/pcntl, encrypted off-host restore, HTTPS/SMTP/Paystack/OAuth/AI/media-provider staging and current remote CI acceptance.
+
+The application-controlled premium experience work is complete. The open items require deployment infrastructure, real devices, field traffic or provider accounts and therefore remain explicit release gates rather than fabricated local success. Earlier learning-ecosystem/career roadmap items are not implicitly completed. Detail: [app-experience-completion.md](app-experience-completion.md).
+
+## Learner project portfolio and showcase — 4 November 2026
+
+- [x] Retain the existing portfolio domain and add private-by-default visibility plus optional source-code links through an additive migration.
+- [x] Restrict the manager to verified learners and enforce active-account ownership through a registered policy on each Livewire mutation.
+- [x] Support create, update, reorder and deletion with explicit publish/private controls and HTTP(S)-only links.
+- [x] Add the smallest slug-based showcase because no reusable public profile route exists; require Public account visibility and include only explicitly published projects.
+- [x] Keep public output escaped, omit private details, and add no portfolio directory or public download path.
+- [x] Cover CRUD, ordering, cross-owner IDs, URL schemes, escaped output and public/private account boundaries on an explicit `_test` database.
+- [x] Complete isolated authenticated/public browser interaction and responsive inspection at 390/768/1024/1440px; retain keyboard-only and screen-reader acceptance as explicit broader release work.
+
+## Dashboard interface refresh — 4 November 2026
+
+- [x] Refresh the shared sidebar, header and mobile navigation as one consistent professional shell.
+- [x] Preserve role-filtered menu generation, named routes, persistent collapse and all authorization boundaries.
+- [x] Add mobile drawer focus entry, Escape/backdrop dismissal and focus return.
+- [x] Redesign the seven primary role dashboard homepages with a shared hierarchy, role-relevant CTA content and recorded-data charts.
+- [x] Keep low-activity homepages informative with route-backed role work areas and factual suggested workflows.
+- [x] Explain dashboard data sources and add role-specific operating checklists and support resources without fabricated signals.
+- [x] Add semantic colour depth, a truthful live client-status strip and reduced-motion-safe micro-interactions across all seven role homepages.
+- [x] Remove fabricated homepage insights and constrain mentor, instructor, content and affiliate dashboard filters/data projections.
+- [x] Rebuild the dashboard profile as a theme-consistent account centre; reduce competing local navigation, restore the edit-route contract, remove nonfunctional/security-misleading controls and rebind every mutation to the authenticated account.
+- [ ] Continue the shared design through secondary dashboard page families without changing their domain or authorization boundaries.
+- [ ] Complete broader theme, screen-reader and authenticated workflow acceptance as each page family is redesigned.
+
+## Enterprise hardening slice — 17 November 2026
+
+- [x] Centralize the publishing role matrix, route guards, persistent Livewire guards, protected blog upload and field-level Blog SEO/settings separation.
+- [x] Extract `PageAnalyticsProjection` and `MockInterviewCompletionService`; remove random CMS/interview results and add honest unavailable states.
+- [x] Consolidate Laravel 12 scheduler declarations and make automated withdrawal processing opt-in.
+- [x] Upgrade Laravel/Symfony through patched compatible lines without suppressing Composer advisories.
+- [ ] Continue extracting page authoring/media/template commands and newsletter campaign/subscriber commands from the remaining large Livewire classes. Each extraction must retain the access ability at its service boundary and add a role/ownership test.
+- [ ] Split the largest Blade workspaces into existing `ui.*` primitives by interaction boundary without changing public route contracts.

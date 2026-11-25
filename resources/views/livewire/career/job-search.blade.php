@@ -4,9 +4,8 @@
         <div class="w-full py-8">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
                 <div>
-                    <h1 class=" font-bold text-themed-primary mb-2 bk-page-title">Find Your Dream Job</h1>
-                    <p class="text-xl text-themed-secondary">Discover opportunities that match your skills and
-                        aspirations</p>
+                    <h1 class=" font-bold text-themed-primary mb-2 bk-page-title">External vacancies</h1>
+                    <p class="text-xl text-themed-secondary">Browse provider listings. Opening a link does not confirm an application or eligibility.</p>
                 </div>
                 <div class="mt-4 lg:mt-0">
                     <div class="flex items-center space-x-4 text-sm text-themed-secondary">
@@ -25,6 +24,9 @@
                 </div>
             </div>
 
+            <p class="mb-4 text-sm text-content-secondary">Listings are supplied by Adzuna and may contain abbreviated descriptions. Work arrangements, qualifications and deadlines may not be supplied. Check the original advert.</p>
+            <a href="{{ route('user.job') }}" class="bk-button bk-button-secondary mb-4">BootKode job portal</a>
+            <x-input-error :messages="$errors->all()" />
             <!-- Main Search Bar -->
             <div class="bg-themed-tertiary rounded-lg p-6 mb-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
@@ -221,13 +223,6 @@
                         <div wire:key="{{ $job['id'] }}"
                             class="bg-themed-secondary rounded-lg shadow-sm  transition-all duration-300 p-6 border border-themed-primary hover:border-brand relative group">
                             <!-- Job Match Score -->
-                            @if($job['match_score'] >= 70)
-                                <div class="absolute top-4 right-4">
-                                    <span class="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">
-                                        {{ $job['match_score'] }}% Match
-                                    </span>
-                                </div>
-                            @endif
 
                             <!-- Save/Unsave Button -->
                             <button wire:click="saveJob({{ $job['id'] }})"
@@ -255,6 +250,7 @@
                                                 d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z" />
                                         </svg>
                                         <span class="font-medium">{{ $job['company']['display_name'] ?? 'Company Name' }}</span>
+                                        <a href="https://www.adzuna.co.uk" class="inline-flex min-h-[23px] min-w-[116px] items-center text-base underline" target="_blank" rel="noopener noreferrer">Adzuna</a>
                                     </div>
 
                                     <div class="flex items-center">
@@ -301,17 +297,8 @@
                                         View Details
                                     </button>
 
-                                    @if($job['is_applied'])
-                                        <button
-                                            class="px-4 py-2 bg-green-100 text-green-700 rounded-lg text-sm font-medium cursor-not-allowed">
-                                            Applied
-                                        </button>
-                                    @else
-                                        <a href="{{ $job['redirect_url'] }}" target="_blank" wire:click="applyToJob({{ $job['id'] }})"
-                                            class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all text-sm font-medium">
-                                            Apply
-                                        </a>
-                                    @endif
+                                    <a href="{{ $job['redirect_url'] }}" target="_blank" rel="noopener noreferrer" wire:click="openExternalJob({{ $job['id'] }})"
+                                            class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all text-sm font-medium">Open on Adzuna</a>
                                 </div>
                             </div>
                         </div>
@@ -334,6 +321,7 @@
 
                                             <div class="flex flex-wrap items-center gap-4 text-sm text-themed-secondary">
                                                 <span class="font-medium">{{ $job['company']['display_name'] ?? 'Company' }}</span>
+                                                <a href="https://www.adzuna.co.uk" class="inline-flex min-h-[23px] min-w-[116px] items-center text-base underline" target="_blank" rel="noopener noreferrer">Adzuna</a>
                                                 <span>{{ $job['location']['display_name'] ?? 'Location' }}</span>
                                                 <span class="font-semibold text-green-600">{{ $job['salary_formatted'] }}</span>
                                                 <span class="text-themed-tertiary">{{ $job['posted_time'] }}</span>
@@ -341,12 +329,6 @@
                                         </div>
 
                                         <div class="flex items-center space-x-2 ml-4">
-                                            @if($job['match_score'] >= 70)
-                                                <span
-                                                    class="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded-full whitespace-nowrap">
-                                                    {{ $job['match_score'] }}% Match
-                                                </span>
-                                            @endif
 
                                             <button wire:click="saveJob({{ $job['id'] }})"
                                                 class="p-2 rounded-full {{ $job['is_saved'] ? 'text-red-500 bg-red-50' : 'text-themed-secondary hover:text-red-500 hover:bg-red-50' }} transition-all">
@@ -372,16 +354,8 @@
                                         View Details
                                     </button>
 
-                                    @if($job['is_applied'])
-                                        <button class="px-6 py-2 bg-green-100 text-green-700 rounded-lg font-medium cursor-not-allowed">
-                                            Applied
-                                        </button>
-                                    @else
-                                        <a href="{{ $job['redirect_url'] }}" target="_blank" wire:click="applyToJob({{ $job['id'] }})"
-                                            class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all font-medium">
-                                            Apply Now
-                                        </a>
-                                    @endif
+                                    <a href="{{ $job['redirect_url'] }}" target="_blank" rel="noopener noreferrer" wire:click="openExternalJob({{ $job['id'] }})"
+                                            class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all font-medium">Open on Adzuna</a>
                                 </div>
                             </div>
                         </div>
@@ -453,17 +427,11 @@
                                 <div class="flex flex-wrap items-center gap-4 text-themed-secondary mb-4">
                                     <span
                                         class="font-medium">{{ $selected_job['company']['display_name'] ?? 'Company' }}</span>
+                                    <a href="https://www.adzuna.co.uk" class="inline-flex min-h-[23px] min-w-[116px] items-center text-base underline" target="_blank" rel="noopener noreferrer">Adzuna</a>
                                     <span>{{ $selected_job['location']['display_name'] ?? 'Location' }}</span>
                                     <span
                                         class="font-semibold text-green-600">{{ $selected_job['salary_formatted'] }}</span>
                                 </div>
-
-                                @if($selected_job['match_score'] >= 70)
-                                    <div
-                                        class="inline-block bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full mb-4">
-                                        {{ $selected_job['match_score'] }}% Match - Great fit for you!
-                                    </div>
-                                @endif
                             </div>
 
                             @if(isset($selected_job['description']))
@@ -492,18 +460,9 @@
                                         {{ $selected_job['is_saved'] ? 'Remove from Saved' : 'Save Job' }}
                                     </button>
 
-                                    @if($selected_job['is_applied'])
-                                        <button
-                                            class="w-full px-4 py-3 bg-green-100 text-green-700 border border-green-200 rounded-lg cursor-not-allowed">
-                                            Saved Already Applied
-                                        </button>
-                                    @else
-                                        <a href="{{ $selected_job['redirect_url'] }}" target="_blank"
-                                            wire:click="applyToJob({{ $selected_job['id'] }})"
-                                            class="w-full block text-center px-4 py-3 bg-action text-action-foreground rounded-lg hover:bg-action/90 transition-all font-medium">
-                                            Apply Now
-                                        </a>
-                                    @endif
+                                    <a href="{{ $selected_job['redirect_url'] }}" target="_blank" rel="noopener noreferrer"
+                                            wire:click="openExternalJob({{ $selected_job['id'] }})"
+                                            class="w-full block text-center px-4 py-3 bg-action text-action-foreground rounded-lg hover:bg-action/90 transition-all font-medium">Open on Adzuna</a>
                                 </div>
 
                                 <div class="border-t border-themed-primary pt-4">

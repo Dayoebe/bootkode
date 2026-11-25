@@ -20,6 +20,7 @@ class Portfolio extends Model
         'category',
         'status',
         'project_url',
+        'source_code_url',
         'client_name',
         'technologies',
         'start_date',
@@ -32,6 +33,7 @@ class Portfolio extends Model
         'tags',
         'is_featured',
         'is_public',
+        'visibility',
         'sort_order',
     ];
 
@@ -78,13 +80,13 @@ class Portfolio extends Model
         return Attribute::make(
             get: function () {
                 if (!$this->image_path) {
-                    return 'https://via.placeholder.com/800x600/f3f4f6/9ca3af?text=No+Image';
+                    return null;
                 }
                 
                 // Check if the file actually exists
                 $fullPath = storage_path('app/public/' . $this->image_path);
                 if (!file_exists($fullPath)) {
-                    return 'https://via.placeholder.com/800x600/f3f4f6/9ca3af?text=Image+Not+Found';
+                    return null;
                 }
                 
                 return Storage::url($this->image_path);
@@ -97,7 +99,7 @@ class Portfolio extends Model
         return Attribute::make(
             get: function () {
                 if (!$this->image_path) {
-                    return 'https://via.placeholder.com/300x300/f3f4f6/9ca3af?text=No+Image';
+                    return null;
                 }
                 
                 // Check if thumbnail exists, otherwise use main image
@@ -205,6 +207,11 @@ class Portfolio extends Model
         return $query->where('is_public', true);
     }
 
+    public function scopePubliclyVisible($query)
+    {
+        return $query->where('visibility', 'public');
+    }
+
     public function scopeCompleted($query)
     {
         return $query->where('status', 'completed');
@@ -251,7 +258,30 @@ class Portfolio extends Model
 
     public function getShareableUrl()
     {
-        return route('portfolio', $this->slug);
+        return $this->visibility === 'public'
+            ? route('portfolio.public', $this->slug)
+            : null;
+    }
+
+    public function safeDemoUrl(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->safeHttpUrl($this->project_url));
+    }
+
+    public function safeSourceCodeUrl(): Attribute
+    {
+        return Attribute::make(get: fn () => $this->safeHttpUrl($this->source_code_url));
+    }
+
+    private function safeHttpUrl(?string $url): ?string
+    {
+        if (! $url || filter_var($url, FILTER_VALIDATE_URL) === false) {
+            return null;
+        }
+
+        return in_array(strtolower((string) parse_url($url, PHP_URL_SCHEME)), ['http', 'https'], true)
+            ? $url
+            : null;
     }
 
     public function incrementViews()
@@ -259,9 +289,4 @@ class Portfolio extends Model
         $this->increment('views_count');
     }
 
-    public function toggleLike()
-    {
-        // This would typically check if user has already liked
-        $this->increment('likes_count');
-    }
 }

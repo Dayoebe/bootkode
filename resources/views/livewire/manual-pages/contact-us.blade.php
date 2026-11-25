@@ -63,7 +63,7 @@
                         <span class="bk-eyebrow">Message</span>
                         <h2 class="bk-display mt-3 text-3xl font-black text-slate-950">Send your request</h2>
                     </div>
-                    <p class="text-sm font-semibold text-slate-500">Usually reviewed within 24 hours.</p>
+                    <p class="text-sm font-semibold text-slate-500">Replies depend on the request and available support capacity.</p>
                 </div>
 
                 @if (session('success'))

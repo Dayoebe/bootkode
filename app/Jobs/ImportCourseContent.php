@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\Learning\CourseContentRun;
 use App\Services\CourseImport\CourseImportService;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -12,11 +13,13 @@ use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
 use Throwable;
 
-class ImportCourseContent implements ShouldQueue
+class ImportCourseContent implements ShouldBeUnique, ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public int $tries = 2;
+
+    public int $uniqueFor = 3600;
 
     public int $timeout = 600;
 
@@ -27,9 +30,14 @@ class ImportCourseContent implements ShouldQueue
         $this->onConnection('course-content')->onQueue('course-content');
     }
 
+    public function uniqueId(): string
+    {
+        return 'course-import-'.$this->runId;
+    }
+
     public function middleware(): array
     {
-        return [(new WithoutOverlapping('course-import-run-'.$this->runId))->expireAfter(900)];
+        return [(new WithoutOverlapping('course-import-run-'.$this->runId))->releaseAfter(30)->expireAfter(900)];
     }
 
     public function backoff(): array

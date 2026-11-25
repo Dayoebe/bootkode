@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Blog;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
 use App\Models\Content\BlogPost;
 use App\Models\Content\BlogCategory;
 use Livewire\Component;
@@ -9,10 +10,16 @@ use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Traits\HasCloudinaryUpload;
+use App\Services\Authorization\PublishingAccess;
 
 class AdminBlogPostForm extends Component
 {
-    use WithFileUploads, HasCloudinaryUpload;
+    use AuthorizesPublishingAdministration, WithFileUploads, HasCloudinaryUpload;
+
+    protected function publishingAbility(): string
+    {
+        return PublishingAccess::BLOG_POSTS;
+    }
 
     public $post;
     public $isEdit = false;

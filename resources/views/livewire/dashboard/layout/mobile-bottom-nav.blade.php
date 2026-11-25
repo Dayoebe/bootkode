@@ -9,7 +9,7 @@
             <i class="{{ $item['icon'] }}" aria-hidden="true"></i><span>{{ $item['label'] }}</span>
         </a>
     @endforeach
-    <button type="button" @click="toggleSidebar()" :aria-expanded="sidebarOpen.toString()" aria-controls="dashboard-navigation">
+    <button type="button" @click="toggleSidebar($event)" :aria-expanded="sidebarOpen.toString()" aria-controls="dashboard-navigation">
         <i class="fas fa-bars" aria-hidden="true"></i><span>Menu</span>
     </button>
 </nav>

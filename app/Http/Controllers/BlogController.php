@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Content\BlogPost;
 use App\Models\Content\BlogComment;
 use App\Models\Content\BlogReaction;
+use App\Services\Authorization\PublishingAccess;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -78,8 +79,10 @@ class BlogController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function uploadImage(Request $request)
+    public function uploadImage(Request $request, PublishingAccess $access)
     {
+        $access->authorize($request->user(), PublishingAccess::BLOG_POSTS);
+
         $request->validate([
             'image' => 'required|image|max:2048' // 2MB max
         ]);
@@ -95,9 +98,11 @@ class BlogController extends Controller
                 'path' => $path
             ]);
         } catch (\Exception $e) {
+            report($e);
+
             return response()->json([
                 'success' => false,
-                'message' => 'Upload failed: ' . $e->getMessage()
+                'message' => 'The image could not be uploaded. Please try again.'
             ], 500);
         }
     }

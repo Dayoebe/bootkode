@@ -8,7 +8,6 @@ use App\Models\Learning\CourseEnrollment;
 use App\Models\Learning\DownloadableContent;
 use App\Models\Learning\Lesson;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -29,7 +28,6 @@ class OfflineLearningPackService
             asset('manifest.webmanifest'),
             asset('icons/icon-192.png'),
             asset('icons/icon-512.png'),
-            route('course.view', $course->slug),
         ]);
         $sections = [];
         $estimatedBytes = 0;
@@ -41,7 +39,6 @@ class OfflineLearningPackService
                 $resources = $this->lessonResources($lesson, $types);
                 $lessonAssets = collect($resources)->pluck('url')->filter();
                 $assetUrls = $assetUrls->merge($lessonAssets);
-                $assetUrls->push(route('course.view', ['course' => $course->slug, 'lesson' => $lesson->id]));
 
                 $estimatedBytes += strlen(strip_tags((string) ($lesson->content ?? $lesson->text_content ?? '')));
                 $estimatedBytes += collect($resources)->sum('size_bytes');
@@ -51,7 +48,7 @@ class OfflineLearningPackService
                     'title' => $lesson->title,
                     'slug' => $lesson->slug,
                     'description' => $lesson->description,
-                    'content' => in_array('lessons', $types, true) ? (string) ($lesson->content ?: $lesson->text_content) : '',
+                    'content' => in_array('lessons', $types, true) ? \Mews\Purifier\Facades\Purifier::clean((string) ($lesson->content ?: $lesson->text_content)) : '',
                     'duration_minutes' => $lesson->duration_minutes,
                     'difficulty_level' => $lesson->difficulty_level,
                     'resources' => $resources,
@@ -76,6 +73,7 @@ class OfflineLearningPackService
         $manifest = [
             'id' => 'course-' . $course->id . '-' . now()->timestamp,
             'generated_at' => now()->toIso8601String(),
+            'user_id' => $user->id,
             'csrf_token' => csrf_token(),
             'storage_limit_mb' => $storageLimitMb,
             'estimated_size_mb' => round($estimatedBytes / 1024 / 1024, 2),
@@ -133,8 +131,13 @@ class OfflineLearningPackService
         $lessonIds = $course->sections->flatMap->lessons->pluck('id')->map(fn ($id) => (int) $id)->all();
         $synced = 0;
         $ignored = 0;
+        $accepted = [];
+        $blocked = [];
 
-        DB::transaction(function () use ($user, $course, $events, $lessonIds, &$synced, &$ignored) {
+        DB::transaction(function () use ($user, $course, $events, $lessonIds, &$synced, &$ignored, &$accepted, &$blocked) {
+            $user = User::whereKey($user->id)->lockForUpdate()->firstOrFail();
+            abort_unless($user->is_active && $user->hasVerifiedEmail(), 403);
+            $this->ensureUserCanAccessCourse($user, $course);
             foreach ($events as $event) {
                 $lessonId = (int) ($event['lesson_id'] ?? 0);
 
@@ -144,23 +147,37 @@ class OfflineLearningPackService
                 }
 
                 if (($event['type'] ?? 'lesson_completed') === 'lesson_completed') {
-                    $completedAt = filled($event['completed_at'] ?? null)
-                        ? Carbon::parse($event['completed_at'])
-                        : now();
+                    $lesson = Lesson::findOrFail($lessonId);
+                    try {
+                        app(CbtAttemptService::class)->authorizeLesson($user, $lesson);
+                    } catch (\Symfony\Component\HttpKernel\Exception\HttpException) {
+                        $blocked[] = $lessonId;
+                        continue;
+                    }
+                    if (! $lesson->assessments()->get()->every(fn ($assessment) => $assessment->isPassedByStudent($user->id))) {
+                        $blocked[] = $lessonId;
+                        continue;
+                    }
 
-                    $user->completedLessons()->syncWithoutDetaching([
-                        $lessonId => ['completed_at' => $completedAt],
-                    ]);
+                    $existing = $user->completedLessons()->where('lessons.id', $lessonId)->first();
+                    if (! $existing?->pivot?->completed_at) {
+                        $user->completedLessons()->syncWithoutDetaching([$lessonId => ['completed_at' => now()]]);
+                    }
 
+                    $progress = \App\Models\Learning\LessonProgress::firstOrNew(['user_id' => $user->id, 'lesson_id' => $lessonId]);
                     \App\Models\Learning\LessonProgress::updateOrCreate(
                         ['user_id' => $user->id, 'lesson_id' => $lessonId],
                         [
-                            'time_spent_seconds' => max(0, (int) ($event['time_spent_seconds'] ?? 0)),
+                            'time_spent_seconds' => max((int) $progress->time_spent_seconds, min(864000, max(0, (int) ($event['time_spent_seconds'] ?? 0)))),
                             'last_accessed_at' => now(),
                         ]
                     );
+                    app(GamificationService::class)->handleLessonCompletion($user, $lesson);
 
                     $synced++;
+                    if (isset($event['event_id'])) {
+                        $accepted[] = $event['event_id'];
+                    }
                 }
             }
 
@@ -178,6 +195,8 @@ class OfflineLearningPackService
         return [
             'synced' => $synced,
             'ignored' => $ignored,
+            'accepted_event_ids' => $accepted,
+            'blocked_lesson_ids' => array_values(array_unique($blocked)),
             'progress_percentage' => $this->courseProgressPercentage($user, $course),
         ];
     }
@@ -186,22 +205,26 @@ class OfflineLearningPackService
     {
         $progress = $this->courseProgressPercentage($user, $course);
 
-        CourseEnrollment::where('course_id', $course->id)
+        $enrollments = CourseEnrollment::where('course_id', $course->id)
             ->where('user_id', $user->id)
-            ->update([
+            ->get();
+        foreach ($enrollments as $enrollment) {
+            $enrollment->update([
                 'progress_percentage' => $progress,
-                'is_completed' => $progress >= 100,
-                'completed_at' => $progress >= 100 ? now() : null,
+                'is_completed' => $enrollment->is_completed || $progress >= 100,
+                'completed_at' => $enrollment->completed_at ?? ($progress >= 100 ? now() : null),
                 'updated_at' => now(),
             ]);
+        }
 
         if (Schema::hasTable('course_user')) {
+            $original = DB::table('course_user')->where('course_id', $course->id)->where('user_id', $user->id)->first();
             DB::table('course_user')
                 ->where('course_id', $course->id)
                 ->where('user_id', $user->id)
                 ->update([
                     'progress' => $progress,
-                    'completed_at' => $progress >= 100 ? now() : null,
+                    'completed_at' => $original?->completed_at ?? ($progress >= 100 ? now() : null),
                     'last_accessed_at' => now(),
                     'updated_at' => now(),
                 ]);

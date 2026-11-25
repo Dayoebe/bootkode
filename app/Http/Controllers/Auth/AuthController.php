@@ -108,7 +108,7 @@ class AuthController extends Controller
         Auth::guard('web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/');
+        return redirect('/')->with('bootkode_signed_out', true)->header('Clear-Site-Data', '"cache", "storage"');
     }
 
     // Registration
@@ -206,8 +206,8 @@ class AuthController extends Controller
     
         Auth::login($user);
     
-        // Redirect to their dashboard with email verification warning
-        return redirect()->route($user->getDashboardRouteName())->with([
+        // Learning setup is separate from registration and remains behind email verification.
+        return redirect()->route('learning.profile')->with([
             'email_not_verified' => true,
             'verification_email' => $user->email,
             'message' => 'Welcome! Please verify your email address to unlock all features.'

@@ -91,13 +91,12 @@ class MarketplaceSearchService
 
     public function getPopularSearches(int $limit = 10): array
     {
-        // This would typically come from a search analytics table
-        // For now, return some common searches
-        return [
-            'Laravel', 'React', 'Python', 'JavaScript', 'Vue.js',
-            'Node.js', 'PHP', 'Web Development', 'Mobile App',
-            'UI/UX Design', 'Database Design', 'API Development'
-        ];
+        return MarketplaceItem::published()
+            ->orderByDesc('views_count')
+            ->orderByDesc('sales_count')
+            ->limit($limit)
+            ->pluck('title')
+            ->all();
     }
 
     public function getSuggestions(string $term, int $limit = 5): array

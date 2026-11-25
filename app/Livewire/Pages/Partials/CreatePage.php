@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Pages\Partials;
 
+use App\Livewire\Concerns\AuthorizesPublishingAdministration;
+use App\Services\Authorization\PublishingAccess;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\Content\Page;
@@ -11,7 +13,12 @@ use Carbon\Carbon;
 
 class CreatePage extends Component
 {
-    use WithFileUploads;
+    use AuthorizesPublishingAdministration, WithFileUploads;
+
+    protected function publishingAbility(): string
+    {
+        return PublishingAccess::PAGE_CONTENT;
+    }
 
     // Form Management
     public $editingPageId = null;
@@ -551,7 +558,7 @@ class CreatePage extends Component
         $this->shortcodes = [
             'company_name' => config('app.name'),
             'current_year' => date('Y'),
-            'contact_email' => 'contact@example.com',
+            'contact_email' => config('mail.from.address') ?: '',
         ];
 
         $this->settings = [

@@ -154,3 +154,67 @@ Five new original SVG covers retain BootKode navy/teal/mint and the existing car
 Teaching content belongs in the main reading flow; source/distribution notices belong in clearly named Course Materials. Practice workbooks are printable PDF plus editable text using existing material links. No dashboard palette, component framework or editor layout is changed. Current responsive acceptance is pending database recovery; see [the course audit](course-content-audit-20261028.md).
 
 Database follow-up: all 6,143 regular files were preserved in a separate physical copy. Recovery modes 1–6 on an isolated copy failed at system-space page 0. Course edits remain prepared and unapplied; see the linked audit for preservation paths and recovery limits.
+
+## Guided learning profile — 2 November 2026
+
+The learning profile reuses `ui.page-header`, `ui.panel`, existing labels/errors/inputs/buttons and semantic navy/teal/theme tokens. Its three stages use a numbered native progress list with `aria-current`, searchable real category checkboxes and labelled optional fields. Errors are associated with their controls; array errors flatten to safe text, and asynchronous work/success uses live status. Headings receive focus after stage changes and save. Native fieldsets group category/format choices; touch-sized choices and wrapped actions support narrow screens. No dependency, palette, animation, dialog system or Alpine runtime is added. Self-reported knowledge and variable course language/format availability are explained honestly. Actual checked widths and remaining accessibility limits belong in verification.md.
+
+## Career Centre and evidence review — 2 November 2026
+
+The new learner and administrator workspaces reuse the shared page header, panels, semantic theme tokens, native labels/inputs/selects, buttons and status regions. Requirements use text labels for mandatory/preferred and supported/evidence-needed states; there is no invented employability percentage. Source excerpts use native disclosure elements. Claim/review/advisor forms use bounded text, associated validation feedback and explicit request/loading states. Existing dashboard focus handling targets the selected opportunity or review panel. The original application dialog retains its existing focus trap/Escape behavior, with a named close button and associated cover-letter/resume/eligibility errors.
+
+The provider view removes fabricated match/popularity badges, adds literal per-advert Adzuna attribution at its published minimum dimensions, retains safe provider links and does not mark a provider visit as an application. No second Alpine runtime, palette, UI framework or application dependency was added. Responsive and interaction evidence, including the exact external-provider stubs and remaining accessibility limits, belongs in verification.md.
+
+## Offline and authoring reliability — 2 November 2026
+
+Existing shared tokens/components/sidebar/bottom navigation remain authoritative. Trix styles load only with authoring views. Course outline fields now shrink inside their panel, section controls stack within the narrow outline, new lesson input/errors have explicit associations, and the active lesson uses semantic action foreground/background. Lesson save feedback is scoped to that editor so the shell's login welcome does not repeat.
+
+The dashboard's network status uses existing feedback styles and distinguishes downloaded reading from actions requiring the server. The standalone offline reader retains its deliberate static-document styling: one primary lesson heading, course chooser, a skip link, visible focus, labelled/touch-sized native lesson disclosure/navigation, safe-area spacing and explicit local/pending/confirmed states. These reuse the established navy/teal/neutral identity; no UI library, second Alpine runtime, ambient animation or replacement palette is introduced. Responsive screenshots and exact browser/keyboard/theme limits are in the app milestone and verification report.
+
+## Partial dashboard failure — 3 November 2026
+
+Secondary dashboard panels use `ui.widget-unavailable` when their loader fails. The component is a normal semantic panel with a secondary heading, polite status semantics, factual preservation copy and a touch-sized retry control. It neither substitutes zero values as successful data nor exposes exception details. The primary learning workspace stays present. This extends the existing panel/button/focus system; it adds no palette, animation, dialog pattern or frontend runtime.
+
+Chart views request the chart entry through Livewire assets. Non-chart routes do not render an empty chart shell or download Chart.js. Existing empty-chart states remain text-labelled, keyboard-neutral content and now construct their label without interpolated HTML.
+
+## Premium shell stability and install prompts — 3 November 2026
+
+Theme and desktop-sidebar state are applied from saved preference in the document head before the dashboard shell paints. Conditional Alpine content that starts hidden uses the shared `[x-cloak]` rule; it must not flash conflict, save-state, submenu or editor panes before hydration. New colors continue to use semantic RGB variables. Ocean and forest accent values are chosen so the tested text/accent pairs remain above 4.5:1 in light, dark, sepia, ocean and forest themes.
+
+The shared PWA prompt is a factual install/update status surface, not a promotional modal. It uses existing panel/button tokens, a polite live region and explicit dismiss/install/update actions. The browser-native install event remains authoritative; unsupported browsers receive no false install claim. Service-worker updates wait for the user's update action rather than forcibly interrupting active learning. See [premium app completion](app-experience-completion.md) for controlled responsive/contrast evidence and the physical-device limit.
+
+## Project portfolio and showcase — 4 November 2026
+
+The learner manager and public showcase reuse `ui.page-header`, `ui.panel`, `ui.empty-state`, `bk-button`, `bk-input` and semantic content/surface/line tokens. No project-specific palette, JavaScript runtime or component library is introduced. Form fields have persistent labels, associated validation messages, explicit private/publish choices, polite status feedback and touch-sized keyboard-operable controls. Project order uses named buttons instead of pointer-only drag interaction. Public cards render descriptions with preserved whitespace as escaped text and label external demo/source actions directly.
+
+## Dashboard shell refresh — 4 November 2026
+
+The authenticated shell uses the active dashboard theme across the entire workspace. Sidebar background, nested surfaces, borders, text, muted copy and accents alias the same semantic variables used by the header and content area; light mode therefore stays light, while dark, sepia, ocean and forest apply consistently without a separate navigation palette. The shared header groups page context, workspace search, notifications, chat, quick actions, theme selection and the account menu. Page views continue to own the single primary heading; the header title is supporting context.
+
+Desktop navigation remains collapsible from 1024px, while smaller screens use the existing five-destination bottom bar and a trapped drawer. Drawer open moves focus to its close control; Escape, the backdrop and the close control dismiss it and return focus to the opener. All shell controls retain the 44px minimum target, visible focus and semantic token system. Menu routes, role filtering and authorization rules are unchanged, and no new palette, dependency, component library or Alpine runtime was introduced.
+
+## Role dashboard homepages — 4 November 2026
+
+All seven authenticated role homepages use the shared `dashboard.home-hero` and `dashboard.hero-stat` primitives for one page-owned heading, role context, a factual priority, primary/secondary actions, three summary signals and a responsive reporting toolbar. The hero inherits the active theme's normal surface, text, border and accent tokens, exactly like the sidebar and content area, without gradients or a role-specific palette. Controls wrap at narrow widths, keep visible focus and remain keyboard/touch operable.
+
+Charts remain role-specific and load through the existing route-level chart entry: learner study activity; instructor enrollment and earnings; mentor sessions; editor content trends; affiliate earnings/referrals; academy growth/completion; and platform user/revenue trends. The shared chart helper replaces all-zero datasets with labelled empty states. Dashboard copy must distinguish recorded values from unavailable signals; it must not infer ratings, traffic, placement, sentiment, goals or performance.
+
+The shared `dashboard.workspace-guide` keeps each homepage useful even when the account has little recorded activity. It presents four to six role-specific work areas backed by existing named routes, plus a short three-step workflow. These cards explain available tools and next actions; they are not metrics, recommendations from inferred performance or evidence that an activity has occurred. The guide uses the same semantic surfaces, borders, text and accent tokens as the rest of the active theme and shifts from one to two to three columns without changing information order.
+
+Each guide also contains an explanatory dashboard briefing, four-item operating checklist and three route-backed resources. Briefing cards name the stored source or explicit unavailable state behind a signal; they must not turn product guidance into a claim that the user completed an action or achieved an outcome. Resource controls retain the shared 44px target and visible focus treatment. On smaller screens briefing, checklist and resource content keeps one reading order; wider screens use two-column groupings without hiding information.
+
+## Dashboard visual depth — 5 November 2026
+
+The seven role homepages share one more expressive visual layer without introducing another palette or component system. The hero uses the active theme's normal surfaces with a solid semantic accent rail, static accent geometry, a high-contrast priority panel and three differently toned recorded-summary cells. Workspace, briefing and metric cards cycle only through the existing primary, secondary, warm and success tokens, so light, dark, sepia, ocean and forest themes remain authoritative.
+
+The live strip reports Lagos time and the browser's local online/offline state; it is not a server-health claim. Its private-account label makes the surface boundary explicit. Motion is limited to hover/focus lift and directional feedback on controls. There is no looping or ambient animation, and the existing reduced-motion rule removes these transitions when requested. Content order, named routes, authorization and factual empty states are unchanged.
+
+## Profile account centre — 9 November 2026
+
+The dashboard profile is a focused account centre rather than a second dashboard navigation system. Its view workspace has four local sections—Overview, Learning, Saved and Account—and its edit workspace has three—Identity, Background and Links & photo. The local controls use tab and tabpanel semantics, keep one visible panel, and retain keyboard focus treatment. The global sidebar remains the only application navigation surface.
+
+The profile hero, factual account snapshot, section navigation, forms, action rows and dialogs use the existing semantic theme variables and shared buttons, inputs and modal primitive. Light, dark, sepia, ocean and forest therefore remain authoritative. Static accent geometry adds depth without keyframe or ambient animation; reduced-motion preferences remove transitions. Labels, associated validation feedback, 44px controls, explicit empty states and escaped output remain required. Account readiness is derived only from saved profile fields, and learning counts come from owned records rather than promotional estimates.
+
+## Honest unavailable analytics and assessments — 17 November 2026
+
+Missing analytics are content states, not zero-valued metrics. Use a labelled semantic panel that names the signals not collected and explains that no estimates are shown. Only persisted counters may appear in metric cards or exports. Unreviewed interview dimensions use “Not assessed” or “Assessment unavailable”; never render a missing score as `0%`. These states use existing surface, line, content, amber and focus tokens, with no new palette, chart shell or ambient motion.

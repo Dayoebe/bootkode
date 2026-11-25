@@ -154,6 +154,9 @@ class JobPortal extends Model
     ];
 
     protected $casts = [
+        'competency_requirements' => 'array',
+        'requirements_review_history' => 'array',
+        'requirements_reviewed_at' => 'datetime',
         'company_social_links' => 'array',
         'skills_required' => 'array',
         'tags' => 'array',
@@ -207,6 +210,8 @@ class JobPortal extends Model
         'is_recently_posted',
         'location_formatted'
     ];
+
+    protected $hidden = ['requirements_review_history', 'requirements_reviewed_by'];
 
     // Boot method
     protected static function boot()

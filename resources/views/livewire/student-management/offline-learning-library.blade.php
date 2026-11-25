@@ -2,17 +2,28 @@
     x-data="{
         packs: [],
         syncStatus: '',
+        onPacksUpdated: null,
+        init() {
+            this.refresh();
+            this.onPacksUpdated = () => this.refresh();
+            window.addEventListener('bootkode-offline-packs-updated', this.onPacksUpdated);
+        },
+        destroy() {
+            window.removeEventListener('bootkode-offline-packs-updated', this.onPacksUpdated);
+        },
         refresh() {
             this.packs = window.bootkodeOffline?.getPacks?.() ?? [];
         },
         async sync() {
             this.syncStatus = 'Syncing queued progress...';
-            const result = await window.bootkodeOffline.syncQueuedProgress();
-            this.syncStatus = result.synced > 0 ? `${result.synced} progress item(s) synced.` : 'No pending offline progress.';
-            this.refresh();
+            try {
+                const result = await window.bootkodeOffline.syncQueuedProgress();
+                this.syncStatus = result.offline ? 'You are offline. Progress is retained on this device.'
+                    : `${result.synced} confirmed; ${result.pending || 0} pending. Required online assessments must pass before completion.`;
+                this.refresh();
+            } catch (error) { this.syncStatus = error.message; }
         }
     }"
-    x-init="refresh(); window.addEventListener('bootkode-offline-packs-updated', () => refresh())"
     class="space-y-6">
     <div class="rounded-lg border border-themed-primary bg-themed-secondary p-6 shadow-sm">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -21,6 +32,7 @@
                 <h1 class="mt-2  font-bold text-themed-primary bk-page-title">Offline Learning Packs</h1>
                 <p class="mt-2 max-w-2xl text-sm leading-6 text-themed-secondary">
                     Download course lessons, PDFs, images, and audio while online, read them in the offline reader, then sync progress when your connection returns.
+                    Signing out removes this device's downloads for privacy; confirmed progress remains in your account.
                 </p>
             </div>
             <button type="button" @click="sync"
@@ -31,7 +43,7 @@
         </div>
 
         <template x-if="syncStatus">
-            <div class="mt-4 rounded-lg border border-themed-secondary bg-themed-tertiary px-4 py-3 text-sm text-themed-secondary" x-text="syncStatus"></div>
+            <div role="status" aria-live="polite" class="mt-4 rounded-lg border border-themed-secondary bg-themed-tertiary px-4 py-3 text-sm text-themed-secondary" x-text="syncStatus"></div>
         </template>
     </div>
 
@@ -39,7 +51,6 @@
         <div class="space-y-4">
             @forelse($packs as $pack)
                 @php
-                    $manifest = $pack->manifest ?? [];
                     $course = $pack->course;
                 @endphp
                 <article class="rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
@@ -55,7 +66,7 @@
                             </div>
                             <h2 class="mt-3 text-lg font-semibold text-themed-primary">{{ $course?->title ?? 'Course pack' }}</h2>
                             <p class="mt-1 text-sm text-themed-secondary">
-                                {{ ($manifest['course']['lesson_count'] ?? $course?->sections?->flatMap->lessons?->count() ?? 0) }} lessons ·
+                                {{ $pack->offline_lesson_count ?? $course?->all_lessons_count ?? 0 }} lessons ·
                                 downloaded {{ $pack->downloaded_at?->diffForHumans() ?? 'recently' }}
                             </p>
                             <div class="mt-3 h-2 overflow-hidden rounded-full bg-themed-tertiary">
@@ -113,4 +124,5 @@
             </div>
         </aside>
     </div>
+    {{ $packs->links() }}
 </div>

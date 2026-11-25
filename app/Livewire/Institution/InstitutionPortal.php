@@ -142,8 +142,7 @@ class InstitutionPortal extends Component
                 })
                 ->count();
 
-            // Revenue calculation (placeholder - integrate with your billing system)
-            $this->stats['total_revenue'] = null; // No verified institutional billing source is connected.
+            $this->stats['total_revenue'] = null;
 
             // Recent enrollments
             $this->stats['recent_enrollments'] = CourseEnrollment::whereIn('user_id',

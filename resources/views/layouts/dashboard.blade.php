@@ -3,6 +3,8 @@
     x-data="{
         theme: localStorage.getItem('theme') || 'light',
         sidebarOpen: false,
+        lastSidebarTrigger: null,
+        online: navigator.onLine,
         sidebarCollapsed: localStorage.getItem('sidebar-collapsed') === 'true',
         themes: ['light', 'dark', 'sepia', 'ocean', 'forest'],
         applyTheme(value) {
@@ -14,23 +16,52 @@
             localStorage.setItem('theme', value);
             this.applyTheme(value);
         },
-        toggleSidebar() {
-            this.sidebarOpen = !this.sidebarOpen;
+        openSidebar(event) {
+            this.lastSidebarTrigger = event?.currentTarget || document.activeElement;
+            this.sidebarOpen = true;
+            this.$nextTick(() => document.getElementById('workspace-sidebar-close')?.focus());
+        },
+        closeSidebar(restoreFocus = true) {
+            const trigger = this.lastSidebarTrigger;
+            this.sidebarOpen = false;
+            if (restoreFocus) {
+                window.setTimeout(() => trigger?.focus(), 200);
+            }
+        },
+        toggleSidebar(event) {
+            this.sidebarOpen ? this.closeSidebar() : this.openSidebar(event);
         },
         toggleSidebarCollapse() {
             this.sidebarCollapsed = !this.sidebarCollapsed;
             localStorage.setItem('sidebar-collapsed', this.sidebarCollapsed.toString());
+            document.documentElement.dataset.sidebarCollapsed = this.sidebarCollapsed.toString();
         }
     }"
-    @keydown.escape.window="sidebarOpen = false"
-    @resize.window="if (window.innerWidth >= 1024) sidebarOpen = false"
-    x-init="applyTheme(theme)"
+    @keydown.escape.window="if (sidebarOpen) closeSidebar()"
+    @online.window="online = true"
+    @offline.window="online = false"
+    @resize.window="if (window.innerWidth >= 1024 && sidebarOpen) closeSidebar(false)"
+    x-init="applyTheme(theme); document.documentElement.dataset.sidebarCollapsed = sidebarCollapsed.toString()"
     x-bind:class="theme"
 >
 <head>
+    <script>
+        (() => {
+            try {
+                const theme = localStorage.getItem('theme') || 'light';
+                const allowedThemes = ['light', 'dark', 'sepia', 'ocean', 'forest'];
+                document.documentElement.classList.add(allowedThemes.includes(theme) ? theme : 'light');
+                document.documentElement.dataset.sidebarCollapsed = (localStorage.getItem('sidebar-collapsed') === 'true').toString();
+            } catch {
+                document.documentElement.classList.add('light');
+                document.documentElement.dataset.sidebarCollapsed = 'false';
+            }
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="bootkode-user-id" content="{{ auth()->id() ?? '' }}">
     <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -45,24 +76,31 @@
         $pageDescription = $description ?? 'Manage learning, courses, mentorship, and platform tools from one focused workspace.';
         $pageIcon = $icon ?? 'fas fa-gauge-high';
         $roleLabel = ucfirst($user?->getRoleNames()->first() ?? 'User');
+        $privacySettings = $user?->privacy_settings ?? [];
+        $marketingAnalyticsEnabled = ($privacySettings['data_collection_consent'] ?? false)
+            && ($privacySettings['analytics_tracking'] ?? false)
+            && ($privacySettings['marketing_analytics'] ?? false)
+            && ($privacySettings['third_party_integrations'] ?? false);
     @endphp
 
     <title>{{ config('app.name', 'BootKode') }} - {{ $pageTitle }}</title>
 
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-10833921436"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'AW-10833921436');
-    </script>
-    <script>
-        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-TJ23X96Z');
-    </script>
+    @if($marketingAnalyticsEnabled)
+        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-10833921436"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'AW-10833921436');
+        </script>
+        <script>
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-TJ23X96Z');
+        </script>
+    @endif
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -76,57 +114,42 @@
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/dashboard.js', 'resources/js/notifications.js'])
     @livewireStyles
     @stack('styles')
-
-
-    <script>
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                displayMath: [['$$', '$$'], ['\\[', '\\]']]
-            },
-            svg: { fontCache: 'global' },
-            startup: {
-                pageReady: function() {
-                    return MathJax.startup.defaultPageReady().then(function() {
-                        document.dispatchEvent(new Event('mathjax-loaded'));
-                    });
-                }
-            }
-        };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
 </head>
 
 <body class="bk-dashboard-app min-h-screen antialiased bg-themed-primary text-themed-primary transition-colors duration-200">
     <a class="bk-skip-link" href="#main-content">Skip to content</a>
 
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TJ23X96Z"
-        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    @if($marketingAnalyticsEnabled)
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TJ23X96Z"
+            height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    @endif
 
     @if(auth()->check() && !auth()->user()->hasVerifiedEmail())
         <livewire:component.email-verification-alert />
     @endif
 
     <div class="min-h-screen bg-themed-primary">
-        <div id="dashboard-navigation" x-trap.inert.noscroll="sidebarOpen">
+        <div id="dashboard-navigation" x-trap.inert.noscroll.noreturn="sidebarOpen">
             @livewire('dashboard-sidebar')
         </div>
 
         <div
             x-show="sidebarOpen"
             x-transition.opacity
-            @click="sidebarOpen = false"
+            @click="closeSidebar()"
             class="fixed inset-0 z-40 bg-slate-950/50 lg:hidden"
             style="display: none;"
         ></div>
 
         <div
-            class="flex min-h-screen min-w-0 flex-col transition-[padding] duration-300"
-            :class="sidebarCollapsed ? 'lg:pl-20' : 'lg:pl-64'"
+            class="bk-dashboard-shell flex min-h-screen min-w-0 flex-col"
         >
             <x-navbar :title="$pageTitle" :description="$pageDescription" :icon="$pageIcon" />
 
             <main id="main-content" tabindex="-1" class="bk-workspace flex-1 px-4 pt-6 sm:px-6 lg:px-8 lg:pt-8">
+                <div x-cloak x-show="!online" role="status" aria-live="polite" class="bk-feedback mb-4">
+                    <p>You are offline. Server actions need a connection. <a href="{{ asset('offline-learning.html') }}" class="underline focus-visible:outline">Open downloaded lessons</a> to continue reading and save progress on this device.</p>
+                </div>
                 <x-ui.flash />
 
                 <div class="bk-page w-full min-w-0">
@@ -139,122 +162,7 @@
     </div>
 
     @livewireScripts
-    <script>
-        window.bootkodeDashboardCharts = {
-            hasData(rows, keys) {
-                if (!Array.isArray(rows) || rows.length === 0) {
-                    return false;
-                }
-
-                return rows.some((row) => keys.some((key) => {
-                    const value = Number(row?.[key] ?? 0);
-
-                    return Number.isFinite(value) && value !== 0;
-                }));
-            },
-
-            hasDatasetData(chartData) {
-                const datasets = chartData?.datasets ?? [];
-
-                return Array.isArray(datasets) && datasets.some((dataset) => {
-                    const values = Array.isArray(dataset?.data) ? dataset.data : Object.values(dataset?.data ?? {});
-
-                    return values.some((value) => {
-                        const numericValue = Number(value ?? 0);
-
-                        return Number.isFinite(numericValue) && numericValue !== 0;
-                    });
-                });
-            },
-
-            showEmpty(canvasOrId, message = 'No chart data yet') {
-                const canvas = typeof canvasOrId === 'string' ? document.getElementById(canvasOrId) : canvasOrId;
-
-                if (!canvas) {
-                    return;
-                }
-
-                canvas.style.display = 'none';
-
-                const parent = canvas.parentElement;
-                if (!parent) {
-                    return;
-                }
-
-                parent.classList.add('relative');
-
-                let emptyState = parent.querySelector(`[data-chart-empty-for="${canvas.id}"]`);
-                if (!emptyState) {
-                    emptyState = document.createElement('div');
-                    emptyState.dataset.chartEmptyFor = canvas.id;
-                    emptyState.className = 'flex h-full min-h-[160px] flex-col items-center justify-center rounded-lg border border-dashed border-themed-primary bg-themed-tertiary px-4 py-6 text-center text-sm text-themed-secondary';
-                    parent.appendChild(emptyState);
-                }
-
-                emptyState.innerHTML = `
-                    <i class="fas fa-chart-line mb-3 text-2xl text-themed-tertiary"></i>
-                    <span>${message}</span>
-                `;
-            },
-
-            shouldRender(canvasId, rows, keys) {
-                const canvas = document.getElementById(canvasId);
-
-                if (!canvas) {
-                    return false;
-                }
-
-                if (!window.Chart) {
-                    this.showEmpty(canvas, 'Chart library could not load');
-
-                    return false;
-                }
-
-                if (!this.hasData(rows, keys)) {
-                    this.showEmpty(canvas);
-
-                    return false;
-                }
-
-                canvas.style.display = '';
-                canvas.parentElement?.querySelector(`[data-chart-empty-for="${canvas.id}"]`)?.remove();
-
-                return true;
-            },
-
-            shouldRenderDataset(canvasId, chartData) {
-                const canvas = document.getElementById(canvasId);
-
-                if (!canvas) {
-                    return false;
-                }
-
-                if (!window.Chart) {
-                    this.showEmpty(canvas, 'Chart library could not load');
-
-                    return false;
-                }
-
-                if (!this.hasDatasetData(chartData)) {
-                    this.showEmpty(canvas);
-
-                    return false;
-                }
-
-                canvas.style.display = '';
-                canvas.parentElement?.querySelector(`[data-chart-empty-for="${canvas.id}"]`)?.remove();
-
-                return true;
-            }
-        };
-    </script>
+    <x-pwa-install-prompt />
     @stack('scripts')
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js').catch(() => {});
-            });
-        }
-    </script>
 </body>
 </html>

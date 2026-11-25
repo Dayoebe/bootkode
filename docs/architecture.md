@@ -1,10 +1,10 @@
 # BootKode architecture
 
-BootKode is a Laravel 11 / Livewire 3 modular monolith. Blade and Alpine support server-rendered journeys; no new frontend framework is required.
+BootKode is a Laravel 12 / Livewire 3 modular monolith. Blade and Alpine support server-rendered journeys; no new frontend framework is required.
 
 ## Responsibilities
 
-- `routes/web.php` and `routes/auth.php`: stable named URL contracts, authentication, verification and role middleware. Laravel 11 middleware registration belongs in `bootstrap/app.php`; the old `app/Http/Kernel.php` is not the active registration mechanism.
+- `routes/web.php` and `routes/auth.php`: stable named URL contracts, authentication, verification and role middleware. Laravel 12 middleware registration belongs in `bootstrap/app.php`; the old `app/Http/Kernel.php` is not the active registration mechanism.
 - `app/Livewire/<domain>`: interactive form state, validation, authorization, pagination and orchestration. Check sensitive authorization on every request, including Livewire hydration.
 - `app/Http/Controllers`: HTTP-only callbacks, auth, downloads and public verification. Gateway callbacks delegate verified financial mutations to services.
 - `app/Services`: multi-record operations and reusable business rules. Transactions must not escape through early returns; financial operations lock current records before checking balances or statuses.
@@ -223,3 +223,75 @@ Original course assets use public course-materials/soft-skills-20261027/{course-
 Lesson documents may mark `required_attribution: true`. `OfflineLearningPackService` retains these documents in explicitly requested packs even when optional documents are deselected. Existing enrollment authorization, resource types and explicit-download boundaries remain unchanged. The guarded editorial payload and private record snapshots are described in [the course audit](course-content-audit-20261028.md); working application remains pending database recovery.
 
 Database follow-up: all 6,143 regular files were preserved in a separate physical copy. Recovery modes 1–6 on an isolated copy failed at system-space page 0. Course edits remain prepared and unapplied; see the linked audit for preservation paths and recovery limits.
+
+## Structured learner onboarding — 2 November 2026
+
+`LearningProfile` is a domain Livewire component inside the existing dashboard shell. `LearnerProfileService` resolves the authenticated active verified account and current Spatie roles on every request/mutation, owns bounded validation/normalization and locks the existing user row before creating or updating its uniquely owned `AiLearningProfile`. The page has no public user/profile ID. Current step and save-confirmation state are locked; final submission revalidates hidden steps. Route role middleware remains persistent through the existing Livewire middleware registration.
+
+An additive migration adds `interests`, `existing_knowledge`, `starting_level`, `learning_preferences`, `onboarding_completed_at` and `onboarding_skipped_at` to the existing profile table. There is no duplicate profile or competency table and no historical backfill. Form writes explicitly select these fields and the existing goal; caller-supplied identity, timestamps, scores and evidence are ignored. Historical signals, diagnoses, feedback, recommendations and paths are retained; `diagnosed_at` is invalidated so existing recalculation can run later. Self-reported information is not proof of competence and is not newly sent to Groq.
+
+Registration retains account/referral/verification handling and redirects to the new verified setup route. The central dashboard redirect guides verified students without completed/skipped setup to that page. Direct student dashboard access remains available, with an owned profile/goal panel and update link. Setup is optional and can be resumed. No assessment, wallet, catalog publication, enrollment, offline-cache or certificate boundary changes.
+
+## Career & Opportunity Intelligence — 2 November 2026
+
+The extension keeps `JobPortal`, `JobApplication`, private resume downloads, resume/portfolio builders, interview practice and mentorship routes. `CareerCentre` joins these existing workflows; `CareerReview` is restricted to active verified platform administrators through route middleware and fresh component/service guards. It does not expose candidate profiles to employers.
+
+`JobRequirementService` validates a bounded mandatory/preferred contract with literal source excerpts and a source hash. Only an explicit human review publishes it. Source edits invalidate the contract until re-review. `CareerAiService` uses the existing `AiManager` / configured provider for draft extraction and consented one-question career guidance, with a shared daily career budget reserved under a user lock, usage records and safe errors. It does not publish requirements, verify competencies, submit applications or send private proof references/assessment answers/CV files to AI. External-provider material is excluded from AI extraction pending independently verified processing rights.
+
+`competency_evidence` is a private assertion/review ledger rather than another assessment or certificate table. Claims remain pending until an authorized non-owner reviewer records a reasoned decision. Source-linked assertions recheck owned finalized passing assessment snapshots, named approved certificates or completed owned portfolio records; an external source requires deliberate manual authenticity/relevance checks. Skills, qualifications, certifications, relevant experience and portfolio requirements stay distinct. Assessment corrections, certificate revocation, evidence expiry and reassessment affect subsequent eligibility without rewriting existing applications or credentials.
+
+`JobEligibilityService` computes explanations from current reviewed requirements and usable owned evidence. Preferred gaps never block application. Unknown legacy contracts remain explicitly unassessed and retain their existing application flow. Reviewed mandatory gaps and stale requirement reviews block new internal submissions through `JobApplicationService`, inside its existing transaction; the learner row serializes application decisions with evidence review/reassessment. Existing application records/replays and private file/counter rollback behavior are retained. External links keep their original destination and never manufacture a submitted application.
+
+`AdzunaSearchService` fixes provider authority, bounds filters/timeouts/request frequency, caches provider-only projections, validates/deduplicates destinations and logs only safe failure metadata. The existing `JobSearch` no longer invents match scores/popularity, shares saved-state cache flags across accounts or labels provider visits as applications. Catalogue learning options use `Course::publiclyAvailable()` and whole-skill matching without an unrelated fallback. No course enrollment, persistent roadmap or demand-generation workflow is implied by those links.
+
+## Production and app reliability milestone — 2 November 2026
+
+The installed framework is Laravel 12.70.2 with the compatible Socialite/JWT set; locked Composer and npm audits are clear. The upgrade required no frontend rewrite or new application subsystem. See [production readiness](deployment/production-readiness.md) and the [staged runbook](deployment/first-release-checklist.md) for the single-node 2 GiB profile, database/Redis aliases, cron bursts, private persistence and restore boundaries.
+
+Long course jobs now reserve one dispatch per run as well as retaining their staged processing locks/checkpoints. The lock expires after the 600-second job deadline and before the 960-second reservation retry. Bulk enrollments checkpoint each committed row and use bounded continuations. Newsletter delivery claims are locked and uncertain SMTP acknowledgement requires reconciliation. Media QA is queued with reviewer reauthorization and DNS-pinned public metadata checks. Production debug/log/exception safeguards and read-only preflight are explicit; a clean `--no-dev` runtime install and cached configuration/routes/views were verified in an isolated test copy.
+
+Trix is a separate `editors.js` entry requested by the two authoring views through Livewire assets. Existing chart/workspace behavior stays in dashboard.js; Livewire still supplies Alpine. The offline library returns paginated owned summaries rather than full lesson manifests. Explicit packs/queues use account-scoped IndexedDB, small local indexes and server-acknowledged event IDs. Fresh session/CSRF state is retrieved privately; server enrollment, lesson access and reviewed assessment eligibility remain authoritative. No authenticated page HTML is implicitly cached. See [the app milestone](app-experience-milestone.md) for recovery, logout cleanup, compatibility and browser limits. These changes require no new migration; the two earlier onboarding/career migrations were separately backed up, rehearsed and applied locally with business-record preservation.
+
+## Route assets and learner dashboard projections — 3 November 2026
+
+Chart.js and chart-only Alpine factories now live in `resources/js/charts.js`. Chart-rendering Livewire views request that entry with `@assets`; the persistent dashboard shell loads only `dashboard.js`. This preserves one Livewire-owned Alpine runtime and browser-history behavior while preventing non-chart routes from paying the chart parse cost. Trix remains independently route-scoped through `editors.js`.
+
+`StudentDashboard::learningProgress()` owns a bounded six-query projection for the six visible enrollments: completed IDs, enrollments, course/instructor, sections and published lessons. It calculates visible totals/next steps in memory and supplies upcoming lesson tasks from the same computed result. It does not cache authenticated HTML or move enrollment/access decisions into JavaScript. Secondary dashboard projections report exceptions and return typed fallbacks; the Blade layer replaces only the failed panel with a retryable status. Primary learning data, writes and domain services remain authoritative.
+
+Dashboard reads no longer initialize gamification rows. `LearningSession::getStudyStreak()` selects distinct completed activity dates once and computes at most 365 consecutive days in PHP. These are read-path changes with no migration or working-record rewrite. See [milestone 2](app-experience-milestone-2.md) for measurements, test boundaries and remaining acceptance.
+
+## Premium app completion — 3 November 2026
+
+Theme and collapsed-sidebar state are applied in the document head before the dashboard shell paints. Optional MathJax is requested only by the CBT surface, authenticated marketing analytics requires saved consent, and conditional editor panes use the existing `x-cloak` contract. The shared app entry owns one service-worker install/update controller and exposes a factual install/update prompt; authenticated course HTML is never implicitly cached.
+
+`AssessmentResultService` projects a lesson's assessment summaries from one question graph, one owned-answer query and one completed-session query. Lesson notes and bookmarks are separate owned `SavedResource` types so removing one cannot delete the other. Course completion locks the owned enrollment, rechecks the certificate inside one transaction, persists completion/certificate state together, and isolates post-commit asset/notification delivery. Soft-deleted certificate numbers remain in the uniqueness sequence. See [premium app completion](app-experience-completion.md) for tests, browser evidence and external limits.
+
+## Learner project showcase boundary — 4 November 2026
+
+`PortfolioBuilder` remains the authenticated Livewire write surface. Its route requires authentication, verified email and the student role; `PortfolioPolicy` independently rechecks the current active student and exact `user_id` for view, update, deletion, reorder and publication-related writes. Livewire project IDs are resolved server-side and then authorized. CSV export and every bulk operation start from the authenticated user's relationship rather than client-supplied ownership.
+
+The additive portfolio migration introduces a private-by-default `visibility` enum and optional `source_code_url`; the older `is_public` field is updated for compatibility but is not a public-read authority. `PortfolioShowcaseController` resolves an explicit public project slug, requires an active owner with Public profile visibility, and then projects only that owner's `visibility=public` rows. `/showcase/{slug}` is deliberately not a directory or account enumeration route. The Blade response escapes text and model accessors suppress any stored link that is not valid HTTP(S).
+
+## Authenticated dashboard shell — 4 November 2026
+
+`resources/views/layouts/dashboard.blade.php` remains the single authenticated shell and owns theme, mobile-drawer and persisted desktop-collapse state. `DashboardSidebar` continues to derive navigation exclusively from `config/menu.php` and server-side role filtering; its Blade view changes presentation only. The shared navbar continues to resolve named routes and real notification/message counts. New shell styles live in `resources/css/dashboard.css`, use tokens from `resources/css/tokens.css`, and load through the existing Vite application entry. Mobile drawer focus restoration is implemented in the layout's existing Alpine scope, so no second runtime or client-side authorization path exists.
+
+## Role dashboard homepage projections — 4 November 2026
+
+The seven role routes remain separate Livewire components under the shared authenticated layout. Their Blade views now compose the same homepage hero/stat primitives while retaining role-specific named routes, records and charts. Chart.js remains isolated in `resources/js/charts.js`; zero-value series use its existing explicit empty-state contract.
+
+Mentor projections are now rooted in `mentorships.mentor_id` and traverse only those relationships to sessions, reviews, support records, certificates and job applications. Client-provided timeframe and mentee filters are allow-listed. Instructor course filters re-resolve a course through the authenticated instructor relationship. Content and affiliate filters are bounded enums. Affiliate transactions traverse the affiliate's referral relationship instead of comparing an affiliate ID with a referral ID. Unrecorded click, audience, backup and publication-status signals remain nullable/unknown rather than acquiring estimates.
+
+## Authenticated profile boundary — 9 November 2026
+
+`App\Livewire\UserManagement\Profile` remains the single profile read/write component behind the existing authenticated named routes. Its `boot()` hook replaces the public model property with `Auth::user()` on every request; mutations and relationship queries resolve the actor again from authentication rather than trusting hydrated account state. Local tab names and settings values are allow-listed server-side. The edit route's query mode selects the three-section edit workspace without introducing another route or component.
+
+Blade owns the static profile structure and uses the shared dashboard layout, semantic tokens and modal primitive. Livewire owns profile, preference, password, session, export, deactivation, deletion and wishlist interactions. The public portfolio showcase and its publication policy remain separate: changing profile information does not publish a project. No profile download accepts an account identifier, and the JSON export is assembled from the authenticated account and owned learning relationships.
+
+## Publishing administration and evidence projections — 17 November 2026
+
+`App\Services\Authorization\PublishingAccess` is the role-to-ability source for blog, page, content and newsletter administration. `AuthorizesPublishingAdministration` invokes it from Livewire's boot lifecycle, which repeats for updates as well as initial mounts. Routes keep equivalent middleware so controller and component entry points fail early. Components with mixed privileges must also authorize the concrete action and whitelist writable fields; Blog SEO editing is the reference implementation.
+
+`PageAnalyticsProjection` owns CMS reporting queries and returns only fields backed by persisted page records. Event-level analytics are a separate future integration and remain unavailable until a consented, attributable source exists. `MockInterviewCompletionService` owns interview finalization in a locked transaction, re-resolves ownership, computes factual completion/timing measures, and deliberately clears unreviewed scores. UI components consume these services instead of containing scoring or reporting formulas.
+
+Laravel 12 schedule ownership lives in `routes/console.php`, loaded by `bootstrap/app.php`. Scheduled money movement uses an environment-backed `when` guard and is off by default. There is no parallel `App\Console\Kernel` schedule.

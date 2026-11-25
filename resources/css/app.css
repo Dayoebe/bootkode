@@ -82,7 +82,7 @@
         --text-tertiary: 14 116 144;
         --border-primary: 186 230 253;
         --border-secondary: 125 211 252;
-        --accent-primary: 2 132 199;
+        --accent-primary: 3 105 161;
         --accent-secondary: 15 118 110;
         --accent-warm: 217 119 6;
         --tab-inactive-bg: 224 242 254;
@@ -92,7 +92,7 @@
         --btn-hover-bg: 186 230 253;
         --btn-disabled-text: 14 116 144;
         --input-border: 125 211 252;
-        --input-focus-border: 2 132 199;
+        --input-focus-border: 3 105 161;
     }
 
     .forest {
@@ -104,7 +104,7 @@
         --text-tertiary: 21 128 61;
         --border-primary: 187 247 208;
         --border-secondary: 134 239 172;
-        --accent-primary: 22 163 74;
+        --accent-primary: 21 128 61;
         --accent-secondary: 2 132 199;
         --accent-warm: 217 119 6;
         --tab-inactive-bg: 220 252 231;
@@ -114,7 +114,7 @@
         --btn-hover-bg: 187 247 208;
         --btn-disabled-text: 21 128 61;
         --input-border: 134 239 172;
-        --input-focus-border: 22 163 74;
+        --input-focus-border: 21 128 61;
     }
 
     .bk-public-app {

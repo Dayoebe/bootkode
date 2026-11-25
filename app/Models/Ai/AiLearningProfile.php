@@ -13,6 +13,12 @@ class AiLearningProfile extends Model
     protected $fillable = [
         'user_id',
         'goal',
+        'interests',
+        'existing_knowledge',
+        'starting_level',
+        'learning_preferences',
+        'onboarding_completed_at',
+        'onboarding_skipped_at',
         'skill_diagnosis',
         'adaptive_path',
         'course_recommendations',
@@ -22,6 +28,11 @@ class AiLearningProfile extends Model
     ];
 
     protected $casts = [
+        'interests' => 'array',
+        'existing_knowledge' => 'array',
+        'learning_preferences' => 'array',
+        'onboarding_completed_at' => 'datetime',
+        'onboarding_skipped_at' => 'datetime',
         'skill_diagnosis' => 'array',
         'adaptive_path' => 'array',
         'course_recommendations' => 'array',

@@ -1,12 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PageController;
 use App\Http\Controllers\CertificateVerificationController;
+use App\Http\Controllers\PageController;
 use App\Livewire\Affiliate;
 use App\Livewire\Content\ContentDocumentationCenter;
-use App\Livewire\Cbt\CbtExamInterface;
-
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,7 +17,7 @@ use App\Livewire\Cbt\CbtExamInterface;
 |
 */
 
-Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('newsletter.')->group(function () {
+Route::middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class.':super_admin,academy_admin,content_editor'])->prefix('dashboard')->name('newsletter.')->group(function () {
     // Newsletter management routes (requires proper role)
     Route::get('/newsletter', App\Livewire\Newsletter\NewsletterCenter::class)->name('index');
     Route::get('/newsletter/subscribers', App\Livewire\Newsletter\NewsletterCenter::class)->name('subscribers');
@@ -28,7 +26,7 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('newsletter.'
     Route::get('/newsletter/performance', App\Livewire\Newsletter\NewsletterCenter::class)->name('performance'); // NEW
     Route::get('/newsletter/templates', App\Livewire\Newsletter\NewsletterCenter::class)->name('templates');
     Route::get('/newsletter/analytics', App\Livewire\Newsletter\NewsletterCenter::class)->name('analytics');
-    Route::get('/newsletter/settings', App\Livewire\Newsletter\NewsletterCenter::class)->name('settings');
+    Route::get('/newsletter/settings', App\Livewire\Newsletter\NewsletterCenter::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin')->name('settings');
 });
 
 // Public newsletter routes (no auth required)
@@ -43,9 +41,12 @@ Route::prefix('newsletter')->name('newsletter.')->group(function () {
     Route::post('/resubscribe/{token}', [App\Http\Controllers\NewsletterController::class, 'resubscribe'])->name('resubscribe');
 });
 
-
 // Affiliate Routes
 Route::get('/affiliate-banners/{size}/{code}', \App\Http\Controllers\AffiliateBannerController::class)->name('affiliate.banner');
+
+// A showcase is discoverable only through an explicitly published project slug.
+Route::get('/showcase/{slug}', \App\Http\Controllers\PortfolioShowcaseController::class)
+    ->name('portfolio.public');
 
 Route::middleware(['auth'])->prefix('affiliate')->name('affiliate.')->group(function () {
     Route::get('/dashboard', \App\Livewire\Affiliate\Dashboard::class)->name('dashboard');
@@ -60,10 +61,10 @@ Route::middleware(['auth'])->prefix('affiliate')->name('affiliate.')->group(func
     // API endpoint for referral code validation
     Route::get('/api/validate-referral/{code}', function ($code) {
         $service = app(\App\Services\AffiliateService::class);
+
         return response()->json(\Illuminate\Support\Arr::only($service->validateReferralCode($code), ['valid', 'message', 'referrer_name']));
     })->name('api.validate-referral');
 });
-
 
 // The gateway authenticates with HMAC, not a browser session.
 Route::post('/webhook/paystack', [App\Http\Controllers\FinancialController::class, 'paystackWebhook'])->name('paystack.webhook');
@@ -80,16 +81,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/paystack/callback', [App\Http\Controllers\FinancialController::class, 'paystackCallback'])->name('paystack.callback');
     Route::get('/api/banks', [App\Http\Controllers\FinancialController::class, 'getBanks'])->name('api.banks');
     Route::post('/api/resolve-account', [App\Http\Controllers\FinancialController::class, 'resolveAccount'])->name('api.resolve-account');
-    Route::get('/admin/financial', App\Livewire\Financial\Admin\FinancialDashboard::class)->name('admin.financial.dashboard')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
-    Route::get('/admin/payments/processing', App\Livewire\Financial\Admin\PaymentProcessing::class)->name('admin.payments.processing')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
-    Route::get('/admin/revenue/reports', App\Livewire\Financial\Admin\RevenueReports::class)->name('admin.revenue.reports')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
-    Route::get('/admin/commercial-readiness', App\Livewire\Financial\Admin\CommercialReadiness::class)->name('admin.commercial.readiness')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
-    Route::get('/admin/financial/settings', App\Livewire\Financial\Admin\FinancialSettings::class)->name('admin.financial.settings')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
-    Route::get('/admin/paystack/settings', App\Livewire\Financial\Admin\PaystackSettings::class)->name('admin.paystack.settings')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
-    Route::get('/admin/payments', \App\Livewire\Financial\Admin\PaymentProcessing::class)->name('admin.payments')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/admin/financial', App\Livewire\Financial\Admin\FinancialDashboard::class)->name('admin.financial.dashboard')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
+    Route::get('/admin/payments/processing', App\Livewire\Financial\Admin\PaymentProcessing::class)->name('admin.payments.processing')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
+    Route::get('/admin/revenue/reports', App\Livewire\Financial\Admin\RevenueReports::class)->name('admin.revenue.reports')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
+    Route::get('/admin/commercial-readiness', App\Livewire\Financial\Admin\CommercialReadiness::class)->name('admin.commercial.readiness')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
+    Route::get('/admin/financial/settings', App\Livewire\Financial\Admin\FinancialSettings::class)->name('admin.financial.settings')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
+    Route::get('/admin/paystack/settings', App\Livewire\Financial\Admin\PaystackSettings::class)->name('admin.paystack.settings')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
+    Route::get('/admin/payments', \App\Livewire\Financial\Admin\PaymentProcessing::class)->name('admin.payments')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
 
 });
-
 
 Route::get('/institution/invitations/{token}/accept', [\App\Http\Controllers\InstitutionInvitationController::class, 'accept'])
     ->name('institution.invitations.accept');
@@ -101,15 +101,14 @@ Route::middleware(['auth', 'verified'])->prefix('institution')->name('institutio
 
     // Main portal dashboard
     Route::get('/portal', App\Livewire\Institution\InstitutionPortal::class)->name('portal');
-    Route::get('/overview', App\Livewire\Institution\InstitutionPortal::class)->name('overview')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
-    Route::get('/partners', App\Livewire\Institution\InstitutionPortal::class)->name('partners')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
-    Route::get('/licenses', App\Livewire\Institution\InstitutionPortal::class)->name('licenses')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
-    Route::get('/cohorts', App\Livewire\Institution\InstitutionPortal::class)->name('cohorts')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
-    Route::get('/bulk-enrollment', App\Livewire\Institution\InstitutionPortal::class)->name('bulk-enrollment')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
-    Route::get('/analytics', App\Livewire\Institution\InstitutionPortal::class)->name('analytics')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
-    Route::get('/whitelabel', App\Livewire\Institution\InstitutionPortal::class)->name('whitelabel')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/overview', App\Livewire\Institution\InstitutionPortal::class)->name('overview')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
+    Route::get('/partners', App\Livewire\Institution\InstitutionPortal::class)->name('partners')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
+    Route::get('/licenses', App\Livewire\Institution\InstitutionPortal::class)->name('licenses')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
+    Route::get('/cohorts', App\Livewire\Institution\InstitutionPortal::class)->name('cohorts')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
+    Route::get('/bulk-enrollment', App\Livewire\Institution\InstitutionPortal::class)->name('bulk-enrollment')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
+    Route::get('/analytics', App\Livewire\Institution\InstitutionPortal::class)->name('analytics')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
+    Route::get('/whitelabel', App\Livewire\Institution\InstitutionPortal::class)->name('whitelabel')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
 });
-
 
 // Blog Routes
 Route::prefix('blog')->name('blog.')->group(function () {
@@ -121,14 +120,14 @@ Route::prefix('blog')->name('blog.')->group(function () {
 });
 
 // Admin Blog Routes (requires authentication and proper roles)
-Route::middleware(['auth', 'verified'])->prefix('admin/blog')->name('admin.blog.')->group(function () {
+Route::middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class.':super_admin,academy_admin,content_editor'])->prefix('admin/blog')->name('admin.blog.')->group(function () {
     Route::get('/posts', \App\Livewire\Blog\AdminBlogPosts::class)->name('posts.index');
     Route::get('/posts/create', \App\Livewire\Blog\AdminBlogPostForm::class)->name('posts.create');
     Route::get('/posts/{post:slug}/edit', \App\Livewire\Blog\AdminBlogPostForm::class)->name('posts.edit');
-    Route::get('/categories', \App\Livewire\Blog\AdminBlogCategories::class)->name('categories.index');
+    Route::get('/categories', \App\Livewire\Blog\AdminBlogCategories::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin')->name('categories.index');
     Route::get('/comments', \App\Livewire\Blog\AdminBlogComments::class)->name('comments.index');
-    Route::get('/settings', \App\Livewire\Blog\AdminBlogSettings::class)->name('settings');
-    Route::get('/seo', \App\Livewire\Blog\AdminBlogSettings::class)->name('seo');
+    Route::get('/settings', \App\Livewire\Blog\AdminBlogSettings::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin')->name('settings');
+    Route::get('/seo', \App\Livewire\Blog\AdminBlogSettings::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,content_editor')->name('seo');
 });
 
 // API Routes for AJAX operations
@@ -136,9 +135,10 @@ Route::middleware('api')->prefix('api/blog')->name('api.blog.')->group(function 
     Route::post('/posts/{post}/react', [\App\Http\Controllers\BlogController::class, 'toggleReaction'])->name('react');
     Route::post('/posts/{post}/view', [\App\Http\Controllers\BlogController::class, 'incrementView'])->name('view');
     Route::post('/comments/{comment}/react', [\App\Http\Controllers\BlogController::class, 'toggleCommentReaction'])->name('comment.react');
-    Route::post('/upload-image', [\App\Http\Controllers\BlogController::class, 'uploadImage'])->name('upload.image');
+    Route::post('/upload-image', [\App\Http\Controllers\BlogController::class, 'uploadImage'])
+        ->middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class.':super_admin,academy_admin,content_editor', 'throttle:30,1'])
+        ->name('upload.image');
 });
-
 
 // =============================================================================
 // PUBLIC PAGES (No Authentication Required) - MANUAL PAGES
@@ -148,8 +148,7 @@ Route::get('/Contact', \App\Livewire\ManualPages\ContactUs::class)->name('contac
 Route::get('/Statistics', \App\Livewire\ManualPages\Statistics::class)->name('statistics');
 Route::get('/Guideline', \App\Livewire\ManualPages\Guideline::class)->name('guideline');
 
-
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class.':super_admin,academy_admin,content_editor'])->group(function () {
     Route::get('/content', ContentDocumentationCenter::class)->name('content.index');
     Route::get('/content/learning-materials', ContentDocumentationCenter::class)->name('content.learning-materials');
     Route::get('/content/video-library', ContentDocumentationCenter::class)->name('content.video-library');
@@ -158,9 +157,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/content/moderation', ContentDocumentationCenter::class)->name('content.moderation');
     Route::get('/content/create-document', ContentDocumentationCenter::class)->name('content.create-document');
     Route::get('/content/reviews', ContentDocumentationCenter::class)->name('content.reviews');
-    Route::get('/content/localization', ContentDocumentationCenter::class)->name('content.localization');
-    Route::get('/content/categories', ContentDocumentationCenter::class)->name('content.categories');
-    Route::get('/content/settings', ContentDocumentationCenter::class)->name('content.settings');
+    Route::get('/content/categories', ContentDocumentationCenter::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin')->name('content.categories');
+    Route::get('/content/settings', ContentDocumentationCenter::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin')->name('content.settings');
     Route::get('/content/reports', ContentDocumentationCenter::class)->name('content.reports');
     Route::get('/content/analytics', ContentDocumentationCenter::class)->name('content.analytics');
     Route::get('/content/overview', ContentDocumentationCenter::class)->name('content.overview');
@@ -179,7 +177,7 @@ Route::middleware(['auth'])->prefix('community')->name('community.')->group(func
     Route::get('/code-challenges', App\Livewire\Community\CommunityCenter::class)->name('code-challenges');
     Route::get('/live-events', App\Livewire\Community\CommunityCenter::class)->name('live-events');
     Route::get('/feedback', App\Livewire\Community\CommunityCenter::class)->name('feedback');
-    Route::get('/moderation', App\Livewire\Community\CommunityCenter::class)->name('moderation')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/moderation', App\Livewire\Community\CommunityCenter::class)->name('moderation')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
 });
 
 // Gamification routes
@@ -204,30 +202,29 @@ Route::get('/course-management/lessons/{lessonId}/assessments', function (int $l
         'lesson' => $lesson->id,
         'tab' => 'assessment',
     ]);
-})->whereNumber('lessonId')->name('lesson.assessments.manage')->middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin,instructor']);
+})->whereNumber('lessonId')->name('lesson.assessments.manage')->middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class.':super_admin,academy_admin,instructor']);
 Route::get('/learning/lessons/{lesson}/assessments', \App\Livewire\StudentManagement\CourseView\StudentAssessmentTaker::class)->defaults('standalone', true)->name('lesson.assessments')->middleware(['auth', 'verified']);
 Route::get('/learning/assessments/{assessment}/discussion', \App\Livewire\StudentManagement\CourseView\AssessmentDiscussion::class)->name('assessment.discussion')->middleware(['auth', 'verified']);
 Route::get('/learning/attempts/{session}/files/{file}', \App\Http\Controllers\AssessmentSubmissionFileController::class)->whereNumber('session')->whereUuid('file')->name('assessment.submission-file')->middleware(['auth', 'verified']);
-Route::get('/course-management/assessment-reviews', \App\Livewire\CourseManagement\AssessmentReviewQueue::class)->name('assessment.reviews')->middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin,instructor']);
+Route::get('/course-management/assessment-reviews', \App\Livewire\CourseManagement\AssessmentReviewQueue::class)->name('assessment.reviews')->middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class.':super_admin,academy_admin,instructor']);
 
 // CBT routes
-Route::get('/cbt/management', \App\Livewire\Cbt\CbtManagement::class)->name('cbt.management')->middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin,instructor']);
+Route::get('/cbt/management', \App\Livewire\Cbt\CbtManagement::class)->name('cbt.management')->middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class.':super_admin,academy_admin,instructor']);
 Route::get('/cbt/results', \App\Livewire\Cbt\CbtViewer::class)->name('cbt.viewer')->middleware(['auth', 'verified']);
 Route::middleware(['auth', 'verified'])->group(function () {
     // CBT Exam Routes
     Route::get('/cbt/exams', App\Livewire\Cbt\CbtExamSelection::class)->name('cbt.exams');
     Route::get('/cbt/exam/{assessment}/take', App\Livewire\Cbt\CbtExamInterface::class)->name('cbt.exam.take');
     Route::get('/cbt/exam/{assessmentId}/summary', \App\Livewire\Cbt\CbtViewer::class)
-    ->name('cbt.exam.summary');
+        ->name('cbt.exam.summary');
 
     // /exam/{assessmentId}
     // Legacy route for backward compatibility
     Route::get('/cbt/exam/{assessmentId?}', App\Livewire\Cbt\CbtExam::class)->name('cbt.exam');
 
     // CBT Management (now available to all authenticated users)
-    Route::get('/cbt/manage', App\Livewire\Cbt\CbtManagement::class)->name('cbt.manage')->middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin,instructor']);
+    Route::get('/cbt/manage', App\Livewire\Cbt\CbtManagement::class)->name('cbt.manage')->middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class.':super_admin,academy_admin,instructor']);
 });
-
 
 // // Replace your existing mentorship routes with:
 Route::middleware(['auth', 'verified'])->prefix('mentorship')->name('mentorship.')->group(function () {
@@ -245,17 +242,22 @@ Route::middleware(['auth', 'verified'])->prefix('mentorship')->name('mentorship.
     });
 
     Route::middleware(['auth', 'verified'])->group(function () {
-        Route::get('/management', \App\Livewire\Mentorship\MentorManagement::class)->name('management')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+        Route::get('/management', \App\Livewire\Mentorship\MentorManagement::class)->name('management')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
     });
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('/career-centre', \App\Livewire\Career\CareerCentre::class)->middleware('verified')->name('career.centre');
+    Route::get('/admin/career-review', \App\Livewire\Career\CareerReview::class)
+        ->middleware(['verified', \App\Http\Middleware\CheckRole::class.':super_admin,academy_admin'])->name('career.review');
     Route::get('/job-applications/{jobApplication}/resume', \App\Http\Controllers\JobApplicationResumeController::class)->name('job-applications.resume');
     Route::get('/search/job', \App\Livewire\Career\JobSearch::class)->name('search.job');
-    Route::get('/portfolio', \App\Livewire\Career\PortfolioBuilder::class)->name('portfolio.show');
+    Route::get('/portfolio', \App\Livewire\Career\PortfolioBuilder::class)
+        ->middleware(['verified', \App\Http\Middleware\CheckRole::class.':student'])
+        ->name('portfolio.show');
     Route::get('/resume/builder', \App\Livewire\Career\ResumeBuilder::class)->name('resume.builder');
     Route::get('/job', \App\Livewire\Career\JobPortal::class)->name('user.job');
-    Route::get('/admin/job', \App\Livewire\Career\JobManagement::class)->name('admin.job')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/admin/job', \App\Livewire\Career\JobManagement::class)->name('admin.job')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
 });
 Route::middleware('auth')->group(function () {
     Route::get('/interview/user', \App\Livewire\Career\UserMockInterview::class)->name('user.interview');
@@ -310,14 +312,18 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('')->group(fu
 Route::middleware(['auth', 'verified'])->group(function () {
     // Student Dashboard Features
     Route::get('/learner-journey', \App\Livewire\StudentManagement\LearnerJourney::class)->name('learner.journey');
+    Route::get('/learning-profile', \App\Livewire\StudentManagement\LearningProfile::class)
+        ->middleware(\App\Http\Middleware\CheckRole::class.':student,instructor,academy_admin,super_admin')
+        ->name('learning.profile');
     Route::get('/ai-learning-coach', \App\Livewire\StudentManagement\AiLearningCoach::class)->name('ai.learning.coach');
     Route::get('/bootkode-ai/mentor', \App\Livewire\Ai\CodingMentor::class)->name('ai.coding-mentor');
     Route::get('/enrolled-courses', \App\Livewire\StudentManagement\EnrolledCourses::class)->name('student.enrolled-courses');
     Route::get('/course-catalog', \App\Livewire\StudentManagement\CourseCatalog::class)->name('student.course-catalog');
     Route::get('/learning-analytics', \App\Livewire\StudentManagement\LearningAnalytics::class)->name('student.learning-analytics');
     Route::get('/offline-learning', \App\Livewire\StudentManagement\OfflineLearningLibrary::class)->name('student.offline-learning');
-    Route::get('/offline-learning/packs/{course:slug}/manifest', [\App\Http\Controllers\OfflineLearningController::class, 'manifest'])->name('offline-learning.manifest');
-    Route::post('/offline-learning/packs/{course:slug}/sync', [\App\Http\Controllers\OfflineLearningController::class, 'sync'])->name('offline-learning.sync');
+    Route::get('/offline-learning/session', [\App\Http\Controllers\OfflineLearningController::class, 'session'])->middleware('throttle:30,1')->name('offline-learning.session');
+    Route::get('/offline-learning/packs/{course:slug}/manifest', [\App\Http\Controllers\OfflineLearningController::class, 'manifest'])->middleware('throttle:60,1')->name('offline-learning.manifest');
+    Route::post('/offline-learning/packs/{course:slug}/sync', [\App\Http\Controllers\OfflineLearningController::class, 'sync'])->middleware('throttle:30,1')->name('offline-learning.sync');
     Route::get('/saved-resources', \App\Livewire\StudentManagement\SavedResources::class)->name('student.saved-resources');
     Route::get('/course/{course:slug}', \App\Livewire\StudentManagement\CourseView::class)->name('course.view');
     Route::get('/course-reviews/analytics/{courseId?}', \App\Livewire\CourseManagement\ReviewAnalytics::class)->name('review-analytics');
@@ -328,7 +334,6 @@ Route::get('/review-reminder/unsubscribe/{reminder}', [\App\Http\Controllers\Rev
 Route::post('/review-reminder/unsubscribe/{reminder}', [\App\Http\Controllers\ReviewReminderSubscriptionController::class, 'unsubscribe'])->name('review-reminder.unsubscribe.confirm');
 Route::get('/review-reminders/unsubscribe-all', [\App\Http\Controllers\ReviewReminderSubscriptionController::class, 'showAll'])->middleware('auth')->name('review-reminders.unsubscribe-all');
 Route::post('/review-reminders/unsubscribe-all', [\App\Http\Controllers\ReviewReminderSubscriptionController::class, 'unsubscribeAll'])->middleware('auth')->name('review-reminders.unsubscribe-all.confirm');
-
 
 // =============================================================================
 // COURSE MANAGEMENT ROUTES
@@ -344,7 +349,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // Course CRUD Routes
 Route::middleware(['auth', 'verified'])->prefix('dashboard/courses')->name('')->group(function () {
     Route::get('/content-studio', \App\Livewire\CourseManagement\CourseContentStudio::class)
-        ->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin,instructor')
+        ->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin,instructor')
         ->name('course-content.studio');
     Route::get('/create', \App\Livewire\CourseManagement\CourseForm::class)->name('create.course');
     Route::get('/{course}/edit', \App\Livewire\CourseManagement\EditCourse::class)->name('edit_course');
@@ -361,7 +366,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/projects/{slug}', [App\Http\Controllers\ProjectController::class, 'show'])->name('project.show');
 });
 
-
 // =============================================================================
 // SYSTEM MANAGEMENT ROUTES
 // =============================================================================
@@ -372,19 +376,23 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('')->group(fu
     Route::get('/notifications', \App\Livewire\SystemManagement\Notifications::class)->name('notifications');
     Route::post('/notifications/{notification}/open', \App\Http\Controllers\NotificationOpenController::class)->name('notifications.open');
     Route::get('/system-status', \App\Livewire\SystemManagement\SystemStatus::class)->name('system-status');
-    Route::get('/system-status-management', \App\Livewire\SystemManagement\SystemStatusManagement::class)->name('system-status.management');
-    Route::get('/production-observability', \App\Livewire\SystemManagement\ProductionObservability::class)->name('production.observability');
+    Route::get('/system-status-management', \App\Livewire\SystemManagement\SystemStatusManagement::class)
+        ->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin')
+        ->name('system-status.management');
+    Route::get('/production-observability', \App\Livewire\SystemManagement\ProductionObservability::class)
+        ->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin')
+        ->name('production.observability');
 
     // Support System
     Route::get('/help-support', \App\Livewire\SystemManagement\HelpSupport::class)->name('help.support');
-    Route::get('/support-tickets', \App\Livewire\SystemManagement\SupportTicketManagement::class)->name('support.tickets')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/support-tickets', \App\Livewire\SystemManagement\SupportTicketManagement::class)->name('support.tickets')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
     Route::get('/support-tickets/{ticket}/attachment', \App\Http\Controllers\SupportAttachmentController::class)->name('support.attachment');
-    Route::get('/faq-management', \App\Livewire\SystemManagement\FaqManagement::class)->name('faq.management')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/faq-management', \App\Livewire\SystemManagement\FaqManagement::class)->name('faq.management')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
 
     // Feedback System
     Route::get('/feedback', \App\Livewire\SystemManagement\Feedback::class)->name('feedback');
     Route::get('/feedback/{feedback}/attachment', \App\Http\Controllers\FeedbackAttachmentController::class)->name('feedback.attachment');
-    Route::get('/feedback-management', \App\Livewire\SystemManagement\FeedbackManagement::class)->name('feedback.management')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/feedback-management', \App\Livewire\SystemManagement\FeedbackManagement::class)->name('feedback.management')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
 
     // Announcements
     Route::get('/announcements', \App\Livewire\SystemManagement\Announcements::class)->name('announcements');
@@ -392,7 +400,6 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('')->group(fu
 
     Route::get('/notification-preferences', \App\Livewire\SystemManagement\NotificationPreferences::class)->name('notification.preferences');
     Route::get('/privacy-settings', \App\Livewire\SystemManagement\PrivacySettings::class)->name('privacy.settings');
-    Route::get('/language-localization', \App\Livewire\SystemManagement\LanguageLocalization::class)->name('language.localization');
 });
 
 // =============================================================================
@@ -411,7 +418,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/marketplace/cart', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.cart');
     Route::get('/marketplace/checkout', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.checkout');
     Route::get('/marketplace/my-purchases', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.purchases');
-    Route::get('/marketplace/reviews', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.reviews')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin,content_editor');
+    Route::get('/marketplace/reviews', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.reviews')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin,content_editor');
     Route::get('/marketplace/item/{slug}', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.item.public');
 
     // VENDOR ROUTES (Instructors, Academy Admin, Super Admin)
@@ -424,14 +431,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/marketplace/vendor/withdrawals', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.vendor.withdrawals');
 
     // ADMIN ROUTES (Academy Admin, Super Admin)
-    Route::get('/marketplace/admin/vendors', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.vendor.applications')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
-    Route::get('/marketplace/admin/orders', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.orders')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
-    Route::get('/marketplace/admin/payments', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.payments')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
-    Route::get('/marketplace/admin/analytics', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.analytics')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
-    Route::get('/marketplace/admin/settings', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.settings')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin');
+    Route::get('/marketplace/admin/vendors', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.vendor.applications')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
+    Route::get('/marketplace/admin/orders', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.orders')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
+    Route::get('/marketplace/admin/payments', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.payments')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
+    Route::get('/marketplace/admin/analytics', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.analytics')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
+    Route::get('/marketplace/admin/settings', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.settings')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin');
 
     // CONTENT EDITOR + ADMIN ROUTES
-    Route::get('/marketplace/promotions', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.promotions')->middleware(\App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin,content_editor');
+    Route::get('/marketplace/promotions', App\Livewire\Marketplace\MarketplaceCenter::class)->name('marketplace.promotions')->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin,content_editor');
 });
 
 // PAYMENT CALLBACKS (Public, no auth)
@@ -442,7 +449,6 @@ Route::get('/marketplace/payment/success', function () {
 Route::get('/marketplace/payment/failed', function () {
     return redirect()->route('marketplace.checkout')->with('error', 'Payment failed. Please try again.');
 })->name('marketplace.payment.failed');
-
 
 // =============================================================================
 // PUBLIC CERTIFICATE VERIFICATION ROUTES (No Authentication Required)
@@ -481,7 +487,7 @@ Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->gr
 // CERTIFICATE MANAGEMENT ROUTES (Admin/Instructor)
 // =============================================================================
 
-\Illuminate\Support\Facades\Route::middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class . ':super_admin,academy_admin,instructor'])->prefix('admin')->name('admin.')->group(function () {
+\Illuminate\Support\Facades\Route::middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class.':super_admin,academy_admin,instructor'])->prefix('admin')->name('admin.')->group(function () {
     // Certificate Management Dashboard
     Route::get('/certificates', \App\Livewire\CertificateManagement\CertificateManagement::class)->name('certificates.manage');
     Route::get('/certificates/analytics', \App\Livewire\CertificateManagement\CertificateAnalytics::class)->name('certificates.analytics');
@@ -492,7 +498,7 @@ Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->gr
         $certificate = \App\Models\Credentials\Certificate::findOrFail($certificateId);
 
         // Permission check
-        if (!auth()->user()->hasAnyRole(['super_admin', 'academy_admin', 'instructor'])) {
+        if (! auth()->user()->hasAnyRole(['super_admin', 'academy_admin', 'instructor'])) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
         }
 
@@ -501,6 +507,7 @@ Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->gr
         }
 
         $certificate->approve(auth()->id());
+
         return response()->json(['success' => true, 'message' => 'Certificate approved successfully']);
     })->name('certificates.approve');
 
@@ -508,7 +515,7 @@ Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->gr
         $certificate = \App\Models\Credentials\Certificate::findOrFail($certificateId);
 
         // Permission check
-        if (!auth()->user()->hasAnyRole(['super_admin', 'academy_admin', 'instructor'])) {
+        if (! auth()->user()->hasAnyRole(['super_admin', 'academy_admin', 'instructor'])) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
         }
 
@@ -518,6 +525,7 @@ Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->gr
 
         $reason = request()->input('reason');
         $certificate->reject($reason, auth()->id());
+
         return response()->json(['success' => true, 'message' => 'Certificate rejected']);
     })->name('certificates.reject');
 
@@ -525,12 +533,13 @@ Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->gr
         $certificate = \App\Models\Credentials\Certificate::findOrFail($certificateId);
 
         // Permission check - Only admins can revoke
-        if (!auth()->user()->hasAnyRole(['super_admin', 'academy_admin'])) {
+        if (! auth()->user()->hasAnyRole(['super_admin', 'academy_admin'])) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
         }
 
         $reason = request()->input('reason');
         $certificate->revoke($reason, auth()->id());
+
         return response()->json(['success' => true, 'message' => 'Certificate revoked']);
     })->name('certificates.revoke');
 
@@ -538,7 +547,7 @@ Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->gr
     Route::post('/certificates/bulk-approve', function () {
         $certificateIds = request()->input('certificate_ids', []);
 
-        if (!auth()->user()->hasAnyRole(['super_admin', 'academy_admin'])) {
+        if (! auth()->user()->hasAnyRole(['super_admin', 'academy_admin'])) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
         }
 
@@ -552,13 +561,13 @@ Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->gr
                     $approved++;
                 }
             } catch (\Exception $e) {
-                \Log::error('Bulk approve error: ' . $e->getMessage());
+                \Log::error('Bulk approve error: '.$e->getMessage());
             }
         }
 
         return response()->json([
             'success' => true,
-            'message' => "Approved {$approved} certificates"
+            'message' => "Approved {$approved} certificates",
         ]);
     })->name('certificates.bulk.approve');
 });
@@ -566,30 +575,23 @@ Route::middleware(['auth', 'verified'])->prefix('student')->name('student.')->gr
 // =============================================================================
 // AUTHENTICATION ROUTES
 // =============================================================================
-require __DIR__ . '/auth.php';
-
-
+require __DIR__.'/auth.php';
 
 // Page management routes (protected)
-Route::prefix('admin/pages')->middleware(['auth', 'verified'])->group(function () {
+Route::prefix('admin/pages')->middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class.':super_admin,academy_admin,content_editor'])->group(function () {
     // Main page manager with tab support
     Route::get('/', \App\Livewire\Pages\PageManager::class)->name('pages.index');
     Route::get('/create', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'create-page')->name('pages.create');
-    Route::get('/analytics', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'analytics')->name('pages.analytics');
-    Route::get('/templates', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'templates')->name('pages.templates');
+    Route::get('/analytics', \App\Livewire\Pages\PageManager::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin')->defaults('activeTab', 'analytics')->name('pages.analytics');
     Route::get('/media', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'media')->name('pages.media');
-    Route::get('/seo', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'seo')->name('pages.seo');
-    Route::get('/settings', \App\Livewire\Pages\PageManager::class)->defaults('activeTab', 'settings')->name('pages.settings');
+    Route::get('/seo', \App\Livewire\Pages\PageManager::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin,academy_admin')->defaults('activeTab', 'seo')->name('pages.seo');
+    Route::get('/settings', \App\Livewire\Pages\PageManager::class)->middleware(\App\Http\Middleware\CheckRole::class.':super_admin')->defaults('activeTab', 'settings')->name('pages.settings');
 
     // // API endpoints
     // Route::post('/upload-media', [\App\Http\Controllers\MediaController::class, 'upload'])->name('pages.upload-media');
     // Route::delete('/media/{media}', [\App\Http\Controllers\MediaController::class, 'delete'])->name('pages.delete-media');
     Route::post('/track-view/{slug}', [PageController::class, 'trackView'])->name('pages.track-view');
 });
-
-
-
-
 
 // =============================================================================
 // CATCH-ALL ROUTE FOR PAGES (Must be absolutely last)

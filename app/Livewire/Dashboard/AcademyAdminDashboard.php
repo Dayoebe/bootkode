@@ -59,6 +59,11 @@ class AcademyAdminDashboard extends Component
         $this->loadAllData();
     }
 
+    public function hydrate(): void
+    {
+        abort_unless(Auth::user()?->canAccessDashboardRole(User::ROLE_ACADEMY_ADMIN), 403);
+    }
+
     public function loadAllData()
     {
         // Load all dashboard data
@@ -67,12 +72,14 @@ class AcademyAdminDashboard extends Component
 
     public function updateTimeframe($timeframe)
     {
+        abort_unless(in_array($timeframe, ['7days', '30days', '90days'], true), 422);
         $this->selectedTimeframe = $timeframe;
         $this->loadAllData();
     }
 
     public function toggleWidget($widget)
     {
+        abort_unless(array_key_exists($widget, $this->showWidgets), 422);
         $this->showWidgets[$widget] = !$this->showWidgets[$widget];
     }
 
@@ -406,26 +413,6 @@ class AcademyAdminDashboard extends Component
     public function toggleQuickActionModal()
     {
         $this->showQuickActionModal = !$this->showQuickActionModal;
-    }
-
-    public function approveCourse($courseId)
-    {
-        $course = Course::find($courseId);
-        if ($course) {
-            $course->update(['is_approved' => true]);
-            $this->dispatch('notify', type: 'success', message: 'Course approved successfully');
-            $this->loadAllData();
-        }
-    }
-
-    public function approveCertificate($certificateId)
-    {
-        $certificate = Certificate::find($certificateId);
-        if ($certificate && $certificate->canBeApproved()) {
-            $certificate->approve(auth()->id());
-            $this->dispatch('notify', type: 'success', message: 'Certificate approved successfully');
-            $this->loadAllData();
-        }
     }
 
     public function render()
