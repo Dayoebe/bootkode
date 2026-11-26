@@ -286,3 +286,14 @@ The application-controlled premium experience work is complete. The open items r
 - [ ] Design a sanitized newsletter-template drafting boundary before adding AI to campaign HTML.
 - [ ] Add course SEO/welcome/completion messages and blog image alt/caption assistance only if those fields become real persisted product capabilities.
 - [ ] Complete configured live-provider acceptance and authenticated multi-theme browser acceptance independently of mocked regression coverage.
+
+## Course learning workspace — 26 November 2026
+
+- [x] Preserve the existing enrolled-course route and server-side lesson, unlock, progress, assessment and certificate boundaries.
+- [x] Replace full dashboard chrome on the lesson route with a focused learning shell and named return paths.
+- [x] Provide an expandable mobile course map and a persisted collapsible desktop curriculum with completed, current, open and locked states.
+- [x] Establish one long-form content contract for headings, lists, quotes, callouts, media, tables, inline code and copyable code blocks.
+- [x] Move private notes and bookmarks into their own authenticated, lesson-authorized Livewire tool panel.
+- [x] Preserve assessments, attachments, external resources, offline packs, instructor messaging and learner reviews without decorative nonfunctional actions.
+- [ ] Complete final isolated test execution and the 390/768/1024/1440 authenticated browser matrix after the pre-existing concurrent test process releases the shared `_test` database.
+- [ ] Treat physical-device, screen-reader, live media-provider and production performance acceptance as separate release gates.

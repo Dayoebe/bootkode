@@ -394,6 +394,10 @@ class CourseView extends Component
     {
         $this->currentLesson = $lesson;
         $this->currentSection = $section ?? $lesson?->section;
+
+        if ($lesson) {
+            $this->dispatch('lesson-location-changed', lessonId: $lesson->id);
+        }
     }
 
     protected function clearCurrentLesson(): void

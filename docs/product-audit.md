@@ -359,3 +359,11 @@ Laravel's active scheduler is now declared only in `routes/console.php`; the unu
 Authorized course, lesson, section, blog and announcement authoring now has one reusable server-side AI drafting workflow. It uses actual form context, strict structured responses, bounded output, a separate usage quota and explicit preview/apply controls. It preserves existing values unless replacement is confirmed and does not save, publish, approve, assign ownership or alter protected commercial fields. Blog category suggestions can resolve only existing active categories. Provider failures and disabled configuration leave the underlying forms usable.
 
 No student records, results, testimonials, usage statistics, payment outcomes or operational facts were added. No working-database migration or business-record mutation is required. Newsletter templates and fields absent from the current course/blog models remain out of scope instead of being represented by invented storage or unsafe raw-HTML generation.
+
+## Course learning experience redesign — 26 November 2026
+
+The enrolled course page now behaves as a learning workspace rather than a general dashboard. A focused top bar, course-progress context, expandable module map, readable lesson article, explicit completion/navigation controls and account-owned learning tools use the existing BootKode design tokens and Livewire stack. Desktop curriculum collapse is a presentation preference only; mobile navigation remains a focus-trapped drawer. The lesson title is the sole primary content heading.
+
+All displayed completion, unlock, duration, assessment, resource and resume states continue to come from the existing course graph and owned records. The redesign adds no sample lessons, inferred results, decorative discussions or fake AI actions. Existing AI coach access is linked only because that authenticated capability already exists. A published lesson with no content or media shows an honest unavailable message.
+
+No schema migration or operational-database mutation is required. Enrollment and lesson authorization, assessment pass gates, explicit offline downloads, historical enrollment compatibility, certificate issuance and named route contracts remain unchanged. Final test/browser evidence is tracked separately in `verification.md`; no production deployment is implied by the local implementation.

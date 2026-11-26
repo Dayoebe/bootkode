@@ -20,17 +20,14 @@
         }
     }"
     class="rounded-lg border border-themed-primary bg-themed-secondary p-4 shadow-sm transition-colors duration-300   lg:sticky lg:top-4">
-    <div class="rounded-lg border border-themed-secondary p-5 shadow-sm"
-        style="background: rgb(var(--accent-primary));">
+    <div class="rounded-lg border border-themed-secondary bg-themed-tertiary p-4">
         <div class="flex items-start justify-between gap-4">
-            <div>
+            <div class="min-w-0">
                 <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Course Map</p>
-                <h2 class="mt-2 text-xl font-semibold text-themed-primary">Navigate with clarity</h2>
-                <p class="mt-2 text-sm leading-6 text-themed-secondary">
-                    Open a section, pick an unlocked lesson, and keep moving in sequence.
-                </p>
+                <h2 class="mt-2 text-lg font-semibold leading-snug text-themed-primary">{{ $course->title }}</h2>
+                <p class="mt-1 text-xs leading-5 text-themed-secondary">{{ $totalLessons }} lessons across {{ $sections->count() }} sections</p>
             </div>
-            <span class="flex h-12 w-12 items-center justify-center rounded-lg bg-themed-secondary shadow-sm">
+            <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-themed-secondary">
                 <i aria-hidden="true" class="fas fa-compass text-lg accent-themed-primary"></i>
             </span>
         </div>
@@ -71,6 +68,8 @@
                 class="overflow-hidden rounded-lg border border-themed-secondary bg-themed-tertiary shadow-sm transition-all duration-300 {{ $isUnlocked ? '' : 'opacity-70' }}">
                 <button type="button"
                     @click="toggleSection({{ $section->id }})"
+                    :aria-expanded="isExpanded({{ $section->id }}).toString()"
+                    aria-controls="course-section-{{ $section->id }}"
                     class="flex w-full items-start justify-between gap-3 px-4 py-4 text-left">
                     <div class="flex min-w-0 items-start gap-3">
                         <span
@@ -116,7 +115,7 @@
                     </div>
                 </button>
 
-                <div class="px-4 pb-4" x-show="isExpanded({{ $section->id }})" x-transition.opacity.scale.origin.top>
+                <div id="course-section-{{ $section->id }}" class="px-4 pb-4" x-show="isExpanded({{ $section->id }})" x-transition.opacity>
                     <div class="mb-4 h-2 overflow-hidden rounded-full border border-themed-secondary bg-themed-secondary">
                         <div class="h-full rounded-full transition-all duration-300"
                             style="width: {{ $sectionProgress }}%; background: rgb(var(--accent-primary));">
@@ -131,8 +130,10 @@
                             @endphp
 
                             <button wire:click="selectLesson({{ $lesson->id }}, {{ $section->id }})"
+                                wire:loading.attr="disabled" wire:target="selectLesson({{ $lesson->id }}, {{ $section->id }})"
                                 @click="$dispatch('close-course-nav')"
                                 @if (!$isUnlocked) disabled @endif
+                                @if ($isCurrentLesson) aria-current="step" @endif
                                 class="flex w-full items-center justify-between gap-3 rounded-lg border px-3 py-3 text-left transition-all duration-200
                                     {{ $isCurrentLesson
                                         ? 'border-transparent text-white shadow-lg'

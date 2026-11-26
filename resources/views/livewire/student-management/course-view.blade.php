@@ -24,9 +24,28 @@
 @endphp
 
 <div
-    x-data="{ navOpen: false }"
-    x-on:close-course-nav.window="navOpen = false"
-    class="course-view-shell relative overflow-hidden rounded-lg">
+    x-data="{
+        navOpen: false,
+        navTrigger: null,
+        curriculumCollapsed: localStorage.getItem('course-curriculum-collapsed') === 'true',
+        openNav(event) {
+            this.navTrigger = event.currentTarget;
+            this.navOpen = true;
+            this.$nextTick(() => document.getElementById('course-nav-close')?.focus());
+        },
+        closeNav() {
+            const trigger = this.navTrigger;
+            this.navOpen = false;
+            window.setTimeout(() => trigger?.focus(), 200);
+        },
+        toggleCurriculum() {
+            this.curriculumCollapsed = !this.curriculumCollapsed;
+            localStorage.setItem('course-curriculum-collapsed', this.curriculumCollapsed.toString());
+        }
+    }"
+    x-on:close-course-nav.window="closeNav()"
+    x-on:keydown.escape.window="if (navOpen) closeNav()"
+    class="course-view-shell relative">
 
 
     <div class="relative space-y-6 md:space-y-8">
@@ -38,16 +57,16 @@
 
         @if (session()->has('success'))
             <div x-data="{ show: true }" x-show="show" x-transition.opacity.duration.300ms
-                class="overflow-hidden rounded-lg border border-emerald-400/40 bg-brand-ink   p-6 text-white shadow-sm  ">
+                class="overflow-hidden rounded-lg border border-emerald-400/40 bg-brand-ink p-4 text-white shadow-sm sm:p-6">
                 <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                     <div class="flex items-start gap-4">
-                        <div class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-lg bg-white/15 shadow-sm">
-                            <i aria-hidden="true" class="fas fa-rocket text-3xl"></i>
+                        <div class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-white/15 shadow-sm sm:h-16 sm:w-16">
+                            <i aria-hidden="true" class="fas fa-rocket text-xl sm:text-3xl"></i>
                         </div>
 
                         <div>
                             <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/80">Enrollment confirmed</p>
-                            <h3 class="mt-2 text-2xl font-semibold">Welcome to your new course</h3>
+                            <h3 class="mt-2 text-lg font-semibold sm:text-2xl">Welcome to your new course</h3>
                             <p class="mt-2 text-sm leading-6 text-white/85">{{ session('success') }}</p>
                             <p class="mt-1 text-sm text-white/75">
                                 You are enrolled in <span class="font-semibold">{{ $course->title }}</span>.
@@ -61,7 +80,7 @@
                     </button>
                 </div>
 
-                <div class="mt-6 grid gap-3 sm:grid-cols-3">
+                <div class="mt-6 hidden gap-3 sm:grid sm:grid-cols-3">
                     <div class="rounded-lg border border-white/15 bg-white/10 p-4 text-center ">
                         <p class="text-2xl font-semibold">{{ $sectionCount }}</p>
                         <p class="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-white/75">Sections</p>
@@ -82,7 +101,7 @@
 
         @if ($resumeLesson)
             <div
-                class="overflow-hidden rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm  ">
+                class="hidden overflow-hidden rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm lg:block">
                 <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                     <div class="flex items-start gap-4">
                         <div class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-lg text-white shadow-sm"

@@ -156,6 +156,42 @@
 }
 
 @layer components {
+    .bk-lesson-prose {
+        max-width: 46rem;
+        color: rgb(var(--text-primary));
+        font-size: 1rem;
+        line-height: 1.8;
+        overflow-wrap: anywhere;
+    }
+
+    .bk-lesson-prose > :first-child { margin-top: 0; }
+    .bk-lesson-prose > :last-child { margin-bottom: 0; }
+    .bk-lesson-prose :is(h2, h3, h4) { color: rgb(var(--text-primary)); font-family: var(--bk-font-display); font-weight: 700; letter-spacing: -.02em; scroll-margin-top: 6rem; }
+    .bk-lesson-prose h2 { margin: 2.75rem 0 1rem; padding-top: .25rem; font-size: clamp(1.35rem, 2vw, 1.75rem); line-height: 1.35; }
+    .bk-lesson-prose h3 { margin: 2rem 0 .75rem; font-size: 1.2rem; line-height: 1.4; }
+    .bk-lesson-prose h4 { margin: 1.5rem 0 .625rem; font-size: 1rem; line-height: 1.45; }
+    .bk-lesson-prose :is(p, ul, ol, blockquote, pre, table, figure) { margin-block: 1.25rem; }
+    .bk-lesson-prose :is(ul, ol) { padding-left: 1.5rem; }
+    .bk-lesson-prose li { margin-block: .45rem; padding-left: .25rem; }
+    .bk-lesson-prose li::marker { color: rgb(var(--accent-primary)); font-weight: 700; }
+    .bk-lesson-prose a { color: rgb(var(--accent-primary)); font-weight: 650; text-decoration: underline; text-decoration-thickness: .08em; text-underline-offset: .2em; }
+    .bk-lesson-prose blockquote { border-left: .25rem solid rgb(var(--accent-primary)); border-radius: 0 var(--bk-radius) var(--bk-radius) 0; background: rgb(var(--accent-primary) / .07); padding: 1rem 1.25rem; color: rgb(var(--text-secondary)); font-style: normal; }
+    .bk-lesson-prose .callout { margin-block: 1.5rem; border: 1px solid rgb(var(--accent-primary) / .25); border-left-width: .25rem; border-radius: var(--bk-radius); background: rgb(var(--accent-primary) / .07); padding: 1rem 1.25rem; }
+    .bk-lesson-prose :is(.callout.warning, .callout.important) { border-color: rgb(var(--bk-warning) / .38); background: rgb(var(--bk-warning) / .08); }
+    .bk-lesson-prose .callout.tip { border-color: rgb(var(--bk-success) / .35); background: rgb(var(--bk-success) / .08); }
+    .bk-lesson-prose :not(pre) > code { border: 1px solid rgb(var(--border-primary)); border-radius: .35rem; background: rgb(var(--bg-tertiary)); padding: .12rem .35rem; color: rgb(var(--text-primary)); font-size: .9em; font-weight: 650; }
+    .bk-lesson-prose pre { position: relative; max-width: 100%; overflow-x: auto; border: 1px solid rgb(51 65 85); border-radius: var(--bk-radius); background: #0f172a; padding: 2.75rem 1.25rem 1.25rem; color: #e2e8f0; box-shadow: 0 12px 30px rgb(15 23 42 / .14); white-space: pre; tab-size: 2; }
+    .bk-lesson-prose pre code { display: block; min-width: max-content; border: 0; background: transparent; padding: 0; color: inherit; font-size: .875rem; line-height: 1.7; }
+    .bk-code-copy { position: absolute; top: .55rem; right: .55rem; display: inline-flex; min-height: 2rem; align-items: center; gap: .35rem; border: 1px solid rgb(148 163 184 / .35); border-radius: .375rem; background: rgb(30 41 59); padding: .3rem .6rem; color: #e2e8f0; font-size: .7rem; font-weight: 700; }
+    .bk-code-copy:hover { background: rgb(51 65 85); }
+    .bk-lesson-prose img { height: auto; margin-inline: auto; border: 1px solid rgb(var(--border-primary)); border-radius: var(--bk-radius); box-shadow: var(--bk-panel-shadow); }
+    .bk-lesson-prose figcaption { margin-top: .5rem; color: rgb(var(--text-secondary)); font-size: .8rem; text-align: center; }
+    .bk-lesson-prose table { display: block; width: 100%; max-width: 100%; overflow-x: auto; border: 1px solid rgb(var(--border-primary)); border-radius: var(--bk-radius); border-collapse: separate; border-spacing: 0; font-size: .9rem; white-space: nowrap; }
+    .bk-lesson-prose :is(th, td) { border-bottom: 1px solid rgb(var(--border-primary)); padding: .75rem 1rem; text-align: left; }
+    .bk-lesson-prose th { background: rgb(var(--bg-tertiary)); color: rgb(var(--text-primary)); font-weight: 750; }
+    .bk-lesson-prose tr:last-child td { border-bottom: 0; }
+    .bk-lesson-prose :is(iframe, video) { width: 100%; max-width: 100%; border-radius: var(--bk-radius); }
+
     .bk-shell {
         width: min(var(--bk-content-width), calc(100% - 2rem));
         margin-inline: auto;

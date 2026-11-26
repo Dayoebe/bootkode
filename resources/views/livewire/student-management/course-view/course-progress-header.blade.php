@@ -11,7 +11,7 @@
     class="relative overflow-hidden rounded-lg border border-themed-primary bg-themed-secondary shadow-sm transition-colors duration-300  ">
 
 
-    <div class="relative p-5 md:p-8">
+    <div class="relative p-4 sm:p-5 md:p-8">
         <div class="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(18rem,0.85fr)] xl:items-start">
             <div class="min-w-0">
                 <div class="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em]">
@@ -32,29 +32,29 @@
                     </span>
                 </div>
 
-                <h1 class="mt-5  font-semibold tracking-tight text-themed-primary  bk-page-title">
+                <p class="mt-4 font-display font-semibold tracking-tight text-themed-primary bk-page-title">
                     {{ $course->title }}
-                </h1>
+                </p>
 
-                <p class="mt-3 max-w-3xl text-base leading-7 text-themed-secondary md:text-lg">
+                <p class="mt-2 max-w-3xl text-sm leading-6 text-themed-secondary sm:mt-3 sm:text-base sm:leading-7 md:text-lg">
                     {{ $course->subtitle ?: \Illuminate\Support\Str::limit(strip_tags($course->description), 210) }}
                 </p>
 
-                <div class="mt-6 flex flex-wrap items-center gap-3 text-sm text-themed-secondary">
-                    <span class="inline-flex items-center gap-2 rounded-full border border-themed-secondary bg-themed-tertiary px-4 py-2">
+                <div class="mt-4 flex flex-wrap items-center gap-2 text-sm text-themed-secondary sm:gap-3">
+                    <span class="hidden items-center gap-2 rounded-full border border-themed-secondary bg-themed-tertiary px-4 py-2 md:inline-flex">
                         <i aria-hidden="true" class="fas fa-user-graduate accent-themed-primary"></i>
                         {{ $course->instructor->name ?? 'Bootkode Instructor' }}
                     </span>
-                    <span class="inline-flex items-center gap-2 rounded-full border border-themed-secondary bg-themed-tertiary px-4 py-2">
+                    <span class="inline-flex items-center gap-2 rounded-full border border-themed-secondary bg-themed-tertiary px-3 py-1.5 sm:px-4 sm:py-2">
                         <i aria-hidden="true" class="fas fa-layer-group accent-themed-primary"></i>
                         {{ $course->sections->count() }} sections
                     </span>
-                    <span class="inline-flex items-center gap-2 rounded-full border border-themed-secondary bg-themed-tertiary px-4 py-2">
+                    <span class="inline-flex items-center gap-2 rounded-full border border-themed-secondary bg-themed-tertiary px-3 py-1.5 sm:px-4 sm:py-2">
                         <i aria-hidden="true" class="fas fa-book-open accent-themed-primary"></i>
                         {{ $stats['total'] }} lessons
                     </span>
                     @if ($currentSection)
-                        <span class="inline-flex items-center gap-2 rounded-full border border-themed-secondary bg-themed-tertiary px-4 py-2">
+                        <span class="hidden items-center gap-2 rounded-full border border-themed-secondary bg-themed-tertiary px-4 py-2 lg:inline-flex">
                             <i aria-hidden="true" class="fas fa-location-arrow accent-themed-primary"></i>
                             Current focus: {{ $currentSection->title }}
                         </span>
@@ -62,7 +62,7 @@
                 </div>
             </div>
 
-            <div class="grid gap-3 sm:grid-cols-2">
+            <div class="hidden gap-3 sm:grid-cols-2 xl:grid">
                 <div class="rounded-lg border border-themed-secondary bg-themed-tertiary p-4 shadow-sm">
                     <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-tertiary">Overall Progress</p>
                     <div class="mt-3 flex items-end justify-between gap-3">
@@ -100,7 +100,7 @@
             </div>
         </div>
 
-        <div class="mt-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+        <div class="mt-8 hidden gap-4 lg:grid lg:grid-cols-[minmax(0,1fr)_22rem]">
             <div class="rounded-lg border border-themed-secondary bg-themed-tertiary p-5 shadow-sm">
                 <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div class="min-w-0">

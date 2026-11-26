@@ -2,18 +2,45 @@
 
 namespace App\Livewire\StudentManagement\CourseView;
 
-use Livewire\Component;
+use App\Livewire\Concerns\RequiresAuthenticatedAccount;
 use App\Models\Learning\Course;
+use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
+use Livewire\Component;
 
 class CourseProgressSidebar extends Component
 {
+    use RequiresAuthenticatedAccount;
+
+    #[Locked]
     public $course;
+
+    #[Locked]
     public $sections;
+
+    #[Locked]
     public $currentLesson;
+
+    #[Locked]
     public $completedLessons;
+
+    #[Locked]
     public $unlockedSections;
+
+    #[Locked]
     public $sectionCompletionThreshold;
+
+    public function boot(): void
+    {
+        if ($this->course instanceof Course) {
+            abort_unless(
+                Auth::user()->enrollments()->where('course_id', $this->course->id)->exists()
+                || Auth::user()->courses()->where('courses.id', $this->course->id)->exists(),
+                403
+            );
+        }
+    }
 
     #[On('progress-updated')]
     public function refreshProgress()
@@ -24,8 +51,14 @@ class CourseProgressSidebar extends Component
 
     public function selectLesson($lessonId, $sectionId)
     {
+        $lesson = $this->course->sections
+            ->firstWhere('id', (int) $sectionId)?->lessons
+            ->firstWhere('id', (int) $lessonId);
+
+        abort_unless($lesson, 404);
+
         // Check if section is unlocked
-        if (!in_array($sectionId, $this->unlockedSections, true)) {
+        if (!in_array((int) $sectionId, $this->unlockedSections, true)) {
             $this->dispatch('notify', [
                 'message' => "Complete at least {$this->sectionCompletionThreshold}% of the previous section to unlock this lesson.",
                 'type' => 'warning'

@@ -13,6 +13,60 @@ window.applyBootKodeAiContent = (field, value) => {
     editor.focus();
 };
 
+// Progressive enhancement for code-heavy lesson content. The lesson HTML remains
+// readable without JavaScript; copy controls are added only when a code block exists.
+window.enhanceBootKodeLesson = (root) => {
+    if (!root) return;
+
+    root.querySelectorAll('pre').forEach((block) => {
+        if (block.querySelector(':scope > .bk-code-copy')) return;
+
+        const code = block.querySelector('code');
+        if (!code) return;
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'bk-code-copy';
+        button.setAttribute('aria-label', 'Copy code to clipboard');
+        button.innerHTML = '<i class="far fa-copy" aria-hidden="true"></i><span>Copy</span>';
+        button.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(code.textContent || '');
+                button.querySelector('span').textContent = 'Copied';
+                button.setAttribute('aria-label', 'Code copied to clipboard');
+            } catch {
+                button.querySelector('span').textContent = 'Select code';
+                button.setAttribute('aria-label', 'Copy unavailable. Select the code manually.');
+            }
+
+            window.setTimeout(() => {
+                button.querySelector('span').textContent = 'Copy';
+                button.setAttribute('aria-label', 'Copy code to clipboard');
+            }, 1800);
+        });
+
+        block.prepend(button);
+    });
+};
+
+document.addEventListener('livewire:init', () => {
+    Livewire.on('lesson-location-changed', (event) => {
+        const lessonId = event?.lessonId ?? event?.[0]?.lessonId;
+        if (!lessonId) return;
+
+        const url = new URL(window.location.href);
+        url.searchParams.set('lesson', lessonId);
+        url.searchParams.delete('continue');
+        window.history.replaceState(window.history.state, '', url);
+
+        window.requestAnimationFrame(() => {
+            const heading = document.getElementById(`lesson-title-${lessonId}`);
+            heading?.focus({preventScroll: true});
+            heading?.scrollIntoView({behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start'});
+        });
+    });
+});
+
 const updateDashboardLiveStatus = () => {
     const time = new Intl.DateTimeFormat('en-NG', {
         timeZone: 'Africa/Lagos',

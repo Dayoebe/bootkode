@@ -123,16 +123,12 @@
     </div>
     @endif
 
-    <div class="overflow-hidden rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm transition-colors duration-300   md:p-6">
-        <div class="mb-6 overflow-hidden rounded-[1.75rem] border border-themed-secondary shadow-sm"
-            style="background:
-                radial-gradient(circle at top left, rgba(var(--accent-primary), 0.16), transparent 34%),
-                radial-gradient(circle at top right, rgba(var(--accent-secondary), 0.12), transparent 32%),
-                linear-gradient(160deg, rgba(var(--accent-primary), 0.06), rgba(var(--accent-secondary), 0.03));">
-            <div class="p-5 md:p-6">
-                <div class="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
+    <div class="overflow-hidden rounded-lg border border-themed-primary bg-themed-secondary p-3 shadow-sm transition-colors duration-300 sm:p-5 md:p-6">
+        <div class="mb-4 border-b border-themed-secondary pb-4 sm:mb-6 sm:pb-6">
+            <div>
+                <div class="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
                     <div class="max-w-3xl">
-                        <div class="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em]">
+                        <div class="flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] sm:text-xs sm:tracking-[0.18em]">
                             <span class="rounded-full border border-themed-secondary bg-themed-secondary px-3 py-1 text-themed-secondary">
                                 {{ $lesson->section->title }}
                             </span>
@@ -152,17 +148,17 @@
                             @endif
                         </div>
 
-                        <h2 class="mt-5 text-3xl font-semibold tracking-tight text-themed-primary md:text-4xl">
+                        <h1 id="lesson-title-{{ $lesson->id }}" tabindex="-1" class="mt-3 text-2xl font-semibold tracking-tight text-themed-primary sm:mt-5 sm:text-3xl md:text-4xl">
                             {{ $lesson->title }}
-                        </h2>
+                        </h1>
 
                         @if ($lesson->description)
-                            <p class="mt-3 max-w-2xl text-base leading-7 text-themed-secondary md:text-lg">
+                            <p class="mt-2 max-w-2xl text-sm leading-6 text-themed-secondary sm:mt-3 sm:text-base sm:leading-7 md:text-lg">
                                 {{ $lesson->description }}
                             </p>
                         @endif
 
-                        <div class="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                        <div class="mt-6 hidden gap-3 sm:grid-cols-2 xl:grid-cols-4 xl:grid">
                             <div class="rounded-lg border border-themed-secondary bg-themed-tertiary p-4 shadow-sm">
                                 <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-tertiary">Time Spent</p>
                                 <p class="mt-2 text-2xl font-semibold text-themed-primary" x-text="formattedLiveTime()">
@@ -207,7 +203,7 @@
                         </div>
                     </div>
 
-                    <div class="w-full xl:max-w-sm">
+                    <div class="hidden w-full xl:block xl:max-w-sm">
                         <div class="rounded-[1.75rem] border border-themed-secondary bg-themed-tertiary p-5 shadow-sm">
                             <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-tertiary">Lesson Status</p>
 
@@ -269,51 +265,20 @@
             </div>
         </div>
 
-        <section class="mb-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto]" aria-labelledby="lesson-tools-heading">
-            <div class="rounded-lg border border-themed-secondary bg-themed-tertiary p-5">
-                <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-tertiary">Learning tools</p>
-                        <h3 id="lesson-tools-heading" class="mt-1 text-lg font-semibold text-themed-primary">Private lesson note</h3>
-                        <p class="mt-1 text-sm text-themed-secondary">Saved only to your account. Clearing the field removes the note.</p>
-                    </div>
-                    <button type="button" wire:click="toggleBookmark" wire:loading.attr="disabled" wire:target="toggleBookmark"
-                        class="bk-button {{ $isBookmarked ? 'bk-button-primary' : 'bk-button-secondary' }} shrink-0"
-                        aria-pressed="{{ $isBookmarked ? 'true' : 'false' }}">
-                        <i aria-hidden="true" class="{{ $isBookmarked ? 'fas' : 'far' }} fa-bookmark"></i>
-                        {{ $isBookmarked ? 'Bookmarked' : 'Bookmark lesson' }}
-                    </button>
-                </div>
-
-                <form wire:submit="saveLessonNotes" class="mt-4">
-                    <label for="lesson-notes-{{ $lesson->id }}" class="sr-only">Private notes for {{ $lesson->title }}</label>
-                    <textarea id="lesson-notes-{{ $lesson->id }}" wire:model="lessonNotes" rows="4" maxlength="5000"
-                        class="bk-input min-h-28 resize-y" placeholder="Capture a key idea, question, or next action…"
-                        aria-describedby="lesson-notes-help-{{ $lesson->id }} @error('lessonNotes') lesson-notes-error-{{ $lesson->id }} @enderror"></textarea>
-                    <div class="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                        <p id="lesson-notes-help-{{ $lesson->id }}" class="text-xs text-themed-secondary">Up to 5,000 characters.</p>
-                        <button type="submit" class="bk-button bk-button-primary" wire:loading.attr="disabled" wire:target="saveLessonNotes">
-                            <span wire:loading.remove wire:target="saveLessonNotes">Save note</span>
-                            <span wire:loading wire:target="saveLessonNotes">Saving…</span>
-                        </button>
-                    </div>
-                    @error('lessonNotes')
-                        <p id="lesson-notes-error-{{ $lesson->id }}" class="bk-field-error mt-2" role="alert">{{ $message }}</p>
-                    @enderror
-                    <p class="mt-2 min-h-5 text-sm text-themed-secondary" role="status" aria-live="polite">{{ $noteStatus }}</p>
-                </form>
-            </div>
-        </section>
-
         <!-- Assessment Preview (if not started) -->
         @if ($hasAssessments && !$allAssessmentsPassed)
             @php $assessmentPreview = $this->getAssessmentPreview(); @endphp
             @if ($assessmentPreview)
-                <div class="mb-6 rounded-[1.75rem] border border-brand bg-brand-ink   p-4 shadow-sm dark:border-brand   md:p-6">
-                    <h3 class="mb-4 flex items-center text-lg font-bold text-content dark:text-white">
-                        <i aria-hidden="true" class="fas fa-eye mr-2 text-brand dark:text-brand"></i>
-                        Assessment Preview
-                    </h3>
+                <details class="group mb-4 overflow-hidden rounded-lg border border-themed-secondary bg-themed-tertiary">
+                    <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 p-3 text-sm font-semibold text-themed-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-action">
+                        <span class="flex items-center gap-2">
+                            <i aria-hidden="true" class="fas fa-clipboard-check accent-themed-primary"></i>
+                            Assessment overview
+                            <span class="rounded-full bg-amber-500 px-2 py-1 text-[11px] font-semibold text-white">Required</span>
+                        </span>
+                        <i aria-hidden="true" class="fas fa-chevron-down text-xs text-themed-secondary transition-transform group-open:rotate-180"></i>
+                    </summary>
+                    <div class="border-t border-themed-secondary p-3 sm:p-5">
 
                     <div class="space-y-4">
                         @foreach ($assessmentPreview as $preview)
@@ -378,7 +343,8 @@
                             </div>
                         @endforeach
                     </div>
-                </div>
+                    </div>
+                </details>
             @endif
         @endif
 
@@ -386,8 +352,17 @@
         <div class="lesson-content-wrapper">
             <!-- Main Text Content -->
             @if ($lesson->content)
-                <div class="lesson-content-display mb-6 prose dark:prose-invert max-w-none text-content dark:text-gray-100">
+                <div class="bk-lesson-prose lesson-content-display mb-8" x-init="$nextTick(() => window.enhanceBootKodeLesson?.($el))">
                     {!! $lesson->content !!}
+                </div>
+            @elseif ($lesson->text_content)
+                <div class="bk-lesson-prose lesson-content-display mb-8">
+                    <p>{!! nl2br(e($lesson->text_content)) !!}</p>
+                </div>
+            @elseif (! $lesson->hasMediaContent() && ! $hasAssessments)
+                <div class="mb-8 rounded-lg border border-dashed border-themed-secondary bg-themed-tertiary p-5">
+                    <h2 class="text-base font-semibold text-themed-primary">Lesson material is not available yet</h2>
+                    <p class="mt-2 text-sm leading-6 text-themed-secondary">The lesson is published, but no readable content or learning media has been attached. Please check again later or contact the instructor.</p>
                 </div>
             @endif
 
@@ -728,6 +703,41 @@
             @endif
         </div>
 
+        <div class="mb-6 rounded-lg border border-themed-secondary bg-themed-tertiary p-4 xl:hidden">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-secondary">Lesson progress</p>
+                    <p class="mt-1 text-sm text-themed-primary">
+                        Lesson {{ $currentIndex + 1 }} of {{ $totalLessons }} · {{ $coursePosition }}% through the course
+                    </p>
+                </div>
+
+                @if ($isCompleted)
+                    <button wire:click="markAsIncomplete"
+                        class="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-600">
+                        <i aria-hidden="true" class="fas fa-undo"></i>
+                        Mark Incomplete
+                    </button>
+                @else
+                    <button wire:click="markAsCompleted"
+                        class="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+                        @if ($hasAssessments && !$allAssessmentsPassed) disabled @endif>
+                        <i aria-hidden="true" class="fas fa-check"></i>
+                        Mark Complete
+                    </button>
+                @endif
+            </div>
+
+            <div class="mt-3 h-2 overflow-hidden rounded-full bg-themed-secondary">
+                <div class="h-full rounded-full transition-all duration-500"
+                    style="width: {{ $coursePosition }}%; background: rgb(var(--accent-primary));">
+                </div>
+            </div>
+            @if ($hasAssessments && !$allAssessmentsPassed)
+                <p class="mt-2 text-xs text-themed-secondary">Complete the required assessment before marking this lesson complete.</p>
+            @endif
+        </div>
+
         <!-- Document Modal -->
         <div x-cloak x-show="documentModalOpen" x-transition.opacity
             class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4"
@@ -913,29 +923,6 @@
     <style>
         .lesson-viewer [x-cloak] {
             display: none !important;
-        }
-
-        .lesson-content-display {
-            overflow-wrap: anywhere;
-        }
-
-        .lesson-content-display iframe,
-        .lesson-content-display img,
-        .lesson-content-display video,
-        .lesson-content-display table {
-            max-width: 100%;
-        }
-
-        .lesson-content-display table {
-            display: block;
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-
-        .lesson-content-display pre {
-            max-width: 100%;
-            overflow-x: auto;
-            white-space: pre-wrap;
         }
 
         .mini-player {
