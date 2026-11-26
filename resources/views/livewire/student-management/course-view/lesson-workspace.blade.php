@@ -62,8 +62,8 @@
 
 <div class="grid grid-cols-1 gap-5 lg:items-start"
     :class="curriculumCollapsed
-        ? 'lg:grid-cols-[4.5rem_minmax(0,1fr)] 2xl:grid-cols-[4.5rem_minmax(0,1fr)_18rem]'
-        : 'lg:grid-cols-[21rem_minmax(0,1fr)] 2xl:grid-cols-[21rem_minmax(0,1fr)_18rem]'">
+        ? 'lg:grid-cols-[4.5rem_minmax(0,1fr)] min-[1360px]:grid-cols-[4.5rem_minmax(0,1fr)_18rem]'
+        : 'lg:grid-cols-[21rem_minmax(0,1fr)] min-[1360px]:grid-cols-[21rem_minmax(0,1fr)_18rem]'">
     <aside class="hidden lg:block" aria-label="Course curriculum">
         <div x-show="!curriculumCollapsed" x-transition.opacity>
             <div class="mb-2 flex justify-end">
@@ -131,7 +131,7 @@
     </div>
 
     @if ($currentLesson)
-        <div class="mt-5 2xl:mt-0">
+        <div class="mt-5 min-[1360px]:mt-0">
             <livewire:student-management.course-view.lesson-tools-panel :lesson="$currentLesson"
                 wire:key="tools-{{ $currentLesson->id }}" />
         </div>

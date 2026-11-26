@@ -155,7 +155,7 @@
                                 class="bk-topbar-icon-button" aria-label="Back to my learning">
                                 <i class="fas fa-arrow-left" aria-hidden="true"></i>
                             </a>
-                            <a href="{{ route('dashboard') }}" wire:navigate class="flex min-w-0 items-center gap-3 rounded-lg">
+                            <a href="{{ route('dashboard') }}" wire:navigate class="flex min-h-11 min-w-0 items-center gap-3 rounded-lg">
                                 <span class="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-lg border border-line bg-white">
                                     <img src="{{ asset('img/logo.png') }}" alt="" class="h-full w-full object-contain">
                                 </span>

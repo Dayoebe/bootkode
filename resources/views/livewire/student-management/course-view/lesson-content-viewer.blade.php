@@ -35,21 +35,6 @@
         documentModalTitle: '',
         imageModalOpen: false,
         imageModalUrl: '',
-        liveSeconds: @js((int) $timeSpentSeconds),
-        estimatedMinutes: @js((int) ($timeComparison['estimated'] ?? 0)),
-        init() {
-            this.liveSeconds = Math.max(this.liveSeconds, @js((int) $timeSpentSeconds));
-
-            window.bootkodeLessonViewer = window.bootkodeLessonViewer || {};
-
-            if (window.bootkodeLessonViewer.liveTimer) {
-                clearInterval(window.bootkodeLessonViewer.liveTimer);
-            }
-
-            window.bootkodeLessonViewer.liveTimer = setInterval(() => {
-                this.liveSeconds += 1;
-            }, 1000);
-        },
         toggle(panel) {
             this.openPanels = this.openPanels.includes(panel)
                 ? this.openPanels.filter(item => item !== panel)
@@ -75,39 +60,6 @@
         closeImage() {
             this.imageModalOpen = false;
             this.imageModalUrl = '';
-        },
-        formattedLiveTime() {
-            const minutesTotal = Math.floor(this.liveSeconds / 60);
-            const seconds = this.liveSeconds % 60;
-
-            if (minutesTotal > 60) {
-                const hours = Math.floor(minutesTotal / 60);
-                const minutes = minutesTotal % 60;
-                return `${hours}h ${minutes}m`;
-            }
-
-            return `${minutesTotal}m ${seconds}s`;
-        },
-        timeEstimateText() {
-            if (!this.estimatedMinutes) {
-                return '';
-            }
-
-            const actualMinutes = Math.floor(this.liveSeconds / 60);
-            const percentage = this.estimatedMinutes > 0
-                ? Math.round((actualMinutes / this.estimatedMinutes) * 100)
-                : 0;
-
-            return `${percentage}% of ${this.estimatedMinutes}m estimate`;
-        },
-        timeEstimateClass() {
-            if (!this.estimatedMinutes) {
-                return '';
-            }
-
-            return Math.floor(this.liveSeconds / 60) > this.estimatedMinutes
-                ? 'text-amber-500'
-                : 'text-emerald-500';
         }
     }"
     x-on:keydown.escape.window="closeDocument(); closeImage()"
@@ -161,11 +113,9 @@
                         <div class="mt-6 hidden gap-3 sm:grid-cols-2 xl:grid-cols-4 xl:grid">
                             <div class="rounded-lg border border-themed-secondary bg-themed-tertiary p-4 shadow-sm">
                                 <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-tertiary">Time Spent</p>
-                                <p class="mt-2 text-2xl font-semibold text-themed-primary" x-text="formattedLiveTime()">
-                                    {{ $this->getFormattedTimeSpent() }}
-                                </p>
+                                <p class="mt-2 text-2xl font-semibold text-themed-primary">{{ $this->getFormattedTimeSpent() }}</p>
                                 @if ($timeComparison && $timeComparison['estimated'] > 0)
-                                    <p class="mt-1 text-xs" :class="timeEstimateClass()" x-text="timeEstimateText()">
+                                    <p class="mt-1 text-xs {{ $timeComparison['over_time'] ? 'text-amber-500' : 'text-emerald-500' }}">
                                         {{ $timeComparison['percentage'] }}% of {{ $timeComparison['estimated'] }}m estimate
                                     </p>
                                 @endif
@@ -237,13 +187,13 @@
 
                             <div class="mt-5 space-y-3">
                                 @if ($isCompleted)
-                                    <button wire:click="markAsIncomplete"
+                                    <button type="button" wire:click="markAsIncomplete" wire:loading.attr="disabled" wire:target="markAsIncomplete"
                                         class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-amber-500 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-600">
                                         <i aria-hidden="true" class="fas fa-undo"></i>
                                         Mark Incomplete
                                     </button>
                                 @else
-                                    <button wire:click="markAsCompleted"
+                                    <button type="button" wire:click="markAsCompleted" wire:loading.attr="disabled" wire:target="markAsCompleted"
                                         class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 {{ $hasAssessments && !$allAssessmentsPassed ? 'cursor-not-allowed opacity-50' : '' }}"
                                         @if ($hasAssessments && !$allAssessmentsPassed) disabled @endif>
                                         <i aria-hidden="true" class="fas fa-check"></i>
@@ -476,7 +426,7 @@
                                             class="rounded-lg bg-action px-3 py-2 text-sm text-action-foreground shadow-sm transition-colors hover:bg-action hover:shadow-sm">
                                             <i aria-hidden="true" class="fas fa-eye mr-1"></i> View
                                         </button>
-                                        <a href="{{ $documentUrl }}" target="_blank"
+                                        <a href="{{ $documentUrl }}" target="_blank" rel="noopener noreferrer"
                                             class="rounded-lg bg-gray-500 px-3 py-2 text-sm text-white shadow-sm transition-colors hover:bg-gray-600 hover:shadow-sm dark:bg-gray-600 dark:hover:bg-gray-700">
                                             <i aria-hidden="true" class="fas fa-download mr-1"></i> Download
                                         </a>
@@ -686,7 +636,7 @@
                     <div class="mt-3" x-show="isOpen('external-links')" x-transition.opacity.scale.origin.top>
                         <div class="space-y-2">
                             @foreach ($lesson->getExternalLinksArray() as $link)
-                                <a href="{{ $link['url'] }}" target="_blank"
+                                <a href="{{ $link['url'] }}" target="_blank" rel="noopener noreferrer"
                                     class="block rounded-lg border border-line bg-surface-muted p-4 shadow-sm transition-all duration-200 hover:bg-surface-muted  dark:border-gray-600 dark:bg-gray-700/50 dark:hover:bg-gray-700">
                                     <div class="flex items-center">
                                         <i aria-hidden="true" class="fas fa-external-link-alt mr-3 text-orange-500 dark:text-orange-400"></i>
@@ -713,13 +663,13 @@
                 </div>
 
                 @if ($isCompleted)
-                    <button wire:click="markAsIncomplete"
+                    <button type="button" wire:click="markAsIncomplete" wire:loading.attr="disabled" wire:target="markAsIncomplete"
                         class="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-600">
                         <i aria-hidden="true" class="fas fa-undo"></i>
                         Mark Incomplete
                     </button>
                 @else
-                    <button wire:click="markAsCompleted"
+                    <button type="button" wire:click="markAsCompleted" wire:loading.attr="disabled" wire:target="markAsCompleted"
                         class="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
                         @if ($hasAssessments && !$allAssessmentsPassed) disabled @endif>
                         <i aria-hidden="true" class="fas fa-check"></i>
@@ -824,7 +774,7 @@
 
             <div class="flex flex-col gap-3 sm:flex-row xl:flex-col xl:justify-end">
                 @if ($previousLesson)
-                    <button wire:click="goToPreviousLesson"
+                    <button type="button" wire:click="goToPreviousLesson" wire:loading.attr="disabled" wire:target="goToPreviousLesson"
                         class="inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-lg border border-themed-secondary bg-themed-tertiary px-5 py-3 text-sm font-semibold text-themed-primary shadow-sm transition hover:-translate-y-0.5 hover:bg-themed-secondary sm:min-w-[14rem]">
                         <i aria-hidden="true" class="fas fa-arrow-left"></i>
                         Previous Lesson
@@ -838,7 +788,7 @@
 
                 @if ($nextLesson)
                     @if ($this->canProceedToNext())
-                        <button wire:click="goToNextLesson"
+                        <button type="button" wire:click="goToNextLesson" wire:loading.attr="disabled" wire:target="goToNextLesson"
                             class="inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 sm:min-w-[14rem]"
                             style="background: rgb(var(--bk-action)); color: rgb(var(--bk-action-text));">
                             Continue
@@ -851,7 +801,7 @@
                         </div>
                     @endif
                 @else
-                    <button wire:click="completeCourse"
+                    <button type="button" wire:click="completeCourse" wire:loading.attr="disabled" wire:target="completeCourse"
                         class="inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-emerald-700 sm:min-w-[14rem] {{ !$this->canProceedToNext() ? 'cursor-not-allowed opacity-50' : '' }}"
                         @if (!$this->canProceedToNext()) disabled @endif>
                         <i aria-hidden="true" class="fas fa-trophy"></i>

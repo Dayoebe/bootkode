@@ -182,7 +182,7 @@
     .bk-lesson-prose :not(pre) > code { border: 1px solid rgb(var(--border-primary)); border-radius: .35rem; background: rgb(var(--bg-tertiary)); padding: .12rem .35rem; color: rgb(var(--text-primary)); font-size: .9em; font-weight: 650; }
     .bk-lesson-prose pre { position: relative; max-width: 100%; overflow-x: auto; border: 1px solid rgb(51 65 85); border-radius: var(--bk-radius); background: #0f172a; padding: 2.75rem 1.25rem 1.25rem; color: #e2e8f0; box-shadow: 0 12px 30px rgb(15 23 42 / .14); white-space: pre; tab-size: 2; }
     .bk-lesson-prose pre code { display: block; min-width: max-content; border: 0; background: transparent; padding: 0; color: inherit; font-size: .875rem; line-height: 1.7; }
-    .bk-code-copy { position: absolute; top: .55rem; right: .55rem; display: inline-flex; min-height: 2rem; align-items: center; gap: .35rem; border: 1px solid rgb(148 163 184 / .35); border-radius: .375rem; background: rgb(30 41 59); padding: .3rem .6rem; color: #e2e8f0; font-size: .7rem; font-weight: 700; }
+    .bk-code-copy { position: absolute; top: .55rem; right: .55rem; display: inline-flex; min-height: var(--bk-control-height); align-items: center; gap: .35rem; border: 1px solid rgb(148 163 184 / .35); border-radius: .375rem; background: rgb(30 41 59); padding: .3rem .75rem; color: #e2e8f0; font-size: .75rem; font-weight: 700; }
     .bk-code-copy:hover { background: rgb(51 65 85); }
     .bk-lesson-prose img { height: auto; margin-inline: auto; border: 1px solid rgb(var(--border-primary)); border-radius: var(--bk-radius); box-shadow: var(--bk-panel-shadow); }
     .bk-lesson-prose figcaption { margin-top: .5rem; color: rgb(var(--text-secondary)); font-size: .8rem; text-align: center; }

@@ -1,4 +1,4 @@
-<aside class="space-y-4 2xl:sticky 2xl:top-20" aria-labelledby="lesson-tools-heading">
+<aside class="space-y-4 min-[1360px]:sticky min-[1360px]:top-20" aria-labelledby="lesson-tools-heading">
     <section class="rounded-lg border border-themed-primary bg-themed-secondary p-4 shadow-sm">
         <div class="flex items-start justify-between gap-3">
             <div>

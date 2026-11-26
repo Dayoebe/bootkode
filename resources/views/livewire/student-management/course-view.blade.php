@@ -4,13 +4,6 @@
     $lessonCount = $course->sections->sum(fn($section) => $section->lessons->count());
     $lastViewedLesson = $this->lastViewedLesson;
     $resumeLesson = $lastViewedLesson && $lastViewedLesson->id !== $currentLesson?->id ? $lastViewedLesson : null;
-    $completedSectionCount = $course->sections->filter(function ($section) use ($completedLessons) {
-        return $section->lessons->count() > 0
-            && $section->lessons->every(fn($lesson) => in_array($lesson->id, $completedLessons, true));
-    })->count();
-    $unlockedSectionCount = count($unlockedSections);
-    $currentSectionProgress = $currentSection ? $this->calculateSectionProgress($currentSection) : 0;
-    $nextLockedSection = $course->sections->first(fn($section) => !in_array($section->id, $unlockedSections, true));
     $progressKey = $course->id . '-' . $progressVersion . '-' . ($currentLesson?->id ?? 'none');
     $offlinePack = $this->offlinePack;
     $offlineEstimateMb = $this->estimateOfflinePackSizeMb();
@@ -247,67 +240,6 @@
             </section>
         </details>
 
-        <section class="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
-            <div class="overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-5 shadow-sm">
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Unlocked Sections</p>
-                <div class="mt-3 flex items-end justify-between gap-3">
-                    <span class="text-3xl font-semibold text-themed-primary">{{ $unlockedSectionCount }}</span>
-                    <span class="rounded-full border border-themed-secondary bg-themed-tertiary px-3 py-1 text-xs font-semibold text-themed-secondary">
-                        of {{ $sectionCount }}
-                    </span>
-                </div>
-                <p class="mt-3 text-sm leading-6 text-themed-secondary">
-                    {{ $nextLockedSection ? 'Keep progressing to open the next chapter.' : 'Every section is open for review.' }}
-                </p>
-            </div>
-
-            <div class="overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-5 shadow-sm">
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Completed Lessons</p>
-                <div class="mt-3 flex items-end justify-between gap-3">
-                    <span class="text-3xl font-semibold text-themed-primary">{{ count($completedLessons) }}</span>
-                    <span class="rounded-full border border-themed-secondary bg-themed-tertiary px-3 py-1 text-xs font-semibold text-themed-secondary">
-                        {{ $lessonCount }} total
-                    </span>
-                </div>
-                <p class="mt-3 text-sm leading-6 text-themed-secondary">
-                    {{ $overallProgress }}% of the course is done and saved to your enrollment record.
-                </p>
-            </div>
-
-            <div class="overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-5 shadow-sm">
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Current Section</p>
-                <div class="mt-3 flex items-end justify-between gap-3">
-                    <span class="truncate text-2xl font-semibold text-themed-primary">
-                        {{ $currentSection?->title ?? 'Ready to begin' }}
-                    </span>
-                    <span class="rounded-full border border-themed-secondary bg-themed-tertiary px-3 py-1 text-xs font-semibold text-themed-secondary">
-                        {{ $currentSectionProgress }}%
-                    </span>
-                </div>
-                <div class="mt-4 h-2 overflow-hidden rounded-full border border-themed-secondary bg-themed-tertiary">
-                    <div class="h-full rounded-full"
-                        style="width: {{ $currentSectionProgress }}%; background: rgb(var(--accent-primary));">
-                    </div>
-                </div>
-            </div>
-
-            <div class="overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-5 shadow-sm">
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Next Unlock</p>
-                <div class="mt-3">
-                    <p class="text-2xl font-semibold text-themed-primary">
-                        {{ $nextLockedSection?->title ?? 'All open' }}
-                    </p>
-                    <p class="mt-2 text-sm leading-6 text-themed-secondary">
-                        @if ($nextLockedSection)
-                            Reach {{ $sectionCompletionThreshold }}% in the current section to unlock it.
-                        @else
-                            You can move freely through every section now.
-                        @endif
-                    </p>
-                </div>
-            </div>
-        </section>
-
         @if ($certificateEarned ?? false)
             <div
                 class="overflow-hidden rounded-lg border border-emerald-400/40 bg-brand-ink   p-6 text-white shadow-sm  ">
@@ -335,53 +267,21 @@
             </div>
         @endif
 
-        <section id="course-reviews"
-            class="overflow-hidden rounded-lg border border-themed-secondary bg-themed-tertiary/40 p-4 shadow-sm  ">
-            <div class="flex flex-col gap-2 border-b border-themed-secondary/70 pb-4 sm:flex-row sm:items-end sm:justify-between">
+        <details id="course-reviews" class="group overflow-hidden rounded-lg border border-themed-secondary bg-themed-secondary shadow-sm">
+            <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 p-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-action">
                 <div>
                     <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-themed-secondary">Optional</p>
-                    <h2 class="mt-2 text-lg font-semibold text-themed-primary">Learner reviews</h2>
-                    <p class="mt-1 text-sm leading-6 text-themed-secondary">
-                        Keep this collapsed unless you want to read feedback or leave a review.
-                    </p>
+                    <h2 class="mt-1 text-base font-semibold text-themed-primary">Learner reviews</h2>
+                    <p class="mt-1 text-sm leading-6 text-themed-secondary">Read recorded feedback or leave your own review.</p>
                 </div>
+                <i class="fas fa-chevron-down text-sm text-themed-secondary transition-transform group-open:rotate-180" aria-hidden="true"></i>
+            </summary>
 
-                <div class="rounded-lg border border-themed-secondary bg-themed-secondary px-4 py-2 text-xs text-themed-secondary">
-                    Secondary section
-                </div>
-            </div>
-
-            <div class="mt-4">
+            <div class="border-t border-themed-secondary p-4">
                 <livewire:student-management.course-view.review :course="$course" wire:key="reviews-{{ $course->id }}" />
             </div>
-        </section>
+        </details>
     </div>
-
-    <style>
-        .course-view-shell [x-cloak] {
-            display: none !important;
-        }
-
-        .course-view-shell * {
-            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-        }
-
-        .text-brand {
-            color: rgb(var(--accent-primary));
-        }
-
-        .bg-action {
-            background-color: rgb(var(--accent-primary));
-        }
-
-        .to-accent-themed-secondary {
-            --tw-gradient-to: rgb(var(--accent-secondary));
-        }
-
-        .from-accent-themed-primary {
-            --tw-gradient-from: rgb(var(--accent-primary));
-        }
-    </style>
 
     @if ($shouldCelebrate)
         @push('scripts')

@@ -8,18 +8,7 @@
     $overallProgress = $totalLessons > 0 ? round((count($completedLessons) / $totalLessons) * 100) : 0;
 @endphp
 
-<div x-data="{
-        expandedSections: @js($defaultExpanded),
-        toggleSection(id) {
-            this.expandedSections = this.expandedSections.includes(id)
-                ? this.expandedSections.filter(sectionId => sectionId !== id)
-                : [...this.expandedSections, id];
-        },
-        isExpanded(id) {
-            return this.expandedSections.includes(id);
-        }
-    }"
-    class="rounded-lg border border-themed-primary bg-themed-secondary p-4 shadow-sm transition-colors duration-300   lg:sticky lg:top-4">
+<div class="rounded-lg border border-themed-primary bg-themed-secondary p-4 shadow-sm transition-colors duration-300 lg:sticky lg:top-20">
     <div class="rounded-lg border border-themed-secondary bg-themed-tertiary p-4">
         <div class="flex items-start justify-between gap-4">
             <div class="min-w-0">
@@ -64,12 +53,9 @@
                 $isCompleted = $this->isSectionCompleted($section);
             @endphp
 
-            <section
-                class="overflow-hidden rounded-lg border border-themed-secondary bg-themed-tertiary shadow-sm transition-all duration-300 {{ $isUnlocked ? '' : 'opacity-70' }}">
-                <button type="button"
-                    @click="toggleSection({{ $section->id }})"
-                    :aria-expanded="isExpanded({{ $section->id }}).toString()"
-                    aria-controls="course-section-{{ $section->id }}"
+            <details @if(in_array($section->id, $defaultExpanded, true)) open @endif
+                class="group overflow-hidden rounded-lg border border-themed-secondary bg-themed-tertiary shadow-sm {{ $isUnlocked ? '' : 'opacity-70' }}">
+                <summary
                     class="flex w-full items-start justify-between gap-3 px-4 py-4 text-left">
                     <div class="flex min-w-0 items-start gap-3">
                         <span
@@ -109,13 +95,12 @@
                     <div class="flex flex-shrink-0 flex-col items-end gap-2">
                         <span class="text-xs font-semibold text-themed-secondary">{{ $sectionProgress }}%</span>
                         <span class="flex h-8 w-8 items-center justify-center rounded-full border border-themed-secondary bg-themed-secondary">
-                            <i aria-hidden="true" class="fas fa-chevron-down text-xs text-themed-tertiary transition-transform duration-300"
-                                :class="{ 'rotate-180': isExpanded({{ $section->id }}) }"></i>
+                            <i aria-hidden="true" class="fas fa-chevron-down text-xs text-themed-tertiary transition-transform duration-300 group-open:rotate-180"></i>
                         </span>
                     </div>
-                </button>
+                </summary>
 
-                <div id="course-section-{{ $section->id }}" class="px-4 pb-4" x-show="isExpanded({{ $section->id }})" x-transition.opacity>
+                <div class="px-4 pb-4">
                     <div class="mb-4 h-2 overflow-hidden rounded-full border border-themed-secondary bg-themed-secondary">
                         <div class="h-full rounded-full transition-all duration-300"
                             style="width: {{ $sectionProgress }}%; background: rgb(var(--accent-primary));">
@@ -189,7 +174,7 @@
                         @endforeach
                     </div>
                 </div>
-            </section>
+            </details>
         @endforeach
     </div>
 

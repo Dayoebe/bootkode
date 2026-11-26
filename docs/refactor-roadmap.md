@@ -295,5 +295,5 @@ The application-controlled premium experience work is complete. The open items r
 - [x] Establish one long-form content contract for headings, lists, quotes, callouts, media, tables, inline code and copyable code blocks.
 - [x] Move private notes and bookmarks into their own authenticated, lesson-authorized Livewire tool panel.
 - [x] Preserve assessments, attachments, external resources, offline packs, instructor messaging and learner reviews without decorative nonfunctional actions.
-- [ ] Complete final isolated test execution and the 390/768/1024/1440 authenticated browser matrix after the pre-existing concurrent test process releases the shared `_test` database.
+- [x] Complete final isolated test execution and the 390/768/1024/1440 authenticated browser matrix after the pre-existing concurrent test process releases the shared `_test` database.
 - [ ] Treat physical-device, screen-reader, live media-provider and production performance acceptance as separate release gates.
