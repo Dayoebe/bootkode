@@ -41,7 +41,7 @@ class AnnouncementManagement extends Component
     {
         return [
             'title' => ['label' => 'Announcement title', 'purpose' => 'A clear concise announcement title', 'max' => 255, 'actions' => ['generate', 'suggest', 'improve', 'shorten']],
-            'content' => ['label' => 'Announcement content', 'purpose' => 'A concise actionable announcement without invented details', 'max' => 2000, 'actions' => ['generate', 'improve', 'rewrite', 'shorten', 'grammar', 'professional']],
+            'content' => ['label' => 'Announcement content', 'purpose' => 'A concise actionable announcement without invented details', 'max' => 2000, 'actions' => ['add', 'continue', 'generate', 'improve', 'rewrite', 'shorten', 'grammar', 'professional'], 'appendable' => true],
         ];
     }
 

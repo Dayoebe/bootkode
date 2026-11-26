@@ -48,9 +48,9 @@ class CourseOutline extends Component
     {
         return [
             'newSectionTitle' => ['label' => 'New section title', 'purpose' => 'A clear module or section title within the current course', 'max' => 255, 'actions' => ['generate', 'suggest', 'improve']],
-            'newSectionDescription' => ['label' => 'New section description', 'purpose' => 'A concise overview of the section scope', 'max' => 1000, 'actions' => ['generate', 'improve', 'rewrite', 'shorten']],
+            'newSectionDescription' => ['label' => 'New section description', 'purpose' => 'A concise overview of the section scope', 'max' => 1000, 'actions' => ['add', 'generate', 'improve', 'rewrite', 'shorten'], 'appendable' => true],
             'newSectionTitleEdit' => ['label' => 'Section title', 'purpose' => 'A clear module or section title within the current course', 'max' => 255, 'actions' => ['suggest', 'improve', 'rewrite']],
-            'newSectionDescriptionEdit' => ['label' => 'Section description', 'purpose' => 'A concise overview of the section scope', 'max' => 1000, 'actions' => ['generate', 'improve', 'rewrite', 'shorten']],
+            'newSectionDescriptionEdit' => ['label' => 'Section description', 'purpose' => 'A concise overview of the section scope', 'max' => 1000, 'actions' => ['add', 'generate', 'improve', 'rewrite', 'shorten'], 'appendable' => true],
         ];
     }
 

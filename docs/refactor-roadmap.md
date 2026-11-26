@@ -281,7 +281,8 @@ The application-controlled premium experience work is complete. The open items r
 - [x] Add whitelisted field and multi-field draft flows with bounded context, structured output, separate quotas and safe provider failures.
 - [x] Require preview, explicit apply and confirmation before replacing existing content; never auto-save, approve or publish.
 - [x] Integrate course details, lessons, course sections, blog articles/SEO/categories/tags and announcements using their existing authorization guards.
-- [x] Keep Trix synchronization in `dashboard.js` and insert generated content as text rather than trusted HTML.
+- [x] Keep Trix synchronization in `dashboard.js`; accept no provider HTML and load only server-converted, purified Markdown output.
+- [x] Support explicit append versus replace for eligible existing content, and render blog/lesson Markdown through a restricted server-side HTML purifier before Trix synchronization.
 - [ ] Design a sanitized newsletter-template drafting boundary before adding AI to campaign HTML.
 - [ ] Add course SEO/welcome/completion messages and blog image alt/caption assistance only if those fields become real persisted product capabilities.
 - [ ] Complete configured live-provider acceptance and authenticated multi-theme browser acceptance independently of mocked regression coverage.

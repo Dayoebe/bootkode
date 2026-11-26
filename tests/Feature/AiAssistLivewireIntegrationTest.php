@@ -79,18 +79,41 @@ class AiAssistLivewireIntegrationTest extends TestCase
             ->assertSet('is_featured', false);
     }
 
-    public function test_blog_rich_text_draft_is_applied_as_plain_text_and_dispatches_editor_sync(): void
+    public function test_blog_rich_text_draft_is_formatted_safely_and_dispatches_editor_sync(): void
     {
         $editor = User::factory()->create(['role' => User::ROLE_CONTENT_EDITOR]);
-        $this->fakeManager([new AiResponse('{"content":"<h2>Start safely</h2><script>alert(1)</script>"}')]);
+        $this->fakeManager([new AiResponse(json_encode(['content' => "## Start safely\n\nA clear opening paragraph.\n\n- First step\n- Second step"]))]);
 
         Livewire::actingAs($editor)->test(AdminBlogPostForm::class)
             ->call('openAiAssist', 'content')
             ->call('generateAiAssist')
             ->assertSet('content', '')
-            ->assertSet('aiAssistDraft.content', 'Start safely')
+            ->assertSet('aiAssistDraft.content', "## Start safely\n\nA clear opening paragraph.\n\n- First step\n- Second step")
             ->call('applyAiAssistField', 'content')
-            ->assertSet('content', 'Start safely')
+            ->assertSet('content', fn (string $content) => str_contains($content, '<h2>Start safely</h2>')
+                && str_contains($content, '<p>A clear opening paragraph.</p>')
+                && str_contains($content, '<ul>')
+                && str_contains($content, '<li>First step</li>'))
+            ->assertDispatched('ai-assist-applied');
+    }
+
+    public function test_blog_ai_can_append_a_structured_section_without_replacing_existing_content(): void
+    {
+        $editor = User::factory()->create(['role' => User::ROLE_CONTENT_EDITOR]);
+        $this->fakeManager([new AiResponse(json_encode(['content' => "## Practical next steps\n\nTry one focused exercise."]))]);
+
+        Livewire::actingAs($editor)->test(AdminBlogPostForm::class)
+            ->set('content', '<p>Existing introduction.</p>')
+            ->call('openAiAssist', 'content')
+            ->assertSet('aiAssistCanAppend', true)
+            ->assertSet('aiAssistApplyMode', 'append')
+            ->set('aiAssistInstructions', 'Add practical next steps')
+            ->call('generateAiAssist')
+            ->call('applyAiAssistField', 'content')
+            ->assertHasNoErrors('aiAssist')
+            ->assertSet('content', fn (string $content) => str_starts_with($content, '<p>Existing introduction.</p>')
+                && str_contains($content, '<h2>Practical next steps</h2>')
+                && str_contains($content, '<p>Try one focused exercise.</p>'))
             ->assertDispatched('ai-assist-applied');
     }
 

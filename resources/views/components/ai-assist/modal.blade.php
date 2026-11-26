@@ -4,7 +4,7 @@
     x-cloak
     x-show="open"
     x-on:keydown.escape.window="$wire.closeAiAssist()"
-    x-on:ai-assist-applied.window="if ($event.detail.richText) window.applyBootKodeAiText($event.detail.field, $event.detail.value)"
+    x-on:ai-assist-applied.window="if ($event.detail.richText) window.applyBootKodeAiContent($event.detail.field, $event.detail.value)"
     class="fixed inset-0 z-[80] flex items-end justify-center p-0 sm:items-center sm:p-6"
     role="dialog"
     aria-modal="true"
@@ -43,6 +43,21 @@
                             @endforeach
                         </select>
                     </div>
+                    @if ($aiAssistCanAppend)
+                        <fieldset class="rounded-xl border border-line p-4">
+                            <legend class="px-1 text-sm font-semibold text-content dark:text-white">How should the draft be applied?</legend>
+                            <div class="mt-2 grid gap-3 sm:grid-cols-2">
+                                <label class="flex min-h-11 cursor-pointer items-start gap-3 rounded-lg border border-line p-3 text-sm text-content hover:bg-surface-muted dark:text-white">
+                                    <input type="radio" wire:model="aiAssistApplyMode" value="append" class="mt-0.5 border-line text-brand focus:ring-brand/30">
+                                    <span><strong class="block">Add after existing content</strong><span class="text-content-muted">Keep what is already there and add only the new draft.</span></span>
+                                </label>
+                                <label class="flex min-h-11 cursor-pointer items-start gap-3 rounded-lg border border-line p-3 text-sm text-content hover:bg-surface-muted dark:text-white">
+                                    <input type="radio" wire:model="aiAssistApplyMode" value="replace" class="mt-0.5 border-line text-brand focus:ring-brand/30">
+                                    <span><strong class="block">Replace existing content</strong><span class="text-content-muted">Use the generated draft instead of the current field.</span></span>
+                                </label>
+                            </div>
+                        </fieldset>
+                    @endif
                 @endif
 
                 <div>
@@ -77,10 +92,14 @@
                 <div class="space-y-4" aria-label="Generated content preview">
                     <div class="flex flex-wrap items-center justify-between gap-3">
                         <h3 class="font-bold text-content dark:text-white">Review the generated draft</h3>
-                        <label class="flex items-start gap-2 text-sm text-content-muted">
-                            <input type="checkbox" wire:model="aiAssistConfirmReplace" class="mt-0.5 rounded border-line text-brand focus:ring-brand/30">
-                            <span>Allow applying over fields that already contain content</span>
-                        </label>
+                        @if ($aiAssistMode === 'form' || $aiAssistApplyMode === 'replace')
+                            <label class="flex items-start gap-2 text-sm text-content-muted">
+                                <input type="checkbox" wire:model="aiAssistConfirmReplace" class="mt-0.5 rounded border-line text-brand focus:ring-brand/30">
+                                <span>Allow applying over fields that already contain content</span>
+                            </label>
+                        @else
+                            <p class="text-sm font-medium text-brand">Existing content will be kept.</p>
+                        @endif
                     </div>
 
                     @foreach ($aiAssistDraft as $field => $value)
@@ -90,16 +109,18 @@
                                     @if ($aiAssistMode === 'form')
                                         <input type="checkbox" wire:model="aiAssistSelected.{{ $field }}" class="rounded border-line text-brand focus:ring-brand/30">
                                     @endif
-                                    {{ str($field)->headline() }}
+                                    {{ $this->aiAssistDraftLabel($field) }}
                                 </label>
                                 <button type="button" wire:click="applyAiAssistField(@js($field))" class="inline-flex min-h-10 items-center gap-2 rounded-lg border border-brand px-3 py-2 text-sm font-semibold text-brand hover:bg-brand/10 focus-visible:ring-2 focus-visible:ring-brand/40">
-                                    <i class="fas fa-arrow-down" aria-hidden="true"></i> Apply this field
+                                    <i class="fas fa-arrow-down" aria-hidden="true"></i> {{ $aiAssistMode === 'field' && $aiAssistApplyMode === 'append' ? 'Add to this field' : 'Apply this field' }}
                                 </button>
                             </div>
                             @if (is_array($value))
                                 <ul class="list-disc space-y-1 pl-5 text-sm text-content dark:text-gray-200">
                                     @foreach ($value as $item)<li>{{ $item }}</li>@endforeach
                                 </ul>
+                            @elseif ($this->aiAssistDraftIsRichText($field))
+                                <div class="prose prose-sm max-h-80 max-w-none overflow-y-auto text-content dark:prose-invert">{!! $this->aiAssistPreviewHtml($field, $value) !!}</div>
                             @else
                                 <div class="max-h-64 overflow-y-auto whitespace-pre-wrap text-sm leading-6 text-content dark:text-gray-200">{{ $value }}</div>
                             @endif

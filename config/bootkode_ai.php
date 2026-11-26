@@ -15,7 +15,7 @@ return [
     'course_generation_daily_requests' => (int) env('BOOTKODE_AI_COURSE_GENERATION_DAILY_REQUESTS', 12),
     'content_assist_daily_requests' => (int) env('BOOTKODE_AI_CONTENT_ASSIST_DAILY_REQUESTS', 30),
     'content_assist_requests_per_minute' => (int) env('BOOTKODE_AI_CONTENT_ASSIST_REQUESTS_PER_MINUTE', 4),
-    'content_assist_max_output_tokens' => (int) env('BOOTKODE_AI_CONTENT_ASSIST_MAX_OUTPUT_TOKENS', 1800),
+    'content_assist_max_output_tokens' => (int) env('BOOTKODE_AI_CONTENT_ASSIST_MAX_OUTPUT_TOKENS', 3200),
 
     'providers' => [
         'groq' => [

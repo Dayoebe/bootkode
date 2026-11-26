@@ -87,16 +87,16 @@ Résumé assistance preserves its optional OpenAI integration but uses the confi
 
 ## Context-aware form assistance
 
-BootKode AI Assist adds an optional drafting layer to authorized course, lesson, blog, section and announcement forms. Field actions use the current field plus a bounded set of relevant sibling values. Course and blog forms can also request one coherent multi-field proposal from an editor-supplied brief. Every result is escaped and presented in a review dialog; the editor must apply each field or a selected group explicitly. Existing content requires a separate replacement confirmation. Applying a proposal only changes in-memory Livewire form state: it never saves, publishes, approves, changes prices, assigns ownership or selects payment state.
+BootKode AI Assist adds an optional drafting layer to authorized course, lesson, blog, section and announcement forms. Field actions use the current field plus a bounded set of relevant sibling values. Course and blog forms can also request one coherent multi-field proposal from an editor-supplied brief. Every result is presented in a review dialog; the editor must apply each field or a selected group explicitly. Eligible long-text and list fields offer **Add after existing content** as well as **Replace existing content**. Append requests receive the bounded end of the current field and ask for only the new continuation; replacement still requires separate confirmation. Applying a proposal only changes in-memory Livewire form state: it never saves, publishes, approves, changes prices, assigns ownership or selects payment state.
 
 The form assistant reuses `AiManager` and the configured server-side provider. It has a separate `content_assist` usage feature, daily per-user quota, and short-window rate limit:
 
 ```dotenv
 BOOTKODE_AI_CONTENT_ASSIST_DAILY_REQUESTS=30
 BOOTKODE_AI_CONTENT_ASSIST_REQUESTS_PER_MINUTE=4
-BOOTKODE_AI_CONTENT_ASSIST_MAX_OUTPUT_TOKENS=1800
+BOOTKODE_AI_CONTENT_ASSIST_MAX_OUTPUT_TOKENS=3200
 ```
 
-Prompts and responses are not stored in usage records. Usage records retain only operational state, safe failure reasons, duration and provider token counts when supplied. The provider is instructed not to invent people, outcomes, usage, credentials, payments, testimonials, references or statistics. Suggested blog categories are mapped only to existing active categories. Rich text receives generated plain text through the existing Trix editor API; output is never trusted as HTML.
+Prompts and responses are not stored in usage records. Usage records retain only operational state, safe failure reasons, duration and provider token counts when supplied. The provider is instructed not to invent people, outcomes, usage, credentials, payments, testimonials, references or statistics. Suggested blog categories are mapped only to existing active categories. Blog and lesson body fields request semantic Markdown with descriptive headings, short paragraphs and useful lists. The server converts that Markdown to a restricted purified HTML subset before the existing Trix editor loads it; provider HTML is never trusted.
 
 AI Assist is deliberately absent from payment, price, ownership, role, approval and publication controls. The current course and blog schemas have no editable course SEO/welcome/completion-message or blog image alt/caption fields, so no parallel fields or storage were invented. Newsletter HTML drafting is also outside this slice because it needs a separately designed sanitized-template boundary.
