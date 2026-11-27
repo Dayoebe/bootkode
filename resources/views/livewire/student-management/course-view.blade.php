@@ -143,7 +143,7 @@
                                     @if(isset($courseDocument['size'])) · {{ \Illuminate\Support\Number::fileSize((int) $courseDocument['size'], precision: 1) }} @endif
                                 </p>
                             </div>
-                            <x-file-preview-link source="course-document" :record="$course->id" :file="$courseDocumentIndex" label="View resource" />
+                            <x-file-preview-link source="course-document" :record="$course->id" :file="$courseDocumentIndex" label="View resource" mode="overlay" />
                         </article>
                     @endforeach
                 </div>

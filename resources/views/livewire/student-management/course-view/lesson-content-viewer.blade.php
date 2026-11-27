@@ -391,7 +391,7 @@
                                             </p>
                                         </div>
                                     </div>
-                                    <x-file-preview-link source="lesson-document" :record="$lesson->id" :file="$documentIndex" label="View material" />
+                                    <x-file-preview-link source="lesson-document" :record="$lesson->id" :file="$documentIndex" label="View material" mode="overlay" />
                                 </div>
                             @endforeach
                         </div>

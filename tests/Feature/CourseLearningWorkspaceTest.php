@@ -82,6 +82,33 @@ class CourseLearningWorkspaceTest extends TestCase
             ->assertDontSee('No lesson selected');
     }
 
+    public function test_lesson_and_course_documents_open_in_the_course_page_overlay(): void
+    {
+        [$student, $course, $lesson] = $this->createEnrolledCourse();
+        $lesson->update(['documents' => [[
+            'path' => 'lessons/documents/practical-guide.pdf',
+            'name' => 'Practical guide.pdf',
+            'size' => 1024,
+            'type' => 'pdf',
+        ]]]);
+        $course->update(['documents' => [[
+            'path' => 'courses/documents/course-workbook.pdf',
+            'name' => 'Course workbook.pdf',
+            'size' => 2048,
+            'type' => 'pdf',
+        ]]]);
+
+        $response = $this->actingAs($student)
+            ->get(route('course.view', ['course' => $course->slug]))
+            ->assertOk()
+            ->assertSee('Practical guide.pdf')
+            ->assertSee('Course workbook.pdf')
+            ->assertSee('data-file-preview-overlay', escape: false)
+            ->assertSee('embed=1', escape: false);
+
+        $this->assertSame(2, substr_count($response->getContent(), 'data-file-preview-overlay'));
+    }
+
     public function test_private_notes_and_bookmarks_are_scoped_to_the_authenticated_student(): void
     {
         [$student, , $lesson] = $this->createEnrolledCourse();
