@@ -8,6 +8,7 @@
     <meta name="bootkode-user-id" content="{{ auth()->id() ?? '' }}">
     <meta name="bootkode-signed-out" content="{{ session('bootkode_signed_out') ? '1' : '0' }}">
     <meta name="theme-color" content="#0f172a">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="BootKode">
