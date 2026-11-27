@@ -1,3 +1,5 @@
+import './file-preview-launcher.js';
+
 // Confirmed logout also clears explicit downloads in browsers without Clear-Site-Data.
 // Expired sessions do not trigger cleanup: their pending progress must survive sign-in.
 function clearSignedOutDownloads() {

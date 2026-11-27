@@ -230,3 +230,9 @@ The profile hero, factual account snapshot, section navigation, forms, action ro
 ## Honest unavailable analytics and assessments — 17 November 2026
 
 Missing analytics are content states, not zero-valued metrics. Use a labelled semantic panel that names the signals not collected and explains that no estimates are shown. Only persisted counters may appear in metric cards or exports. Unreviewed interview dimensions use “Not assessed” or “Assessment unavailable”; never render a missing score as `0%`. These states use existing surface, line, content, amber and focus tokens, with no new palette, chart shell or ambient motion.
+
+## Universal file viewer — 27 November 2026
+
+Authenticated file links use the shared `file-preview-link` primitive: View is the primary action and Download remains a separate, explicit action. A dedicated viewer and the optional overlay share one navy header, semantic neutral stage, touch-sized controls, visible focus, skip link, labelled search/page inputs, live loading/error/search status and restrained reduced-motion behavior. The overlay uses a native dialog, closes with Escape or its labelled control, and returns focus to the invoking link.
+
+The toolbar scrolls within its own bounded row at narrow widths rather than forcing page overflow. PDF, document, slide, sheet and media surfaces stay inside the viewer stage; wide sheets retain local scrolling and sticky row/column context. Renderer content cannot introduce another application palette. Unsupported, empty, mismatched and oversized files show a factual reason plus Download original. Full screen, fit, zoom and search appear only where the active renderer supports them.

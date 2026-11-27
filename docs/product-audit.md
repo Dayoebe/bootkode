@@ -367,3 +367,11 @@ The enrolled course page now behaves as a learning workspace rather than a gener
 All displayed completion, unlock, duration, assessment, resource and resume states continue to come from the existing course graph and owned records. The redesign adds no sample lessons, inferred results, decorative discussions or fake AI actions. Existing AI coach access is linked only because that authenticated capability already exists. A published lesson with no content or media shows an honest unavailable message.
 
 No schema migration or operational-database mutation is required. Enrollment and lesson authorization, assessment pass gates, explicit offline downloads, historical enrollment compatibility, certificate issuance and named route contracts remain unchanged. Final test/browser evidence is tracked separately in `verification.md`; no production deployment is implied by the local implementation.
+
+## Universal in-browser document viewer — 27 November 2026
+
+The previous resource experience mixed direct downloads, browser-native media URLs and page-specific preview behavior. The new viewer centralizes real stored lesson/course files, learning materials, assessment submissions and support/feedback attachments behind source-specific authorization. It does not expose storage paths, infer access from menu visibility or make a public URL from a private attachment. View and Download both repeat the same current-user domain check.
+
+Reliable browser previews now cover PDF, DOCX, PPTX, XLSX, CSV, Markdown, plain text, supported images, audio and video. Legacy DOC/RTF/PPT/XLS remain downloadable with an honest conversion-needed explanation. There is no claimed browser renderer for EPUB or an invented blog-attachment domain where no such persisted relation exists. Existing external links remain external links.
+
+No schema migration or working-database rewrite is required. Rendering dependencies are format-scoped through dynamic imports. The largest optional PPTX, PDF worker and XLSX payloads remain material performance costs, so production field timing and representative large-file acceptance remain release checks rather than being inferred from local fixtures.

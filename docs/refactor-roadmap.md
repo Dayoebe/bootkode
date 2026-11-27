@@ -297,3 +297,13 @@ The application-controlled premium experience work is complete. The open items r
 - [x] Preserve assessments, attachments, external resources, offline packs, instructor messaging and learner reviews without decorative nonfunctional actions.
 - [x] Complete final isolated test execution and the 390/768/1024/1440 authenticated browser matrix after the pre-existing concurrent test process releases the shared `_test` database.
 - [ ] Treat physical-device, screen-reader, live media-provider and production performance acceptance as separate release gates.
+
+## Universal authenticated file viewer — 27 November 2026
+
+- [x] Centralize source resolution, ownership/enrollment authorization, storage-prefix checks, MIME inspection and OpenXML validation without accepting client storage paths.
+- [x] Add private inline/download routes with byte-range support, safe response headers and sanitized SVG delivery.
+- [x] Render PDF, DOCX, PPTX, XLSX, CSV, Markdown, text, image, audio and video through route-scoped browser modules.
+- [x] Reuse one View/Download primitive across course resources, learning materials, assessment files, support and feedback attachments.
+- [x] Provide both a dedicated workspace and accessible same-origin overlay with Escape dismissal and focus return.
+- [x] Cover access denial, path bounds, MIME mismatch, OpenXML signatures, SVG sanitization, legacy fallback, private records and real-file browser behavior on the dedicated test database.
+- [ ] Complete screen-reader/keyboard-only sessions, physical-device media behavior, representative 100 MB Office-file profiling and production field performance before treating those as certified.

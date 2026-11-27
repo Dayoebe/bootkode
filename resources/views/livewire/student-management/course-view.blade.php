@@ -124,6 +124,32 @@
 
         @include('livewire.student-management.course-view.lesson-workspace')
 
+        @if(count($course->getDocumentsArray()) > 0)
+            <details class="group overflow-hidden rounded-lg border border-themed-primary bg-themed-secondary shadow-sm">
+                <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 p-4 text-themed-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-action">
+                    <span>
+                        <span class="block text-sm font-semibold">Course resources</span>
+                        <span class="mt-1 block text-sm text-themed-secondary">{{ count($course->getDocumentsArray()) }} downloadable {{ \Illuminate\Support\Str::plural('file', count($course->getDocumentsArray())) }}</span>
+                    </span>
+                    <i aria-hidden="true" class="fas fa-chevron-down text-sm text-themed-secondary transition-transform group-open:rotate-180"></i>
+                </summary>
+                <div class="grid gap-3 border-t border-themed-secondary p-4">
+                    @foreach($course->getDocumentsArray() as $courseDocumentIndex => $courseDocument)
+                        <article class="flex flex-col gap-4 rounded-lg border border-themed-secondary bg-themed-tertiary p-4 sm:flex-row sm:items-center sm:justify-between">
+                            <div class="min-w-0">
+                                <h2 class="truncate font-semibold text-themed-primary">{{ $courseDocument['name'] ?? 'Course resource' }}</h2>
+                                <p class="mt-1 text-sm text-themed-secondary">
+                                    {{ strtoupper(pathinfo($courseDocument['name'] ?? ($courseDocument['path'] ?? ''), PATHINFO_EXTENSION) ?: 'FILE') }}
+                                    @if(isset($courseDocument['size'])) · {{ \Illuminate\Support\Number::fileSize((int) $courseDocument['size'], precision: 1) }} @endif
+                                </p>
+                            </div>
+                            <x-file-preview-link source="course-document" :record="$course->id" :file="$courseDocumentIndex" label="View resource" />
+                        </article>
+                    @endforeach
+                </div>
+            </details>
+        @endif
+
         @if ($course->instructor)
             <section class="overflow-hidden rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
                 <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">

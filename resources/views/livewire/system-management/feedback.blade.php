@@ -219,11 +219,8 @@
                                     </div>
                                 @endif
 
-                                @if($feedback->attachment_url)
-                                    <a href="{{ $feedback->attachment_url }}" target="_blank"
-                                       class="inline-flex items-center text-xs text-rose-600 dark:text-rose-400 hover:text-rose-800 dark:hover:text-rose-300 transition-colors">
-                                        <i aria-hidden="true" class="fas fa-paperclip mr-1"></i> View Attachment
-                                    </a>
+                                @if($feedback->attachment)
+                                    <x-file-preview-link source="feedback-attachment" :record="$feedback->id" file="0" label="View attachment" mode="overlay" />
                                 @endif
                             </div>
                         @empty

@@ -297,7 +297,7 @@ class LessonEditor extends Component
 
     public function uploadDocument()
     {
-        $this->validate(['documentUpload' => 'required|mimes:pdf,doc,docx,txt,epub,ppt,pptx|max:51200']);
+        $this->validate(['documentUpload' => 'required|file|mimes:pdf,doc,docx,txt,md,rtf,epub,ppt,pptx,xls,xlsx,csv|max:51200']);
 
         $path = $this->documentUpload->store('lessons/documents', 'public');
         $this->documents[] = [

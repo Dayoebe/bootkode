@@ -206,6 +206,16 @@ Route::get('/course-management/lessons/{lessonId}/assessments', function (int $l
 Route::get('/learning/lessons/{lesson}/assessments', \App\Livewire\StudentManagement\CourseView\StudentAssessmentTaker::class)->defaults('standalone', true)->name('lesson.assessments')->middleware(['auth', 'verified']);
 Route::get('/learning/assessments/{assessment}/discussion', \App\Livewire\StudentManagement\CourseView\AssessmentDiscussion::class)->name('assessment.discussion')->middleware(['auth', 'verified']);
 Route::get('/learning/attempts/{session}/files/{file}', \App\Http\Controllers\AssessmentSubmissionFileController::class)->whereNumber('session')->whereUuid('file')->name('assessment.submission-file')->middleware(['auth', 'verified']);
+
+Route::middleware(['auth', 'verified'])->prefix('files/{source}/{record}/{file}')->group(function () {
+    Route::get('/view', [\App\Http\Controllers\DocumentViewerController::class, 'show'])->name('files.view');
+    Route::get('/content', [\App\Http\Controllers\DocumentViewerController::class, 'content'])->name('files.content');
+    Route::get('/download', [\App\Http\Controllers\DocumentViewerController::class, 'download'])->name('files.download');
+})->where([
+    'source' => '[a-z-]+',
+    'record' => '[A-Za-z0-9-]+',
+    'file' => '[A-Za-z0-9-]+',
+]);
 Route::get('/course-management/assessment-reviews', \App\Livewire\CourseManagement\AssessmentReviewQueue::class)->name('assessment.reviews')->middleware(['auth', 'verified', \App\Http\Middleware\CheckRole::class.':super_admin,academy_admin,instructor']);
 
 // CBT routes

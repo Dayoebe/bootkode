@@ -30,11 +30,6 @@
     wire:poll.30s="updateTimeSpent"
     x-data="{
         openPanels: @js($openPanels),
-        documentModalOpen: false,
-        documentModalUrl: '',
-        documentModalTitle: '',
-        imageModalOpen: false,
-        imageModalUrl: '',
         toggle(panel) {
             this.openPanels = this.openPanels.includes(panel)
                 ? this.openPanels.filter(item => item !== panel)
@@ -42,27 +37,8 @@
         },
         isOpen(panel) {
             return this.openPanels.includes(panel);
-        },
-        openDocument(url, title) {
-            this.documentModalUrl = url;
-            this.documentModalTitle = title;
-            this.documentModalOpen = true;
-        },
-        closeDocument() {
-            this.documentModalOpen = false;
-            this.documentModalUrl = '';
-            this.documentModalTitle = '';
-        },
-        openImage(url) {
-            this.imageModalUrl = url;
-            this.imageModalOpen = true;
-        },
-        closeImage() {
-            this.imageModalOpen = false;
-            this.imageModalUrl = '';
         }
     }"
-    x-on:keydown.escape.window="closeDocument(); closeImage()"
     class="lesson-viewer">
     <!-- Transition Overlay -->
     @if($isTransitioning)
@@ -388,10 +364,7 @@
 
                     <div class="mt-3" x-show="isOpen('documents')" x-transition.opacity.scale.origin.top>
                         <div class="grid gap-3">
-                            @foreach ($lesson->getDocumentsArray() as $document)
-                                @php
-                                    $documentUrl = asset('storage/' . $document['path']);
-                                @endphp
+                            @foreach ($lesson->getDocumentsArray() as $documentIndex => $document)
                                 <div class="flex flex-col gap-4 rounded-lg border border-line bg-surface-muted p-4 transition-shadow duration-200  dark:border-gray-600 dark:bg-gray-700/50 sm:flex-row sm:items-center sm:justify-between">
                                     <div class="flex items-center gap-3 min-w-0">
                                         <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded bg-action shadow-sm">
@@ -418,19 +391,7 @@
                                             </p>
                                         </div>
                                     </div>
-                                    <div class="grid grid-cols-2 gap-2 sm:flex sm:w-auto">
-                                        <button type="button"
-                                            data-document-url="{{ $documentUrl }}"
-                                            data-document-title="{{ $document['name'] }}"
-                                            x-on:click="openDocument($el.dataset.documentUrl, $el.dataset.documentTitle)"
-                                            class="rounded-lg bg-action px-3 py-2 text-sm text-action-foreground shadow-sm transition-colors hover:bg-action hover:shadow-sm">
-                                            <i aria-hidden="true" class="fas fa-eye mr-1"></i> View
-                                        </button>
-                                        <a href="{{ $documentUrl }}" target="_blank" rel="noopener noreferrer"
-                                            class="rounded-lg bg-gray-500 px-3 py-2 text-sm text-white shadow-sm transition-colors hover:bg-gray-600 hover:shadow-sm dark:bg-gray-600 dark:hover:bg-gray-700">
-                                            <i aria-hidden="true" class="fas fa-download mr-1"></i> Download
-                                        </a>
-                                    </div>
+                                    <x-file-preview-link source="lesson-document" :record="$lesson->id" :file="$documentIndex" label="View material" />
                                 </div>
                             @endforeach
                         </div>
@@ -500,7 +461,7 @@
 
                     <div class="mt-3" x-show="isOpen('uploaded-videos')" x-transition.opacity.scale.origin.top>
                         <div class="grid gap-4">
-                            @foreach ($lesson->getVideosArray() as $video)
+                            @foreach ($lesson->getVideosArray() as $videoIndex => $video)
                                 <div class="rounded-lg border border-line bg-surface-muted p-3 shadow-sm transition-shadow duration-200  dark:border-gray-600 dark:bg-gray-700/50">
                                     <div class="mb-2 flex items-center justify-between">
                                         <span class="font-medium text-content dark:text-white">{{ $video['name'] }}</span>
@@ -509,9 +470,10 @@
                                         </span>
                                     </div>
                                     <video controls class="w-full rounded shadow-sm">
-                                        <source src="{{ asset('storage/' . $video['path']) }}" type="video/mp4">
+                                        <source src="{{ route('files.content', ['lesson-video', $lesson->id, $videoIndex]) }}">
                                         Your browser does not support the video tag.
                                     </video>
+                                    <div class="mt-3"><x-file-preview-link source="lesson-video" :record="$lesson->id" :file="$videoIndex" label="Open video" mode="overlay" /></div>
                                 </div>
                             @endforeach
                         </div>
@@ -561,12 +523,13 @@
                                             </div>
                                         </div>
                                         <audio id="audio-{{ $index }}"
-                                            onloadedmetadata="initAudioPlayer({{ $index }})"
-                                            ontimeupdate="updateProgress({{ $index }})">
-                                            <source src="{{ asset('storage/' . $audio['path']) }}" type="audio/mpeg">
+                                            onloadedmetadata="window.initAudioPlayer?.({{ $index }})"
+                                            ontimeupdate="window.updateProgress?.({{ $index }})">
+                                            <source src="{{ route('files.content', ['lesson-audio', $lesson->id, $index]) }}">
                                             Your browser does not support the audio element.
                                         </audio>
                                     </div>
+                                    <div class="mt-3"><x-file-preview-link source="lesson-audio" :record="$lesson->id" :file="$index" label="Open audio" mode="overlay" /></div>
                                 </div>
                             @endforeach
                         </div>
@@ -590,26 +553,22 @@
 
                     <div class="mt-3" x-show="isOpen('images-content')" x-transition.opacity.scale.origin.top>
                         @if ($lesson->image_path)
-                            @php
-                                $mainImageUrl = asset('storage/' . $lesson->image_path);
-                            @endphp
-                            <img src="{{ $mainImageUrl }}" alt="Lesson Image"
-                                class="mb-4 w-full cursor-pointer rounded-lg border border-line shadow-sm transition-shadow duration-200 hover:shadow-sm dark:border-gray-700"
-                                x-on:click='openImage(@js($mainImageUrl))'>
+                            <div class="mb-4">
+                                <img src="{{ route('files.content', ['lesson-main-image', $lesson->id, 0]) }}" alt="Lesson image"
+                                    class="w-full rounded-lg border border-line shadow-sm dark:border-gray-700">
+                                <div class="mt-3"><x-file-preview-link source="lesson-main-image" :record="$lesson->id" file="0" label="View image" mode="overlay" /></div>
+                            </div>
                         @endif
 
                         @if (count($lesson->getImagesArray()) > 0)
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                                @foreach ($lesson->getImagesArray() as $image)
-                                    @php
-                                        $imageUrl = asset('storage/' . $image['path']);
-                                    @endphp
+                                @foreach ($lesson->getImagesArray() as $imageIndex => $image)
                                     <div class="overflow-hidden rounded-lg border border-line bg-surface-muted shadow-sm transition-shadow duration-200  dark:border-gray-600 dark:bg-gray-700/50">
-                                        <img src="{{ $imageUrl }}" alt="Lesson Image"
-                                            class="h-48 w-full cursor-pointer object-cover transition-opacity duration-200 hover:opacity-90"
-                                            x-on:click='openImage(@js($imageUrl))'>
+                                        <img src="{{ route('files.content', ['lesson-image', $lesson->id, $imageIndex]) }}" alt="{{ $image['name'] ?? 'Lesson image' }}"
+                                            class="h-48 w-full object-cover">
                                         <div class="p-3">
                                             <p class="text-sm text-content dark:text-gray-300">{{ $image['name'] }}</p>
+                                            <div class="mt-3"><x-file-preview-link source="lesson-image" :record="$lesson->id" :file="$imageIndex" label="View image" mode="overlay" /></div>
                                         </div>
                                     </div>
                                 @endforeach
@@ -686,42 +645,6 @@
             @if ($hasAssessments && !$allAssessmentsPassed)
                 <p class="mt-2 text-xs text-themed-secondary">Complete the required assessment before marking this lesson complete.</p>
             @endif
-        </div>
-
-        <!-- Document Modal -->
-        <div x-cloak x-show="documentModalOpen" x-transition.opacity
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4"
-            @click.self="closeDocument()" x-trap.inert.noscroll="documentModalOpen" role="dialog" aria-modal="true" aria-label="Dialog" tabindex="-1" x-data="{}" @keydown.escape.stop="documentModalOpen = false">
-            <div class="flex h-[85vh] w-full max-w-6xl flex-col overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary shadow-sm">
-                <div class="flex items-center justify-between border-b border-themed-secondary p-4">
-                    <h3 class="text-lg font-semibold text-themed-primary" x-text="documentModalTitle"></h3>
-                    <button type="button" @click="closeDocument()"
-                        class="text-themed-secondary transition-colors hover:text-themed-primary" aria-label="Close">
-                        <i aria-hidden="true" class="fas fa-times text-xl"></i>
-                    </button>
-                </div>
-                <div class="flex-1 p-4">
-                    <iframe class="h-full w-full rounded bg-surface" frameborder="0" x-bind:src="documentModalUrl"></iframe>
-                </div>
-            </div>
-        </div>
-
-        <!-- Image Modal -->
-        <div x-cloak x-show="imageModalOpen" x-transition.opacity
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4"
-            @click.self="closeImage()" x-trap.inert.noscroll="imageModalOpen" role="dialog" aria-modal="true" aria-label="Image Preview" tabindex="-1" x-data="{}" @keydown.escape.stop="imageModalOpen = false">
-            <div class="flex h-[85vh] w-full max-w-6xl flex-col overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary shadow-sm">
-                <div class="flex items-center justify-between border-b border-themed-secondary p-4">
-                    <h3 class="text-lg font-semibold text-themed-primary">Image Preview</h3>
-                    <button type="button" @click="closeImage()"
-                        class="text-themed-secondary transition-colors hover:text-themed-primary" aria-label="Close">
-                        <i aria-hidden="true" class="fas fa-times text-xl"></i>
-                    </button>
-                </div>
-                <div class="flex flex-1 items-center justify-center p-4">
-                    <img class="max-h-full max-w-full object-contain" x-bind:src="imageModalUrl" alt="">
-                </div>
-            </div>
         </div>
 
         <!-- Lesson Navigation -->
@@ -815,7 +738,7 @@
     <script>
         window.bootkodeLessonViewer = window.bootkodeLessonViewer || {};
 
-        function initAudioPlayer(index) {
+        window.initAudioPlayer = function (index) {
             const audio = document.getElementById(`audio-${index}`);
             const durationElement = document.getElementById(`duration-${index}`);
             if (!audio || !durationElement || Number.isNaN(audio.duration)) {
@@ -824,9 +747,9 @@
             const minutes = Math.floor(audio.duration / 60);
             const seconds = Math.floor(audio.duration % 60);
             durationElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-        }
+        };
 
-        function togglePlayPause(index) {
+        window.togglePlayPause = function (index) {
             const audio = document.getElementById(`audio-${index}`);
             const playIcon = document.getElementById(`play-icon-${index}`);
             const pauseIcon = document.getElementById(`pause-icon-${index}`);
@@ -843,9 +766,9 @@
                 playIcon.classList.remove('hidden');
                 pauseIcon.classList.add('hidden');
             }
-        }
+        };
 
-        function updateProgress(index) {
+        window.updateProgress = function (index) {
             const audio = document.getElementById(`audio-${index}`);
             const progressBar = document.getElementById(`progress-bar-${index}`);
             const currentTimeElement = document.getElementById(`current-time-${index}`);
@@ -866,7 +789,13 @@
                 playIcon.classList.remove('hidden');
                 pauseIcon.classList.add('hidden');
             }
-        }
+        };
+
+        document.querySelectorAll('audio[id^="audio-"]').forEach((audio) => {
+            if (audio.readyState >= 1) {
+                window.initAudioPlayer(audio.id.replace('audio-', ''));
+            }
+        });
 
     </script>
 

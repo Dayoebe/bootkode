@@ -12,7 +12,7 @@
         <div class="space-y-5 p-6">
             @if($selectedTicket)
                 <h2 class="break-words text-xl font-semibold text-content">{{ $selectedTicket->subject }}</h2><p class="whitespace-pre-line break-words text-content-muted">{{ $selectedTicket->description }}</p>
-                @if($selectedTicket->attachment)<a href="{{ $selectedTicket->attachment_url }}" class="inline-flex min-h-11 items-center text-brand underline">Download attachment</a>@endif
+                @if($selectedTicket->attachment)<x-file-preview-link source="support-attachment" :record="$selectedTicket->id" file="0" label="View attachment" mode="overlay" />@endif
             @endif
             <form wire:submit="respondToTicket" class="space-y-5"><div><x-input-label for="support-response" value="Response" /><textarea aria-label="Response" id="support-response" wire:model="response" rows="6" class="bk-input mt-2" required aria-describedby="support-response-error"></textarea><x-input-error id="support-response-error" :messages="$errors->get('response')" /></div><div><x-input-label for="support-resolution" value="Ticket status" /><select aria-label="Resolution status" id="support-resolution" wire:model="resolutionStatus" class="bk-input mt-2"><option value="in_progress">In progress</option><option value="resolved">Resolved</option></select><x-input-error :messages="$errors->get('resolutionStatus')" /></div><div class="flex flex-wrap justify-end gap-3"><x-secondary-button wire:click="$set('showResponseModal', false)">Cancel</x-secondary-button><x-primary-button wire:loading.attr="disabled">Save response</x-primary-button></div></form>
         </div>
