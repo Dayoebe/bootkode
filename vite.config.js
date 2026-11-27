@@ -10,6 +10,7 @@ export default defineConfig({
                 'resources/js/dashboard.js',
                 'resources/js/charts.js',
                 'resources/js/editors.js',
+                'resources/js/file-viewer.js',
                 'resources/js/notifications.js',
             ],
             refresh: true,

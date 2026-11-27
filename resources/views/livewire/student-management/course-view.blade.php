@@ -4,13 +4,6 @@
     $lessonCount = $course->sections->sum(fn($section) => $section->lessons->count());
     $lastViewedLesson = $this->lastViewedLesson;
     $resumeLesson = $lastViewedLesson && $lastViewedLesson->id !== $currentLesson?->id ? $lastViewedLesson : null;
-    $completedSectionCount = $course->sections->filter(function ($section) use ($completedLessons) {
-        return $section->lessons->count() > 0
-            && $section->lessons->every(fn($lesson) => in_array($lesson->id, $completedLessons, true));
-    })->count();
-    $unlockedSectionCount = count($unlockedSections);
-    $currentSectionProgress = $currentSection ? $this->calculateSectionProgress($currentSection) : 0;
-    $nextLockedSection = $course->sections->first(fn($section) => !in_array($section->id, $unlockedSections, true));
     $progressKey = $course->id . '-' . $progressVersion . '-' . ($currentLesson?->id ?? 'none');
     $offlinePack = $this->offlinePack;
     $offlineEstimateMb = $this->estimateOfflinePackSizeMb();
@@ -24,9 +17,28 @@
 @endphp
 
 <div
-    x-data="{ navOpen: false }"
-    x-on:close-course-nav.window="navOpen = false"
-    class="course-view-shell relative overflow-hidden rounded-lg">
+    x-data="{
+        navOpen: false,
+        navTrigger: null,
+        curriculumCollapsed: localStorage.getItem('course-curriculum-collapsed') === 'true',
+        openNav(event) {
+            this.navTrigger = event.currentTarget;
+            this.navOpen = true;
+            this.$nextTick(() => document.getElementById('course-nav-close')?.focus());
+        },
+        closeNav() {
+            const trigger = this.navTrigger;
+            this.navOpen = false;
+            window.setTimeout(() => trigger?.focus(), 200);
+        },
+        toggleCurriculum() {
+            this.curriculumCollapsed = !this.curriculumCollapsed;
+            localStorage.setItem('course-curriculum-collapsed', this.curriculumCollapsed.toString());
+        }
+    }"
+    x-on:close-course-nav.window="closeNav()"
+    x-on:keydown.escape.window="if (navOpen) closeNav()"
+    class="course-view-shell relative">
 
 
     <div class="relative space-y-6 md:space-y-8">
@@ -38,16 +50,16 @@
 
         @if (session()->has('success'))
             <div x-data="{ show: true }" x-show="show" x-transition.opacity.duration.300ms
-                class="overflow-hidden rounded-lg border border-emerald-400/40 bg-brand-ink   p-6 text-white shadow-sm  ">
+                class="overflow-hidden rounded-lg border border-emerald-400/40 bg-brand-ink p-4 text-white shadow-sm sm:p-6">
                 <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                     <div class="flex items-start gap-4">
-                        <div class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-lg bg-white/15 shadow-sm">
-                            <i aria-hidden="true" class="fas fa-rocket text-3xl"></i>
+                        <div class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-white/15 shadow-sm sm:h-16 sm:w-16">
+                            <i aria-hidden="true" class="fas fa-rocket text-xl sm:text-3xl"></i>
                         </div>
 
                         <div>
                             <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/80">Enrollment confirmed</p>
-                            <h3 class="mt-2 text-2xl font-semibold">Welcome to your new course</h3>
+                            <h3 class="mt-2 text-lg font-semibold sm:text-2xl">Welcome to your new course</h3>
                             <p class="mt-2 text-sm leading-6 text-white/85">{{ session('success') }}</p>
                             <p class="mt-1 text-sm text-white/75">
                                 You are enrolled in <span class="font-semibold">{{ $course->title }}</span>.
@@ -61,7 +73,7 @@
                     </button>
                 </div>
 
-                <div class="mt-6 grid gap-3 sm:grid-cols-3">
+                <div class="mt-6 hidden gap-3 sm:grid sm:grid-cols-3">
                     <div class="rounded-lg border border-white/15 bg-white/10 p-4 text-center ">
                         <p class="text-2xl font-semibold">{{ $sectionCount }}</p>
                         <p class="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-white/75">Sections</p>
@@ -82,7 +94,7 @@
 
         @if ($resumeLesson)
             <div
-                class="overflow-hidden rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm  ">
+                class="hidden overflow-hidden rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm lg:block">
                 <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                     <div class="flex items-start gap-4">
                         <div class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-lg text-white shadow-sm"
@@ -110,6 +122,34 @@
             </div>
         @endif
 
+        @include('livewire.student-management.course-view.lesson-workspace')
+
+        @if(count($course->getDocumentsArray()) > 0)
+            <details class="group overflow-hidden rounded-lg border border-themed-primary bg-themed-secondary shadow-sm">
+                <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 p-4 text-themed-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-action">
+                    <span>
+                        <span class="block text-sm font-semibold">Course resources</span>
+                        <span class="mt-1 block text-sm text-themed-secondary">{{ count($course->getDocumentsArray()) }} downloadable {{ \Illuminate\Support\Str::plural('file', count($course->getDocumentsArray())) }}</span>
+                    </span>
+                    <i aria-hidden="true" class="fas fa-chevron-down text-sm text-themed-secondary transition-transform group-open:rotate-180"></i>
+                </summary>
+                <div class="grid gap-3 border-t border-themed-secondary p-4">
+                    @foreach($course->getDocumentsArray() as $courseDocumentIndex => $courseDocument)
+                        <article class="flex flex-col gap-4 rounded-lg border border-themed-secondary bg-themed-tertiary p-4 sm:flex-row sm:items-center sm:justify-between">
+                            <div class="min-w-0">
+                                <h2 class="truncate font-semibold text-themed-primary">{{ $courseDocument['name'] ?? 'Course resource' }}</h2>
+                                <p class="mt-1 text-sm text-themed-secondary">
+                                    {{ strtoupper(pathinfo($courseDocument['name'] ?? ($courseDocument['path'] ?? ''), PATHINFO_EXTENSION) ?: 'FILE') }}
+                                    @if(isset($courseDocument['size'])) · {{ \Illuminate\Support\Number::fileSize((int) $courseDocument['size'], precision: 1) }} @endif
+                                </p>
+                            </div>
+                            <x-file-preview-link source="course-document" :record="$course->id" :file="$courseDocumentIndex" label="View resource" mode="overlay" />
+                        </article>
+                    @endforeach
+                </div>
+            </details>
+        @endif
+
         @if ($course->instructor)
             <section class="overflow-hidden rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
                 <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -134,14 +174,22 @@
             </section>
         @endif
 
-        <section
-            x-data="window.bootkodeOffline.panel({
-                slug: @js($course->slug),
-                manifestUrl: @js(route('offline-learning.manifest', $course->slug)),
-                storageLimitMb: @js($offlineStorageLimitMb),
-                types: @js($offlineContentTypes)
-            })"
-            class="overflow-hidden rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm">
+        <details class="group overflow-hidden rounded-lg border border-themed-primary bg-themed-secondary shadow-sm">
+            <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 p-4 text-themed-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-action">
+                <span>
+                    <span class="block text-sm font-semibold">Offline learning</span>
+                    <span class="mt-1 block text-sm text-themed-secondary">Download or manage this course on this device</span>
+                </span>
+                <i aria-hidden="true" class="fas fa-chevron-down text-sm text-themed-secondary transition-transform group-open:rotate-180"></i>
+            </summary>
+            <section
+                x-data="window.bootkodeOffline.panel({
+                    slug: @js($course->slug),
+                    manifestUrl: @js(route('offline-learning.manifest', $course->slug)),
+                    storageLimitMb: @js($offlineStorageLimitMb),
+                    types: @js($offlineContentTypes)
+                })"
+                class="overflow-hidden rounded-lg bg-themed-secondary p-5 shadow-sm">
             <div class="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
                 <div class="min-w-0">
                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Offline pack</p>
@@ -215,68 +263,8 @@
                     </div>
                 </div>
             </div>
-        </section>
-
-        <section class="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
-            <div class="overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-5 shadow-sm">
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Unlocked Sections</p>
-                <div class="mt-3 flex items-end justify-between gap-3">
-                    <span class="text-3xl font-semibold text-themed-primary">{{ $unlockedSectionCount }}</span>
-                    <span class="rounded-full border border-themed-secondary bg-themed-tertiary px-3 py-1 text-xs font-semibold text-themed-secondary">
-                        of {{ $sectionCount }}
-                    </span>
-                </div>
-                <p class="mt-3 text-sm leading-6 text-themed-secondary">
-                    {{ $nextLockedSection ? 'Keep progressing to open the next chapter.' : 'Every section is open for review.' }}
-                </p>
-            </div>
-
-            <div class="overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-5 shadow-sm">
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Completed Lessons</p>
-                <div class="mt-3 flex items-end justify-between gap-3">
-                    <span class="text-3xl font-semibold text-themed-primary">{{ count($completedLessons) }}</span>
-                    <span class="rounded-full border border-themed-secondary bg-themed-tertiary px-3 py-1 text-xs font-semibold text-themed-secondary">
-                        {{ $lessonCount }} total
-                    </span>
-                </div>
-                <p class="mt-3 text-sm leading-6 text-themed-secondary">
-                    {{ $overallProgress }}% of the course is done and saved to your enrollment record.
-                </p>
-            </div>
-
-            <div class="overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-5 shadow-sm">
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Current Section</p>
-                <div class="mt-3 flex items-end justify-between gap-3">
-                    <span class="truncate text-2xl font-semibold text-themed-primary">
-                        {{ $currentSection?->title ?? 'Ready to begin' }}
-                    </span>
-                    <span class="rounded-full border border-themed-secondary bg-themed-tertiary px-3 py-1 text-xs font-semibold text-themed-secondary">
-                        {{ $currentSectionProgress }}%
-                    </span>
-                </div>
-                <div class="mt-4 h-2 overflow-hidden rounded-full border border-themed-secondary bg-themed-tertiary">
-                    <div class="h-full rounded-full"
-                        style="width: {{ $currentSectionProgress }}%; background: rgb(var(--accent-primary));">
-                    </div>
-                </div>
-            </div>
-
-            <div class="overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-5 shadow-sm">
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Next Unlock</p>
-                <div class="mt-3">
-                    <p class="text-2xl font-semibold text-themed-primary">
-                        {{ $nextLockedSection?->title ?? 'All open' }}
-                    </p>
-                    <p class="mt-2 text-sm leading-6 text-themed-secondary">
-                        @if ($nextLockedSection)
-                            Reach {{ $sectionCompletionThreshold }}% in the current section to unlock it.
-                        @else
-                            You can move freely through every section now.
-                        @endif
-                    </p>
-                </div>
-            </div>
-        </section>
+            </section>
+        </details>
 
         @if ($certificateEarned ?? false)
             <div
@@ -305,170 +293,21 @@
             </div>
         @endif
 
-        <div class="lg:hidden">
-            <div class="sticky top-4 z-30 overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary p-4 shadow-sm  ">
-                <div class="flex flex-col gap-4">
-                    <div class="flex items-start justify-between gap-4">
-                        <div class="min-w-0">
-                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Current lesson</p>
-                        <p class="mt-2 truncate text-sm font-semibold text-themed-primary">
-                            {{ $currentLesson?->title ?? 'Choose a lesson to begin' }}
-                        </p>
-                        <p class="mt-1 text-xs text-themed-secondary">
-                            {{ $currentSection?->title ?? 'Course overview' }} • {{ $overallProgress }}% complete
-                        </p>
-                        </div>
-
-                        <div class="rounded-lg border border-themed-secondary bg-themed-tertiary px-3 py-2 text-right">
-                            <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-themed-secondary">Completed</p>
-                            <p class="mt-1 text-sm font-semibold text-themed-primary">{{ count($completedLessons) }}/{{ $lessonCount }}</p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="rounded-lg border border-themed-secondary bg-themed-tertiary px-4 py-3">
-                            <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-themed-secondary">Unlocked</p>
-                            <p class="mt-1 text-lg font-semibold text-themed-primary">{{ $unlockedSectionCount }}/{{ $sectionCount }}</p>
-                        </div>
-                        <div class="rounded-lg border border-themed-secondary bg-themed-tertiary px-4 py-3">
-                            <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-themed-secondary">Current Section</p>
-                            <p class="mt-1 truncate text-sm font-semibold text-themed-primary">{{ $currentSection?->title ?? 'Ready to start' }}</p>
-                        </div>
-                    </div>
-
-                    <div class="grid gap-2 sm:grid-cols-2">
-                        @if ($resumeLesson)
-                            <button wire:click="continueFromLastLesson"
-                                class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-themed-secondary bg-themed-tertiary px-4 py-3 text-sm font-semibold text-themed-primary shadow-sm transition">
-                                <i aria-hidden="true" class="fas fa-history"></i>
-                                Resume
-                            </button>
-                        @endif
-
-                        <button @click="navOpen = true"
-                            class="inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold text-white shadow-sm transition"
-                            style="background: rgb(var(--bk-action)); color: rgb(var(--bk-action-text));">
-                            <i aria-hidden="true" class="fas fa-compass"></i>
-                            Course Map
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div x-cloak x-show="navOpen" class="fixed inset-0 z-50 lg:hidden">
-            <div class="absolute inset-0 bg-black/60 " @click="navOpen = false"></div>
-
-            <div class="absolute inset-y-0 left-0 w-full max-w-md p-4">
-                <div
-                    class="flex h-full flex-col overflow-hidden rounded-lg border border-themed-primary bg-themed-secondary shadow-sm  ">
-                    <div class="flex items-center justify-between border-b border-themed-secondary px-5 py-4">
-                        <div>
-                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Learning map</p>
-                            <h2 class="mt-1 text-lg font-semibold text-themed-primary">Navigate the course</h2>
-                        </div>
-
-                        <button @click="navOpen = false"
-                            class="flex h-10 w-10 items-center justify-center rounded-lg border border-themed-secondary bg-themed-tertiary text-themed-primary transition hover:bg-themed-secondary" aria-label="Close">
-                            <i aria-hidden="true" class="fas fa-times"></i>
-                        </button>
-                    </div>
-
-                    <div class="flex-1 overflow-y-auto p-4">
-                        <livewire:student-management.course-view.course-progress-sidebar :course="$course"
-                            :sections="$course->sections" :currentLesson="$currentLesson" :completedLessons="$completedLessons"
-                            :unlockedSections="$unlockedSections" :sectionCompletionThreshold="$sectionCompletionThreshold"
-                            wire:key="sidebar-mobile-{{ $progressKey }}" />
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 gap-6 lg:grid-cols-[22rem_minmax(0,1fr)] lg:items-start">
-            <aside class="hidden lg:block">
-                <livewire:student-management.course-view.course-progress-sidebar :course="$course"
-                    :sections="$course->sections" :currentLesson="$currentLesson" :completedLessons="$completedLessons"
-                    :unlockedSections="$unlockedSections" :sectionCompletionThreshold="$sectionCompletionThreshold"
-                    wire:key="sidebar-desktop-{{ $progressKey }}" />
-            </aside>
-
-            <div class="min-w-0">
-                @if ($currentLesson)
-                    @php
-                        $allLessons = $course->sections->flatMap->lessons;
-                    @endphp
-
-                    <livewire:student-management.course-view.lesson-content-viewer :lesson="$currentLesson"
-                        :allLessons="$allLessons->toArray()" :completedLessons="$completedLessons"
-                        :unlockedSections="$unlockedSections"
-                        wire:key="content-{{ $currentLesson->id }}-{{ $progressVersion }}" />
-                @else
-                    <div
-                        class="rounded-lg border border-themed-primary bg-themed-secondary p-6 text-center shadow-sm   sm:p-10">
-                        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-lg border border-themed-secondary bg-themed-tertiary">
-                            <i aria-hidden="true" class="fas fa-book-open text-2xl accent-themed-primary"></i>
-                        </div>
-                        <h3 class="mt-5 text-xl font-semibold text-themed-primary">No lesson selected</h3>
-                        <p class="mt-2 text-sm leading-6 text-themed-secondary">
-                            Open the course map and choose any unlocked lesson to begin learning.
-                        </p>
-                        <button @click="navOpen = true"
-                            class="mt-5 inline-flex items-center gap-2 rounded-lg border border-themed-secondary bg-themed-tertiary px-5 py-3 text-sm font-semibold text-themed-primary transition hover:bg-themed-secondary lg:hidden">
-                            <i aria-hidden="true" class="fas fa-compass"></i>
-                            Open Course Map
-                        </button>
-                    </div>
-                @endif
-            </div>
-        </div>
-
-        <section id="course-reviews"
-            class="overflow-hidden rounded-lg border border-themed-secondary bg-themed-tertiary/40 p-4 shadow-sm  ">
-            <div class="flex flex-col gap-2 border-b border-themed-secondary/70 pb-4 sm:flex-row sm:items-end sm:justify-between">
+        <details id="course-reviews" class="group overflow-hidden rounded-lg border border-themed-secondary bg-themed-secondary shadow-sm">
+            <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 p-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-action">
                 <div>
                     <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-themed-secondary">Optional</p>
-                    <h2 class="mt-2 text-lg font-semibold text-themed-primary">Learner reviews</h2>
-                    <p class="mt-1 text-sm leading-6 text-themed-secondary">
-                        Keep this collapsed unless you want to read feedback or leave a review.
-                    </p>
+                    <h2 class="mt-1 text-base font-semibold text-themed-primary">Learner reviews</h2>
+                    <p class="mt-1 text-sm leading-6 text-themed-secondary">Read recorded feedback or leave your own review.</p>
                 </div>
+                <i class="fas fa-chevron-down text-sm text-themed-secondary transition-transform group-open:rotate-180" aria-hidden="true"></i>
+            </summary>
 
-                <div class="rounded-lg border border-themed-secondary bg-themed-secondary px-4 py-2 text-xs text-themed-secondary">
-                    Secondary section
-                </div>
-            </div>
-
-            <div class="mt-4">
+            <div class="border-t border-themed-secondary p-4">
                 <livewire:student-management.course-view.review :course="$course" wire:key="reviews-{{ $course->id }}" />
             </div>
-        </section>
+        </details>
     </div>
-
-    <style>
-        .course-view-shell [x-cloak] {
-            display: none !important;
-        }
-
-        .course-view-shell * {
-            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-        }
-
-        .text-brand {
-            color: rgb(var(--accent-primary));
-        }
-
-        .bg-action {
-            background-color: rgb(var(--accent-primary));
-        }
-
-        .to-accent-themed-secondary {
-            --tw-gradient-to: rgb(var(--accent-secondary));
-        }
-
-        .from-accent-themed-primary {
-            --tw-gradient-from: rgb(var(--accent-primary));
-        }
-    </style>
 
     @if ($shouldCelebrate)
         @push('scripts')

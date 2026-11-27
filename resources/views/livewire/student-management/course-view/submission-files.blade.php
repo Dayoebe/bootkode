@@ -10,7 +10,7 @@
     <ul class="space-y-3">
         @foreach($files as $file)
             <li wire:key="draft-file-{{ $file['id'] }}" class="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-line p-3">
-                <div class="min-w-0">@if($file['available'])<a href="{{ $file['url'] }}" class="break-all font-medium text-action underline">{{ $file['name'] }}</a>@else<p class="break-all text-content">{{ $file['name'] }} · File unavailable</p>@endif<p class="text-sm text-content-muted">{{ $file['size'] < 1024 ? $file['size'].' bytes' : number_format($file['size'] / 1024, 1).' KiB' }} · Attached to this draft</p></div>
+                <div class="min-w-0">@if($file['available'])<a href="{{ $file['url'] }}" class="break-all font-medium text-action underline">View {{ $file['name'] }}</a><span class="mx-1 text-content-muted">·</span><a href="{{ $file['download_url'] }}" class="font-medium text-action underline">Download</a>@else<p class="break-all text-content">{{ $file['name'] }} · File unavailable</p>@endif<p class="text-sm text-content-muted">{{ $file['size'] < 1024 ? $file['size'].' bytes' : number_format($file['size'] / 1024, 1).' KiB' }} · Attached to this draft</p></div>
                 <x-secondary-button wire:click="removeFile({{ $question['id'] }}, '{{ $file['id'] }}')" wire:loading.attr="disabled" wire:target="attachFile,removeFile" :aria-label="'Remove '.$file['name'].' from draft'">Remove file</x-secondary-button>
             </li>
         @endforeach

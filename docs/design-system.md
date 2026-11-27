@@ -22,6 +22,10 @@ Use 4px-based spacing, 44px standard control height, 8px control/panel radius, r
 
 Prefer props for variants and slots for content. Keep static UI in Blade and server interactions in Livewire. Never infer authorization from disabled/hidden controls. Add `wire:loading` and `wire:target` to expensive actions; destructive actions require explicit confirmation. Named routes are mandatory for internal destinations.
 
+### AI Assist
+
+Use the shared `ai-assist.button` beside, never inside, a field label. The shared AI Assist review dialog owns the generated preview, loading/unavailable/error states, selection controls and replacement confirmation. Appendable non-empty fields show explicit **Add after existing content** and **Replace existing content** choices; append is the default and the preview states that existing content will be kept. Rich-text previews render only server-purified semantic headings, paragraphs, lists and basic emphasis. The dialog uses the existing semantic action/surface tokens, Livewire-owned Alpine focus trap, Escape dismissal, focus return and live status announcements. On small screens it is a bounded bottom sheet; from `sm` it is a centered modal. Generated content must stay visibly provisional until the editor selects Apply, and applying must never imply that the form was saved or published.
+
 ## Accessibility and responsive behavior
 
 Provide skip links, visible focus, semantic landmarks, labelled icon controls and text alongside statuses. Respect reduced motion globally; remove ambient decorative animation. Mobile drawers must close on Escape and return focus. Tables scroll within an explicitly bounded container rather than causing page overflow. Grids collapse at Tailwind's established 640/768/1024/1280 breakpoints; verify 390/768/1024/1440 widths. Do not hide overflow merely to conceal a broken layout.
@@ -39,6 +43,14 @@ Certificate print styling is an intentional document-specific exception to inter
 Root marketplace/institution/mentorship pages use the shared page header, factual definition-list metrics and escaped live feedback. Nested marketplace panels own secondary headings; standalone mentor profile/code-review pages provide their own primary heading. Business and management navigation scroll within their container on small screens. Existing institution and mentorship dialogs use the Livewire-owned Alpine focus plugin, modal semantics, Escape dismissal and focus return. No additional Alpine runtime or modal dependency is introduced. Rate labels use the actual NGN wallet currency. A resource without published content displays its unavailable state instead of a placeholder link.
 
 Legacy interior cards and forms still contain older utilities; root consistency and representative keyboard/layout acceptance do not constitute complete visual or screen-reader acceptance of every legacy interior state.
+
+## Course learning workspace
+
+The enrolled lesson route uses a focused shell rather than dashboard chrome. Its compact top bar provides a named return to My learning, while the curriculum, lesson and contextual tools use the existing semantic surfaces, 8px radius, restrained shadow and navy/teal action tokens. The lesson title is the page's primary heading; the course title remains supporting context. Desktop curriculum can collapse to a factual progress rail and persists that presentation preference locally. Mobile uses a trapped course-map drawer with Escape and focus return.
+
+Long-form lesson copy is capped at a readable 46rem measure with 1.8 line height. Semantic headings, lists, links, quotes, figures, responsive media, scroll-bounded tables, inline code and dark code blocks share one `.bk-lesson-prose` contract. Code-copy controls are progressive enhancement and never obscure the underlying code. Authored `.callout` elements support neutral, warning/important and tip treatments without substring colour overrides. Existing media, assessments and attachments retain their current domain components.
+
+Private notes and bookmarks sit in a separate contextual Livewire panel on wide screens and follow the lesson on narrower screens. Every control is labelled, touch sized and exposes request/status feedback. When a published lesson has neither readable content, media nor assessments, the reader shows an honest unavailable state rather than placeholder teaching material.
 
 Mentoring primary controls use the shared `bk-button` / `bk-button-primary` foreground/background pair. Undefined legacy accent utilities were replaced with semantic utilities, and mentoring overview/analytics metric cards use bounded surfaces rather than bright gradients. Shopping/session feedback can pass persistent locked component messages into `ui.flash`; session-backed calls retain the existing component API.
 
@@ -169,7 +181,7 @@ The provider view removes fabricated match/popularity badges, adds literal per-a
 
 Existing shared tokens/components/sidebar/bottom navigation remain authoritative. Trix styles load only with authoring views. Course outline fields now shrink inside their panel, section controls stack within the narrow outline, new lesson input/errors have explicit associations, and the active lesson uses semantic action foreground/background. Lesson save feedback is scoped to that editor so the shell's login welcome does not repeat.
 
-The dashboard's network status uses existing feedback styles and distinguishes downloaded reading from actions requiring the server. The standalone offline reader retains its deliberate static-document styling: one primary lesson heading, course chooser, a skip link, visible focus, labelled/touch-sized native lesson disclosure/navigation, safe-area spacing and explicit local/pending/confirmed states. These reuse the established navy/teal/neutral identity; no UI library, second Alpine runtime, ambient animation or replacement palette is introduced. Responsive screenshots and exact browser/keyboard/theme limits are in the app milestone and verification report.
+The dashboard's network status uses existing feedback styles and distinguishes downloaded reading from actions requiring the server. Enrolled course pages place the selected lesson workspace before secondary course information; explicit offline-pack controls remain available in a collapsed, keyboard-accessible disclosure. On mobile, the lesson reader uses a compact sticky course-map bar, hides the global bottom navigation, keeps lesson text ahead of secondary status and private-note tools, and places completion controls after the content. The standalone offline reader retains its deliberate static-document styling: one primary lesson heading, course chooser, a skip link, visible focus, labelled/touch-sized native lesson disclosure/navigation, safe-area spacing and explicit local/pending/confirmed states. These reuse the established navy/teal/neutral identity; no UI library, second Alpine runtime, ambient animation or replacement palette is introduced. Responsive screenshots and exact browser/keyboard/theme limits are in the app milestone and verification report.
 
 ## Partial dashboard failure — 3 November 2026
 
@@ -218,3 +230,9 @@ The profile hero, factual account snapshot, section navigation, forms, action ro
 ## Honest unavailable analytics and assessments — 17 November 2026
 
 Missing analytics are content states, not zero-valued metrics. Use a labelled semantic panel that names the signals not collected and explains that no estimates are shown. Only persisted counters may appear in metric cards or exports. Unreviewed interview dimensions use “Not assessed” or “Assessment unavailable”; never render a missing score as `0%`. These states use existing surface, line, content, amber and focus tokens, with no new palette, chart shell or ambient motion.
+
+## Universal file viewer — 27 November 2026
+
+Authenticated file links use the shared `file-preview-link` primitive: View is the primary action and Download remains a separate, explicit action. A dedicated viewer and the optional overlay share one navy header, semantic neutral stage, touch-sized controls, visible focus, skip link, labelled search/page inputs, live loading/error/search status and restrained reduced-motion behavior. The overlay uses a native dialog, closes with Escape or its labelled control, and returns focus to the invoking link.
+
+The toolbar scrolls within its own bounded row at narrow widths rather than forcing page overflow. PDF, document, slide, sheet and media surfaces stay inside the viewer stage; wide sheets retain local scrolling and sticky row/column context. Renderer content cannot introduce another application palette. Unsupported, empty, mismatched and oversized files show a factual reason plus Download original. Full screen, fit, zoom and search appear only where the active renderer supports them.

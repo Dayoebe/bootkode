@@ -51,7 +51,7 @@ class LearningMaterials extends Component
         'type' => 'required|in:document,presentation,worksheet,template,guide,other',
         'course_id' => 'nullable|exists:courses,id',
         'content' => 'nullable|string',
-        'file_upload' => 'nullable|file|max:50000', // 50MB max
+        'file_upload' => 'nullable|file|mimes:pdf,doc,docx,txt,md,rtf,ppt,pptx,xls,xlsx,csv,jpg,jpeg,png,webp,gif,svg,mp3,wav,ogg,mp4,webm,mov|max:50000', // 50MB max
         'tags' => 'nullable|string',
         'is_public' => 'boolean',
         'difficulty_level' => 'required|in:beginner,intermediate,advanced,expert',

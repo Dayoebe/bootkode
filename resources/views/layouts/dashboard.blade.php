@@ -63,6 +63,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="bootkode-user-id" content="{{ auth()->id() ?? '' }}">
     <meta name="theme-color" content="#0f172a">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="BootKode">
@@ -81,6 +82,7 @@
             && ($privacySettings['analytics_tracking'] ?? false)
             && ($privacySettings['marketing_analytics'] ?? false)
             && ($privacySettings['third_party_integrations'] ?? false);
+        $isLearningWorkspace = request()->routeIs('course.view');
     @endphp
 
     <title>{{ config('app.name', 'BootKode') }} - {{ $pageTitle }}</title>
@@ -129,9 +131,11 @@
     @endif
 
     <div class="min-h-screen bg-themed-primary">
-        <div id="dashboard-navigation" x-trap.inert.noscroll.noreturn="sidebarOpen">
-            @livewire('dashboard-sidebar')
-        </div>
+        @unless($isLearningWorkspace)
+            <div id="dashboard-navigation" x-trap.inert.noscroll.noreturn="sidebarOpen">
+                @livewire('dashboard-sidebar')
+            </div>
+        @endunless
 
         <div
             x-show="sidebarOpen"
@@ -142,22 +146,58 @@
         ></div>
 
         <div
-            class="bk-dashboard-shell flex min-h-screen min-w-0 flex-col"
+            class="{{ $isLearningWorkspace ? 'bk-learning-shell' : 'bk-dashboard-shell' }} flex min-h-screen min-w-0 flex-col"
         >
-            <x-navbar :title="$pageTitle" :description="$pageDescription" :icon="$pageIcon" />
+            @if($isLearningWorkspace)
+                <header class="bk-learning-topbar">
+                    <div class="flex min-h-16 items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+                        <div class="flex min-w-0 items-center gap-3">
+                            <a href="{{ route('student.enrolled-courses') }}" wire:navigate
+                                class="bk-topbar-icon-button" aria-label="Back to my learning">
+                                <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                            </a>
+                            <a href="{{ route('dashboard') }}" wire:navigate class="flex min-h-11 min-w-0 items-center gap-3 rounded-lg">
+                                <span class="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-lg border border-line bg-white">
+                                    <img src="{{ asset('img/logo.png') }}" alt="" class="h-full w-full object-contain">
+                                </span>
+                                <span class="min-w-0">
+                                    <span class="block truncate font-display text-sm font-semibold text-content">BootKode Learning</span>
+                                    <span class="hidden text-xs text-content-muted sm:block">Learn. Build. Grow.</span>
+                                </span>
+                            </a>
+                        </div>
 
-            <main id="main-content" tabindex="-1" class="bk-workspace flex-1 px-4 pt-6 sm:px-6 lg:px-8 lg:pt-8">
+                        <div class="flex shrink-0 items-center gap-2">
+                            <span class="hidden items-center gap-2 text-xs font-semibold text-content-muted md:inline-flex">
+                                <span class="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true"></span>
+                                Progress saves to your account
+                            </span>
+                            <a href="{{ route('student.enrolled-courses') }}" wire:navigate class="bk-button bk-button-secondary">
+                                <i class="fas fa-book-open" aria-hidden="true"></i>
+                                <span class="hidden sm:inline">My learning</span>
+                            </a>
+                        </div>
+                    </div>
+                </header>
+            @else
+                <x-navbar :title="$pageTitle" :description="$pageDescription" :icon="$pageIcon" />
+            @endif
+
+            <main id="main-content" tabindex="-1"
+                class="{{ $isLearningWorkspace ? 'bk-learning-workspace px-3 py-4 sm:px-5 lg:px-6' : 'bk-workspace px-4 pt-6 sm:px-6 lg:px-8 lg:pt-8' }} flex-1">
                 <div x-cloak x-show="!online" role="status" aria-live="polite" class="bk-feedback mb-4">
                     <p>You are offline. Server actions need a connection. <a href="{{ asset('offline-learning.html') }}" class="underline focus-visible:outline">Open downloaded lessons</a> to continue reading and save progress on this device.</p>
                 </div>
                 <x-ui.flash />
 
-                <div class="bk-page w-full min-w-0">
+                <div class="{{ $isLearningWorkspace ? 'bk-learning-page' : 'bk-page' }} w-full min-w-0">
                     {{ $slot }}
                 </div>
             </main>
 
-            <x-mobile-bottom-nav />
+            @unless (request()->routeIs('course.view'))
+                <x-mobile-bottom-nav />
+            @endunless
         </div>
     </div>
 

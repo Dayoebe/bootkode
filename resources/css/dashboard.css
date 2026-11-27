@@ -2,6 +2,10 @@
 @layer components {
     .bk-workspace { padding-bottom: calc(6rem + env(safe-area-inset-bottom, 0px)); }
     .bk-page { max-width: var(--bk-workspace-width); margin-inline: auto; }
+    .bk-learning-shell { min-width: 0; }
+    .bk-learning-topbar { position: sticky; top: 0; z-index: var(--bk-layer-nav); border-bottom: 1px solid rgb(var(--border-primary)); background: rgb(var(--bg-secondary) / .96); box-shadow: var(--bk-header-shadow); backdrop-filter: blur(12px); }
+    .bk-learning-workspace { padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px)); }
+    .bk-learning-page { width: 100%; max-width: 112rem; margin-inline: auto; }
     .bk-sidebar { position: fixed; inset: 0 auto 0 0; z-index: var(--bk-layer-dialog); display: flex; width: var(--bk-sidebar-width); max-width: calc(100vw - 2rem); flex-direction: column; border-right: 1px solid rgb(var(--bk-sidebar-border) / .72); background: rgb(var(--bk-sidebar-bg)); color: rgb(var(--bk-sidebar-text)); box-shadow: 18px 0 42px rgb(2 6 23 / .18); transform: translateX(-100%); transition: transform var(--bk-duration), width var(--bk-duration), box-shadow var(--bk-duration); }
     .bk-sidebar.is-open { transform: translateX(0); }
     .bk-sidebar-brand { display: flex; min-height: 5.25rem; align-items: center; justify-content: space-between; gap: .75rem; border-bottom: 1px solid rgb(var(--bk-sidebar-border) / .58); padding: 1rem; }

@@ -353,3 +353,33 @@ Blog, page, content and newsletter administration now share an explicit `Publish
 Page analytics no longer estimates visitors, sessions, traffic sources, conversions, revenue, device share or Core Web Vitals. `PageAnalyticsProjection` exposes stored lifetime counters and recorded publishing activity; unavailable event-level signals are labelled explicitly. Mock interviews record only responses, completion rate and available response timing. Technical, communication, confidence and overall scores remain null until a reviewed assessment supplies them.
 
 Laravel's active scheduler is now declared only in `routes/console.php`; the unused legacy console kernel was removed. Newsletter, gamification, review analytics, withdrawals, job alerts, CBT reminders and review reminders appear in the active schedule. Withdrawal processing remains disabled by default. Laravel is locked at 12.73.0 and affected Symfony components remain on their compatible patched lines; the unsuppressed Composer audit reports no advisories at this checkpoint.
+
+## Context-aware AI form assistance — 25 November 2026
+
+Authorized course, lesson, section, blog and announcement authoring now has one reusable server-side AI drafting workflow. It uses actual form context, strict structured responses, bounded output, a separate usage quota and explicit preview/apply controls. It preserves existing values unless replacement is confirmed and does not save, publish, approve, assign ownership or alter protected commercial fields. Blog category suggestions can resolve only existing active categories. Provider failures and disabled configuration leave the underlying forms usable.
+
+No student records, results, testimonials, usage statistics, payment outcomes or operational facts were added. No working-database migration or business-record mutation is required. Newsletter templates and fields absent from the current course/blog models remain out of scope instead of being represented by invented storage or unsafe raw-HTML generation.
+
+## Course learning experience redesign — 26 November 2026
+
+The enrolled course page now behaves as a learning workspace rather than a general dashboard. A focused top bar, course-progress context, expandable module map, readable lesson article, explicit completion/navigation controls and account-owned learning tools use the existing BootKode design tokens and Livewire stack. Desktop curriculum collapse is a presentation preference only; mobile navigation remains a focus-trapped drawer. The lesson title is the sole primary content heading.
+
+All displayed completion, unlock, duration, assessment, resource and resume states continue to come from the existing course graph and owned records. The redesign adds no sample lessons, inferred results, decorative discussions or fake AI actions. Existing AI coach access is linked only because that authenticated capability already exists. A published lesson with no content or media shows an honest unavailable message.
+
+No schema migration or operational-database mutation is required. Enrollment and lesson authorization, assessment pass gates, explicit offline downloads, historical enrollment compatibility, certificate issuance and named route contracts remain unchanged. Final test/browser evidence is tracked separately in `verification.md`; no production deployment is implied by the local implementation.
+
+Selection follow-up on 27 November replaces the nested sidebar event with the existing canonical course URL plus `lesson` query. An unlocked lesson therefore remains selectable through ordinary navigation at mobile and desktop widths. A published course with no published learner-visible lessons now says that lessons are unavailable instead of presenting “No lesson selected” and a map action that cannot succeed. Draft lessons remain unpublished; the fix does not silently publish course content or weaken section locks.
+
+The operational **Critical Thinking and Practical Problem Solving** course was separately corrected after its six complete lessons were confirmed to have null publication timestamps. Their original rows were backed up privately before lesson IDs `79`–`84` were published in one guarded transaction. This was a targeted content-state correction for that already published and approved course, not a change to the learner access rule or a bulk publication of draft lessons.
+
+Lesson documents and course resources now invoke the existing authenticated file viewer as a bounded in-page popup, matching lesson images, audio and video. The lesson remains visible behind the modal at mobile and desktop widths; opening a PDF no longer replaces the learning workspace or creates a separate browser tab. The original download remains a separate explicit action, and the viewer repeats the existing file authorization checks.
+
+The lesson article's **Previous Lesson** and **Next Lesson** actions now bubble their navigation requests directly to the owning course workspace. Previous still records elapsed lesson time before moving; Next still passes through the existing assessment, completion, section-unlock and progress rules before selecting the following lesson. Successful navigation updates the canonical `lesson` query and focused lesson heading without reloading the dashboard shell.
+
+## Universal in-browser document viewer — 27 November 2026
+
+The previous resource experience mixed direct downloads, browser-native media URLs and page-specific preview behavior. The new viewer centralizes real stored lesson/course files, learning materials, assessment submissions and support/feedback attachments behind source-specific authorization. It does not expose storage paths, infer access from menu visibility or make a public URL from a private attachment. View and Download both repeat the same current-user domain check.
+
+Reliable browser previews now cover PDF, DOCX, PPTX, XLSX, CSV, Markdown, plain text, supported images, audio and video. Legacy DOC/RTF/PPT/XLS remain downloadable with an honest conversion-needed explanation. There is no claimed browser renderer for EPUB or an invented blog-attachment domain where no such persisted relation exists. Existing external links remain external links.
+
+No schema migration or working-database rewrite is required. Rendering dependencies are format-scoped through dynamic imports. The largest optional PPTX, PDF worker and XLSX payloads remain material performance costs, so production field timing and representative large-file acceptance remain release checks rather than being inferred from local fixtures.

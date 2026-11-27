@@ -3,6 +3,7 @@
 namespace App\Livewire\SystemManagement;
 
 use App\Models\Admin\Announcement;
+use App\Models\Core\User;
 use App\Models\Learning\Course;
 use App\Notifications\NewAnnouncementNotification;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +15,7 @@ use Livewire\Attributes\Layout;
 class AnnouncementManagement extends Component
 {
     use WithPagination;
+    use \App\Livewire\Concerns\InteractsWithAiContentAssistant;
 
     public $title = '';
     public $content = '';
@@ -29,6 +31,36 @@ class AnnouncementManagement extends Component
         'course_id' => ['nullable', 'exists:courses,id'],
         'status' => ['required', 'in:draft,published'],
     ];
+
+    protected function aiAssistFormName(): string
+    {
+        return 'announcement';
+    }
+
+    protected function aiAssistFields(): array
+    {
+        return [
+            'title' => ['label' => 'Announcement title', 'purpose' => 'A clear concise announcement title', 'max' => 255, 'actions' => ['generate', 'suggest', 'improve', 'shorten']],
+            'content' => ['label' => 'Announcement content', 'purpose' => 'A concise actionable announcement without invented details', 'max' => 2000, 'actions' => ['add', 'continue', 'generate', 'improve', 'rewrite', 'shorten', 'grammar', 'professional'], 'appendable' => true],
+        ];
+    }
+
+    protected function aiAssistContext(): array
+    {
+        $course = $this->course_id ? Course::publiclyAvailable()->find($this->course_id) : null;
+
+        return [
+            'scope' => $course ? 'Learners in the selected course' : 'Platform-wide audience',
+            'selected course title' => $course?->title,
+            'title' => $this->title,
+            'content' => $this->content,
+        ];
+    }
+
+    protected function authorizeAiAssistRequest(): void
+    {
+        abort_unless(Auth::user()?->hasAnyRole(['super_admin', 'academy_admin']), 403);
+    }
 
     public function saveAnnouncement()
     {
@@ -118,7 +150,7 @@ class AnnouncementManagement extends Component
 
         return view('livewire.system-management.announcement-management', [
             'announcements' => $announcements,
-            'courses' => Course::where('is_published', true)->where('is_approved', true)->get(),
+            'courses' => Course::publiclyAvailable()->get(),
         ]);
     }
 }

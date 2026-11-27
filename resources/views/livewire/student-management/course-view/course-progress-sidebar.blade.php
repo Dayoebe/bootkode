@@ -8,29 +8,15 @@
     $overallProgress = $totalLessons > 0 ? round((count($completedLessons) / $totalLessons) * 100) : 0;
 @endphp
 
-<div x-data="{
-        expandedSections: @js($defaultExpanded),
-        toggleSection(id) {
-            this.expandedSections = this.expandedSections.includes(id)
-                ? this.expandedSections.filter(sectionId => sectionId !== id)
-                : [...this.expandedSections, id];
-        },
-        isExpanded(id) {
-            return this.expandedSections.includes(id);
-        }
-    }"
-    class="rounded-lg border border-themed-primary bg-themed-secondary p-4 shadow-sm transition-colors duration-300   lg:sticky lg:top-4">
-    <div class="rounded-lg border border-themed-secondary p-5 shadow-sm"
-        style="background: rgb(var(--accent-primary));">
+<div class="rounded-lg border border-themed-primary bg-themed-secondary p-4 shadow-sm transition-colors duration-300 lg:sticky lg:top-20">
+    <div class="rounded-lg border border-themed-secondary bg-themed-tertiary p-4">
         <div class="flex items-start justify-between gap-4">
-            <div>
+            <div class="min-w-0">
                 <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-secondary">Course Map</p>
-                <h2 class="mt-2 text-xl font-semibold text-themed-primary">Navigate with clarity</h2>
-                <p class="mt-2 text-sm leading-6 text-themed-secondary">
-                    Open a section, pick an unlocked lesson, and keep moving in sequence.
-                </p>
+                <h2 class="mt-2 text-lg font-semibold leading-snug text-themed-primary">{{ $course->title }}</h2>
+                <p class="mt-1 text-xs leading-5 text-themed-secondary">{{ $totalLessons }} lessons across {{ $sections->count() }} sections</p>
             </div>
-            <span class="flex h-12 w-12 items-center justify-center rounded-lg bg-themed-secondary shadow-sm">
+            <span class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-themed-secondary">
                 <i aria-hidden="true" class="fas fa-compass text-lg accent-themed-primary"></i>
             </span>
         </div>
@@ -67,10 +53,9 @@
                 $isCompleted = $this->isSectionCompleted($section);
             @endphp
 
-            <section
-                class="overflow-hidden rounded-lg border border-themed-secondary bg-themed-tertiary shadow-sm transition-all duration-300 {{ $isUnlocked ? '' : 'opacity-70' }}">
-                <button type="button"
-                    @click="toggleSection({{ $section->id }})"
+            <details @if(in_array($section->id, $defaultExpanded, true)) open @endif
+                class="group overflow-hidden rounded-lg border border-themed-secondary bg-themed-tertiary shadow-sm {{ $isUnlocked ? '' : 'opacity-70' }}">
+                <summary
                     class="flex w-full items-start justify-between gap-3 px-4 py-4 text-left">
                     <div class="flex min-w-0 items-start gap-3">
                         <span
@@ -110,13 +95,12 @@
                     <div class="flex flex-shrink-0 flex-col items-end gap-2">
                         <span class="text-xs font-semibold text-themed-secondary">{{ $sectionProgress }}%</span>
                         <span class="flex h-8 w-8 items-center justify-center rounded-full border border-themed-secondary bg-themed-secondary">
-                            <i aria-hidden="true" class="fas fa-chevron-down text-xs text-themed-tertiary transition-transform duration-300"
-                                :class="{ 'rotate-180': isExpanded({{ $section->id }}) }"></i>
+                            <i aria-hidden="true" class="fas fa-chevron-down text-xs text-themed-tertiary transition-transform duration-300 group-open:rotate-180"></i>
                         </span>
                     </div>
-                </button>
+                </summary>
 
-                <div class="px-4 pb-4" x-show="isExpanded({{ $section->id }})" x-transition.opacity.scale.origin.top>
+                <div class="px-4 pb-4">
                     <div class="mb-4 h-2 overflow-hidden rounded-full border border-themed-secondary bg-themed-secondary">
                         <div class="h-full rounded-full transition-all duration-300"
                             style="width: {{ $sectionProgress }}%; background: rgb(var(--accent-primary));">
@@ -130,18 +114,20 @@
                                 $isCurrentLesson = $currentLesson && $currentLesson->id == $lesson->id;
                             @endphp
 
-                            <button wire:click="selectLesson({{ $lesson->id }}, {{ $section->id }})"
-                                @click="$dispatch('close-course-nav')"
-                                @if (!$isUnlocked) disabled @endif
-                                class="flex w-full items-center justify-between gap-3 rounded-lg border px-3 py-3 text-left transition-all duration-200
+                            @if ($isUnlocked)
+                                <a href="{{ route('course.view', ['course' => $course->slug, 'lesson' => $lesson->id]) }}"
+                                    @if ($isCurrentLesson) aria-current="step" @endif
+                                    class="flex w-full items-center justify-between gap-3 rounded-lg border px-3 py-3 text-left transition-all duration-200
                                     {{ $isCurrentLesson
                                         ? 'border-transparent text-white shadow-lg'
-                                        : ($isUnlocked
-                                            ? 'border-themed-secondary bg-themed-secondary text-themed-primary hover:-translate-y-0.5 hover:shadow-md'
-                                            : 'border-themed-secondary bg-themed-secondary text-themed-tertiary cursor-not-allowed') }}"
-                                @if ($isCurrentLesson)
-                                    style="background: rgb(var(--bk-action)); color: rgb(var(--bk-action-text));"
-                                @endif>
+                                        : 'border-themed-secondary bg-themed-secondary text-themed-primary hover:-translate-y-0.5 hover:shadow-md' }}"
+                                    @if ($isCurrentLesson)
+                                        style="background: rgb(var(--bk-action)); color: rgb(var(--bk-action-text));"
+                                    @endif>
+                            @else
+                                <button type="button" disabled aria-disabled="true"
+                                    class="flex w-full cursor-not-allowed items-center justify-between gap-3 rounded-lg border border-themed-secondary bg-themed-secondary px-3 py-3 text-left text-themed-tertiary opacity-75">
+                            @endif
                                 <div class="flex min-w-0 items-center gap-3">
                                     <span
                                         class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg {{ $isCurrentLesson ? 'bg-white/20 text-white' : ($isLessonCompleted ? 'bg-green-500/15 text-green-500' : ($isUnlocked ? 'bg-themed-tertiary accent-themed-primary' : 'bg-themed-tertiary text-themed-tertiary')) }}">
@@ -184,11 +170,15 @@
                                 @if ($isCurrentLesson)
                                     <i aria-hidden="true" class="fas fa-arrow-right text-sm text-white"></i>
                                 @endif
-                            </button>
+                            @if ($isUnlocked)
+                                </a>
+                            @else
+                                </button>
+                            @endif
                         @endforeach
                     </div>
                 </div>
-            </section>
+            </details>
         @endforeach
     </div>
 

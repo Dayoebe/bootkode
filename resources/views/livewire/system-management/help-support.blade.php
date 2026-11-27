@@ -33,7 +33,7 @@
             <div class="mt-6 space-y-4">
                 @forelse($tickets as $ticket)
                     <article class="rounded-lg border border-line p-4"><div class="flex flex-wrap items-start justify-between gap-3"><h2 class="break-words text-lg font-semibold text-content">{{ $ticket->subject }}</h2><span class="text-sm text-content-muted">{{ ucfirst(str_replace('_', ' ', $ticket->status)) }}</span></div><p class="mt-2 text-sm text-content-muted">Ticket #{{ $ticket->id }} · {{ $ticket->created_at->format('M j, Y') }}</p><p class="mt-4 whitespace-pre-line break-words text-content">{{ $ticket->description }}</p>
-                        @if($ticket->attachment)<a href="{{ $ticket->attachment_url }}" class="mt-3 inline-flex min-h-11 items-center text-brand underline">Download attachment</a>@endif
+                        @if($ticket->attachment)<div class="mt-3"><x-file-preview-link source="support-attachment" :record="$ticket->id" file="0" label="View attachment" mode="overlay" /></div>@endif
                         @if($ticket->response)<div class="mt-4 rounded-lg bg-surface-muted p-4"><p class="font-semibold text-content">Support response</p><p class="mt-2 whitespace-pre-line break-words text-content-muted">{{ $ticket->response }}</p><p class="mt-2 text-sm text-content-muted">{{ $ticket->responded_at?->format('M j, Y, g:i a') ?? 'Response date not recorded' }}</p></div>@endif
                     </article>
                 @empty

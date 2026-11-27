@@ -176,19 +176,27 @@ class AssessmentSubmissionService
             if ($questionId !== null && (int) $id !== $questionId) continue;
             $result[$id] = array_map(fn ($file) => ['id' => $file['id'], 'name' => $file['name'], 'size' => $file['size'],
                 'available' => $this->fileAvailable($file),
-                'url' => route('assessment.submission-file', [$session->id, $file['id']])], $files);
+                'url' => route('files.view', ['assessment-submission', $session->id, $file['id']]),
+                'download_url' => route('assessment.submission-file', [$session->id, $file['id']])], $files);
         }
         return $questionId !== null ? ($result[$questionId] ?? []) : $result;
     }
 
     public function download(User $viewer, LearningSession $session, string $fileId)
     {
+        $file = $this->fileForViewer($viewer, $session, $fileId);
+        return Storage::disk('local')->download($file['path'], $file['name'], ['Cache-Control' => 'private, no-store',
+            'X-Content-Type-Options' => 'nosniff', 'Content-Security-Policy' => 'sandbox']);
+    }
+
+    public function fileForViewer(User $viewer, LearningSession $session, string $fileId): array
+    {
         $this->authorizeRead($viewer, $session);
         $file = collect($session->metadata['submission_files'] ?? [])->flatten(1)->firstWhere('id', $fileId);
         abort_unless($file && is_string($file['path']) && str_starts_with($file['path'], 'private/assessment-submissions/'.$session->id.'/')
             && $this->fileAvailable($file), 404, 'The recorded file is unavailable.');
-        return Storage::disk('local')->download($file['path'], $file['name'], ['Cache-Control' => 'private, no-store',
-            'X-Content-Type-Options' => 'nosniff', 'Content-Security-Policy' => 'sandbox']);
+
+        return $file;
     }
 
     private function authorizeRead(User $viewer, LearningSession $session): void

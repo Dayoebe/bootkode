@@ -114,6 +114,12 @@
                     </div>
                 </div>
 
+                @if($material->file_path)
+                    <div class="mb-4">
+                        <x-file-preview-link source="learning-material" :record="$material->id" file="0" label="View material" />
+                    </div>
+                @endif
+
                 <!-- Material Content -->
                 <div class="mb-4">
                     @if($material->file_path)

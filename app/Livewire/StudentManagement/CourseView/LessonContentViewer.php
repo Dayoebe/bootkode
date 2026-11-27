@@ -5,7 +5,6 @@ namespace App\Livewire\StudentManagement\CourseView;
 use App\Models\Assessment\Assessment;
 use App\Models\Learning\Lesson;
 use App\Models\Learning\LessonProgress;
-use App\Models\Learning\SavedResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\On;
@@ -63,12 +62,6 @@ class LessonContentViewer extends Component
 
     public $showTimeComparison = false;
 
-    public string $lessonNotes = '';
-
-    public bool $isBookmarked = false;
-
-    public string $noteStatus = '';
-
     public function mount($lesson, $allLessons, $completedLessons = [], $unlockedSections = [])
     {
         $this->lesson = $lesson;
@@ -102,79 +95,8 @@ class LessonContentViewer extends Component
 
         // NEW: Initialize time tracking
         $this->initializeTimeTracking();
-        $this->loadLearningTools();
-
         // NEW: Store last viewed lesson for "Continue Learning"
         $this->storeLastViewedLesson();
-    }
-
-    protected function loadLearningTools(): void
-    {
-        $resources = SavedResource::query()
-            ->where('user_id', Auth::id())
-            ->where('resourceable_type', Lesson::class)
-            ->where('resourceable_id', $this->lesson->id)
-            ->whereIn('type', ['lesson', 'note'])
-            ->get()
-            ->keyBy('type');
-
-        $this->isBookmarked = $resources->has('lesson');
-        $this->lessonNotes = (string) ($resources->get('note')?->notes ?? '');
-    }
-
-    public function toggleBookmark(): void
-    {
-        $query = SavedResource::query()
-            ->where('user_id', Auth::id())
-            ->where('resourceable_type', Lesson::class)
-            ->where('resourceable_id', $this->lesson->id)
-            ->where('type', 'lesson');
-
-        if ($query->exists()) {
-            $query->delete();
-            $this->isBookmarked = false;
-            $this->noteStatus = 'Bookmark removed. Your lesson note is still saved.';
-        } else {
-            SavedResource::create([
-                'user_id' => Auth::id(),
-                'course_id' => $this->lesson->section->course_id,
-                'resourceable_type' => Lesson::class,
-                'resourceable_id' => $this->lesson->id,
-                'type' => 'lesson',
-            ]);
-            $this->isBookmarked = true;
-            $this->noteStatus = 'Lesson bookmarked.';
-        }
-    }
-
-    public function saveLessonNotes(): void
-    {
-        $this->validate([
-            'lessonNotes' => ['nullable', 'string', 'max:5000'],
-        ]);
-
-        $notes = trim($this->lessonNotes);
-        $keys = [
-            'user_id' => Auth::id(),
-            'resourceable_type' => Lesson::class,
-            'resourceable_id' => $this->lesson->id,
-            'type' => 'note',
-        ];
-
-        if ($notes === '') {
-            SavedResource::query()->where($keys)->delete();
-            $this->lessonNotes = '';
-            $this->noteStatus = 'Lesson note removed.';
-
-            return;
-        }
-
-        SavedResource::updateOrCreate($keys, [
-            'course_id' => $this->lesson->section->course_id,
-            'notes' => $notes,
-        ]);
-        $this->lessonNotes = $notes;
-        $this->noteStatus = 'Lesson note saved.';
     }
 
     // NEW: Time tracking initialization
@@ -447,8 +369,7 @@ class LessonContentViewer extends Component
             $this->isTransitioning = true;
             $lessonId = is_object($prevLesson) ? $prevLesson->id : $prevLesson['id'];
 
-            $this->dispatch('lesson-selected', lessonId: $lessonId)
-                ->to('student-management.course-view');
+            $this->dispatch('lesson-selected', lessonId: $lessonId);
         }
     }
 
@@ -469,8 +390,7 @@ class LessonContentViewer extends Component
 
         $nextLesson = $this->allLessons[$this->currentIndex + 1] ?? null;
         if ($nextLesson) {
-            $this->dispatch('advance-to-next-lesson', lessonId: $this->lesson->id)
-                ->to('student-management.course-view');
+            $this->dispatch('advance-to-next-lesson', lessonId: $this->lesson->id);
         }
     }
 

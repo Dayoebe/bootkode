@@ -1,6 +1,55 @@
 {
+  "__commonjs-dynamic-modules-B9lKsKkd.js": {
+    "file": "assets/_commonjs-dynamic-modules-B9lKsKkd.js",
+    "name": "_commonjs-dynamic-modules"
+  },
+  "_mammoth.browser-CAH26SuV.js": {
+    "file": "assets/mammoth.browser-CAH26SuV.js",
+    "name": "mammoth.browser",
+    "isDynamicEntry": true,
+    "imports": [
+      "__commonjs-dynamic-modules-B9lKsKkd.js"
+    ]
+  },
+  "node_modules/@aiden0z/pptx-renderer/dist/aiden0z-pptx-renderer.es.js": {
+    "file": "assets/aiden0z-pptx-renderer.es-2e1szWyt.js",
+    "name": "aiden0z-pptx-renderer.es",
+    "src": "node_modules/@aiden0z/pptx-renderer/dist/aiden0z-pptx-renderer.es.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "__commonjs-dynamic-modules-B9lKsKkd.js"
+    ]
+  },
+  "node_modules/dompurify/dist/purify.es.mjs": {
+    "file": "assets/purify.es-DxdA0B9h.js",
+    "name": "purify.es",
+    "src": "node_modules/dompurify/dist/purify.es.mjs",
+    "isDynamicEntry": true
+  },
+  "node_modules/marked/lib/marked.esm.js": {
+    "file": "assets/marked.esm-DRkkDDQT.js",
+    "name": "marked.esm",
+    "src": "node_modules/marked/lib/marked.esm.js",
+    "isDynamicEntry": true
+  },
+  "node_modules/pdfjs-dist/build/pdf.mjs": {
+    "file": "assets/pdf-vkbVaD7t.js",
+    "name": "pdf",
+    "src": "node_modules/pdfjs-dist/build/pdf.mjs",
+    "isDynamicEntry": true
+  },
+  "node_modules/pdfjs-dist/build/pdf.worker.min.mjs": {
+    "file": "assets/pdf.worker.min-B_fnEKel.mjs",
+    "src": "node_modules/pdfjs-dist/build/pdf.worker.min.mjs"
+  },
+  "node_modules/xlsx/xlsx.mjs": {
+    "file": "assets/xlsx-YQ4lDkt_.js",
+    "name": "xlsx",
+    "src": "node_modules/xlsx/xlsx.mjs",
+    "isDynamicEntry": true
+  },
   "resources/css/app.css": {
-    "file": "assets/app-DzozryXd.css",
+    "file": "assets/app-CfUQj66y.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",
@@ -9,7 +58,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-bNOSysig.js",
+    "file": "assets/app-BZae9Qpo.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true
@@ -21,7 +70,7 @@
     "isEntry": true
   },
   "resources/js/dashboard.js": {
-    "file": "assets/dashboard-m2DIIYJk.js",
+    "file": "assets/dashboard-BUe3HYC0.js",
     "name": "dashboard",
     "src": "resources/js/dashboard.js",
     "isEntry": true
@@ -33,6 +82,23 @@
     "isEntry": true,
     "css": [
       "assets/editors-CpXwwO1r.css"
+    ]
+  },
+  "resources/js/file-viewer.js": {
+    "file": "assets/file-viewer-CfdcOLfc.js",
+    "name": "file-viewer",
+    "src": "resources/js/file-viewer.js",
+    "isEntry": true,
+    "dynamicImports": [
+      "node_modules/dompurify/dist/purify.es.mjs",
+      "node_modules/pdfjs-dist/build/pdf.mjs",
+      "_mammoth.browser-CAH26SuV.js",
+      "node_modules/marked/lib/marked.esm.js",
+      "node_modules/@aiden0z/pptx-renderer/dist/aiden0z-pptx-renderer.es.js",
+      "node_modules/xlsx/xlsx.mjs"
+    ],
+    "assets": [
+      "assets/pdf.worker.min-B_fnEKel.mjs"
     ]
   },
   "resources/js/notifications.js": {

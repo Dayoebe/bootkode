@@ -30,26 +30,6 @@
     wire:poll.30s="updateTimeSpent"
     x-data="{
         openPanels: @js($openPanels),
-        documentModalOpen: false,
-        documentModalUrl: '',
-        documentModalTitle: '',
-        imageModalOpen: false,
-        imageModalUrl: '',
-        liveSeconds: @js((int) $timeSpentSeconds),
-        estimatedMinutes: @js((int) ($timeComparison['estimated'] ?? 0)),
-        init() {
-            this.liveSeconds = Math.max(this.liveSeconds, @js((int) $timeSpentSeconds));
-
-            window.bootkodeLessonViewer = window.bootkodeLessonViewer || {};
-
-            if (window.bootkodeLessonViewer.liveTimer) {
-                clearInterval(window.bootkodeLessonViewer.liveTimer);
-            }
-
-            window.bootkodeLessonViewer.liveTimer = setInterval(() => {
-                this.liveSeconds += 1;
-            }, 1000);
-        },
         toggle(panel) {
             this.openPanels = this.openPanels.includes(panel)
                 ? this.openPanels.filter(item => item !== panel)
@@ -57,60 +37,8 @@
         },
         isOpen(panel) {
             return this.openPanels.includes(panel);
-        },
-        openDocument(url, title) {
-            this.documentModalUrl = url;
-            this.documentModalTitle = title;
-            this.documentModalOpen = true;
-        },
-        closeDocument() {
-            this.documentModalOpen = false;
-            this.documentModalUrl = '';
-            this.documentModalTitle = '';
-        },
-        openImage(url) {
-            this.imageModalUrl = url;
-            this.imageModalOpen = true;
-        },
-        closeImage() {
-            this.imageModalOpen = false;
-            this.imageModalUrl = '';
-        },
-        formattedLiveTime() {
-            const minutesTotal = Math.floor(this.liveSeconds / 60);
-            const seconds = this.liveSeconds % 60;
-
-            if (minutesTotal > 60) {
-                const hours = Math.floor(minutesTotal / 60);
-                const minutes = minutesTotal % 60;
-                return `${hours}h ${minutes}m`;
-            }
-
-            return `${minutesTotal}m ${seconds}s`;
-        },
-        timeEstimateText() {
-            if (!this.estimatedMinutes) {
-                return '';
-            }
-
-            const actualMinutes = Math.floor(this.liveSeconds / 60);
-            const percentage = this.estimatedMinutes > 0
-                ? Math.round((actualMinutes / this.estimatedMinutes) * 100)
-                : 0;
-
-            return `${percentage}% of ${this.estimatedMinutes}m estimate`;
-        },
-        timeEstimateClass() {
-            if (!this.estimatedMinutes) {
-                return '';
-            }
-
-            return Math.floor(this.liveSeconds / 60) > this.estimatedMinutes
-                ? 'text-amber-500'
-                : 'text-emerald-500';
         }
     }"
-    x-on:keydown.escape.window="closeDocument(); closeImage()"
     class="lesson-viewer">
     <!-- Transition Overlay -->
     @if($isTransitioning)
@@ -123,16 +51,12 @@
     </div>
     @endif
 
-    <div class="overflow-hidden rounded-lg border border-themed-primary bg-themed-secondary p-5 shadow-sm transition-colors duration-300   md:p-6">
-        <div class="mb-6 overflow-hidden rounded-[1.75rem] border border-themed-secondary shadow-sm"
-            style="background:
-                radial-gradient(circle at top left, rgba(var(--accent-primary), 0.16), transparent 34%),
-                radial-gradient(circle at top right, rgba(var(--accent-secondary), 0.12), transparent 32%),
-                linear-gradient(160deg, rgba(var(--accent-primary), 0.06), rgba(var(--accent-secondary), 0.03));">
-            <div class="p-5 md:p-6">
-                <div class="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
+    <div class="overflow-hidden rounded-lg border border-themed-primary bg-themed-secondary p-3 shadow-sm transition-colors duration-300 sm:p-5 md:p-6">
+        <div class="mb-4 border-b border-themed-secondary pb-4 sm:mb-6 sm:pb-6">
+            <div>
+                <div class="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
                     <div class="max-w-3xl">
-                        <div class="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em]">
+                        <div class="flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] sm:text-xs sm:tracking-[0.18em]">
                             <span class="rounded-full border border-themed-secondary bg-themed-secondary px-3 py-1 text-themed-secondary">
                                 {{ $lesson->section->title }}
                             </span>
@@ -152,24 +76,22 @@
                             @endif
                         </div>
 
-                        <h2 class="mt-5 text-3xl font-semibold tracking-tight text-themed-primary md:text-4xl">
+                        <h1 id="lesson-title-{{ $lesson->id }}" tabindex="-1" class="mt-3 text-2xl font-semibold tracking-tight text-themed-primary sm:mt-5 sm:text-3xl md:text-4xl">
                             {{ $lesson->title }}
-                        </h2>
+                        </h1>
 
                         @if ($lesson->description)
-                            <p class="mt-3 max-w-2xl text-base leading-7 text-themed-secondary md:text-lg">
+                            <p class="mt-2 max-w-2xl text-sm leading-6 text-themed-secondary sm:mt-3 sm:text-base sm:leading-7 md:text-lg">
                                 {{ $lesson->description }}
                             </p>
                         @endif
 
-                        <div class="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                        <div class="mt-6 hidden gap-3 sm:grid-cols-2 xl:grid-cols-4 xl:grid">
                             <div class="rounded-lg border border-themed-secondary bg-themed-tertiary p-4 shadow-sm">
                                 <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-tertiary">Time Spent</p>
-                                <p class="mt-2 text-2xl font-semibold text-themed-primary" x-text="formattedLiveTime()">
-                                    {{ $this->getFormattedTimeSpent() }}
-                                </p>
+                                <p class="mt-2 text-2xl font-semibold text-themed-primary">{{ $this->getFormattedTimeSpent() }}</p>
                                 @if ($timeComparison && $timeComparison['estimated'] > 0)
-                                    <p class="mt-1 text-xs" :class="timeEstimateClass()" x-text="timeEstimateText()">
+                                    <p class="mt-1 text-xs {{ $timeComparison['over_time'] ? 'text-amber-500' : 'text-emerald-500' }}">
                                         {{ $timeComparison['percentage'] }}% of {{ $timeComparison['estimated'] }}m estimate
                                     </p>
                                 @endif
@@ -207,7 +129,7 @@
                         </div>
                     </div>
 
-                    <div class="w-full xl:max-w-sm">
+                    <div class="hidden w-full xl:block xl:max-w-sm">
                         <div class="rounded-[1.75rem] border border-themed-secondary bg-themed-tertiary p-5 shadow-sm">
                             <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-tertiary">Lesson Status</p>
 
@@ -241,13 +163,13 @@
 
                             <div class="mt-5 space-y-3">
                                 @if ($isCompleted)
-                                    <button wire:click="markAsIncomplete"
+                                    <button type="button" wire:click="markAsIncomplete" wire:loading.attr="disabled" wire:target="markAsIncomplete"
                                         class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-amber-500 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-600">
                                         <i aria-hidden="true" class="fas fa-undo"></i>
                                         Mark Incomplete
                                     </button>
                                 @else
-                                    <button wire:click="markAsCompleted"
+                                    <button type="button" wire:click="markAsCompleted" wire:loading.attr="disabled" wire:target="markAsCompleted"
                                         class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 {{ $hasAssessments && !$allAssessmentsPassed ? 'cursor-not-allowed opacity-50' : '' }}"
                                         @if ($hasAssessments && !$allAssessmentsPassed) disabled @endif>
                                         <i aria-hidden="true" class="fas fa-check"></i>
@@ -269,51 +191,20 @@
             </div>
         </div>
 
-        <section class="mb-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto]" aria-labelledby="lesson-tools-heading">
-            <div class="rounded-lg border border-themed-secondary bg-themed-tertiary p-5">
-                <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-themed-tertiary">Learning tools</p>
-                        <h3 id="lesson-tools-heading" class="mt-1 text-lg font-semibold text-themed-primary">Private lesson note</h3>
-                        <p class="mt-1 text-sm text-themed-secondary">Saved only to your account. Clearing the field removes the note.</p>
-                    </div>
-                    <button type="button" wire:click="toggleBookmark" wire:loading.attr="disabled" wire:target="toggleBookmark"
-                        class="bk-button {{ $isBookmarked ? 'bk-button-primary' : 'bk-button-secondary' }} shrink-0"
-                        aria-pressed="{{ $isBookmarked ? 'true' : 'false' }}">
-                        <i aria-hidden="true" class="{{ $isBookmarked ? 'fas' : 'far' }} fa-bookmark"></i>
-                        {{ $isBookmarked ? 'Bookmarked' : 'Bookmark lesson' }}
-                    </button>
-                </div>
-
-                <form wire:submit="saveLessonNotes" class="mt-4">
-                    <label for="lesson-notes-{{ $lesson->id }}" class="sr-only">Private notes for {{ $lesson->title }}</label>
-                    <textarea id="lesson-notes-{{ $lesson->id }}" wire:model="lessonNotes" rows="4" maxlength="5000"
-                        class="bk-input min-h-28 resize-y" placeholder="Capture a key idea, question, or next action…"
-                        aria-describedby="lesson-notes-help-{{ $lesson->id }} @error('lessonNotes') lesson-notes-error-{{ $lesson->id }} @enderror"></textarea>
-                    <div class="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                        <p id="lesson-notes-help-{{ $lesson->id }}" class="text-xs text-themed-secondary">Up to 5,000 characters.</p>
-                        <button type="submit" class="bk-button bk-button-primary" wire:loading.attr="disabled" wire:target="saveLessonNotes">
-                            <span wire:loading.remove wire:target="saveLessonNotes">Save note</span>
-                            <span wire:loading wire:target="saveLessonNotes">Saving…</span>
-                        </button>
-                    </div>
-                    @error('lessonNotes')
-                        <p id="lesson-notes-error-{{ $lesson->id }}" class="bk-field-error mt-2" role="alert">{{ $message }}</p>
-                    @enderror
-                    <p class="mt-2 min-h-5 text-sm text-themed-secondary" role="status" aria-live="polite">{{ $noteStatus }}</p>
-                </form>
-            </div>
-        </section>
-
         <!-- Assessment Preview (if not started) -->
         @if ($hasAssessments && !$allAssessmentsPassed)
             @php $assessmentPreview = $this->getAssessmentPreview(); @endphp
             @if ($assessmentPreview)
-                <div class="mb-6 rounded-[1.75rem] border border-brand bg-brand-ink   p-4 shadow-sm dark:border-brand   md:p-6">
-                    <h3 class="mb-4 flex items-center text-lg font-bold text-content dark:text-white">
-                        <i aria-hidden="true" class="fas fa-eye mr-2 text-brand dark:text-brand"></i>
-                        Assessment Preview
-                    </h3>
+                <details class="group mb-4 overflow-hidden rounded-lg border border-themed-secondary bg-themed-tertiary">
+                    <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 p-3 text-sm font-semibold text-themed-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-action">
+                        <span class="flex items-center gap-2">
+                            <i aria-hidden="true" class="fas fa-clipboard-check accent-themed-primary"></i>
+                            Assessment overview
+                            <span class="rounded-full bg-amber-500 px-2 py-1 text-[11px] font-semibold text-white">Required</span>
+                        </span>
+                        <i aria-hidden="true" class="fas fa-chevron-down text-xs text-themed-secondary transition-transform group-open:rotate-180"></i>
+                    </summary>
+                    <div class="border-t border-themed-secondary p-3 sm:p-5">
 
                     <div class="space-y-4">
                         @foreach ($assessmentPreview as $preview)
@@ -378,7 +269,8 @@
                             </div>
                         @endforeach
                     </div>
-                </div>
+                    </div>
+                </details>
             @endif
         @endif
 
@@ -386,8 +278,17 @@
         <div class="lesson-content-wrapper">
             <!-- Main Text Content -->
             @if ($lesson->content)
-                <div class="lesson-content-display mb-6 prose dark:prose-invert max-w-none text-content dark:text-gray-100">
+                <div class="bk-lesson-prose lesson-content-display mb-8" x-init="$nextTick(() => window.enhanceBootKodeLesson?.($el))">
                     {!! $lesson->content !!}
+                </div>
+            @elseif ($lesson->text_content)
+                <div class="bk-lesson-prose lesson-content-display mb-8">
+                    <p>{!! nl2br(e($lesson->text_content)) !!}</p>
+                </div>
+            @elseif (! $lesson->hasMediaContent() && ! $hasAssessments)
+                <div class="mb-8 rounded-lg border border-dashed border-themed-secondary bg-themed-tertiary p-5">
+                    <h2 class="text-base font-semibold text-themed-primary">Lesson material is not available yet</h2>
+                    <p class="mt-2 text-sm leading-6 text-themed-secondary">The lesson is published, but no readable content or learning media has been attached. Please check again later or contact the instructor.</p>
                 </div>
             @endif
 
@@ -463,10 +364,7 @@
 
                     <div class="mt-3" x-show="isOpen('documents')" x-transition.opacity.scale.origin.top>
                         <div class="grid gap-3">
-                            @foreach ($lesson->getDocumentsArray() as $document)
-                                @php
-                                    $documentUrl = asset('storage/' . $document['path']);
-                                @endphp
+                            @foreach ($lesson->getDocumentsArray() as $documentIndex => $document)
                                 <div class="flex flex-col gap-4 rounded-lg border border-line bg-surface-muted p-4 transition-shadow duration-200  dark:border-gray-600 dark:bg-gray-700/50 sm:flex-row sm:items-center sm:justify-between">
                                     <div class="flex items-center gap-3 min-w-0">
                                         <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded bg-action shadow-sm">
@@ -493,17 +391,7 @@
                                             </p>
                                         </div>
                                     </div>
-                                    <div class="grid grid-cols-2 gap-2 sm:flex sm:w-auto">
-                                        <button type="button"
-                                            x-on:click='openDocument(@js($documentUrl), @js($document["name"]))'
-                                            class="rounded-lg bg-action px-3 py-2 text-sm text-action-foreground shadow-sm transition-colors hover:bg-action hover:shadow-sm">
-                                            <i aria-hidden="true" class="fas fa-eye mr-1"></i> View
-                                        </button>
-                                        <a href="{{ $documentUrl }}" target="_blank"
-                                            class="rounded-lg bg-gray-500 px-3 py-2 text-sm text-white shadow-sm transition-colors hover:bg-gray-600 hover:shadow-sm dark:bg-gray-600 dark:hover:bg-gray-700">
-                                            <i aria-hidden="true" class="fas fa-download mr-1"></i> Download
-                                        </a>
-                                    </div>
+                                    <x-file-preview-link source="lesson-document" :record="$lesson->id" :file="$documentIndex" label="View material" mode="overlay" />
                                 </div>
                             @endforeach
                         </div>
@@ -573,7 +461,7 @@
 
                     <div class="mt-3" x-show="isOpen('uploaded-videos')" x-transition.opacity.scale.origin.top>
                         <div class="grid gap-4">
-                            @foreach ($lesson->getVideosArray() as $video)
+                            @foreach ($lesson->getVideosArray() as $videoIndex => $video)
                                 <div class="rounded-lg border border-line bg-surface-muted p-3 shadow-sm transition-shadow duration-200  dark:border-gray-600 dark:bg-gray-700/50">
                                     <div class="mb-2 flex items-center justify-between">
                                         <span class="font-medium text-content dark:text-white">{{ $video['name'] }}</span>
@@ -582,9 +470,10 @@
                                         </span>
                                     </div>
                                     <video controls class="w-full rounded shadow-sm">
-                                        <source src="{{ asset('storage/' . $video['path']) }}" type="video/mp4">
+                                        <source src="{{ route('files.content', ['lesson-video', $lesson->id, $videoIndex]) }}">
                                         Your browser does not support the video tag.
                                     </video>
+                                    <div class="mt-3"><x-file-preview-link source="lesson-video" :record="$lesson->id" :file="$videoIndex" label="Open video" mode="overlay" /></div>
                                 </div>
                             @endforeach
                         </div>
@@ -634,12 +523,13 @@
                                             </div>
                                         </div>
                                         <audio id="audio-{{ $index }}"
-                                            onloadedmetadata="initAudioPlayer({{ $index }})"
-                                            ontimeupdate="updateProgress({{ $index }})">
-                                            <source src="{{ asset('storage/' . $audio['path']) }}" type="audio/mpeg">
+                                            onloadedmetadata="window.initAudioPlayer?.({{ $index }})"
+                                            ontimeupdate="window.updateProgress?.({{ $index }})">
+                                            <source src="{{ route('files.content', ['lesson-audio', $lesson->id, $index]) }}">
                                             Your browser does not support the audio element.
                                         </audio>
                                     </div>
+                                    <div class="mt-3"><x-file-preview-link source="lesson-audio" :record="$lesson->id" :file="$index" label="Open audio" mode="overlay" /></div>
                                 </div>
                             @endforeach
                         </div>
@@ -663,26 +553,22 @@
 
                     <div class="mt-3" x-show="isOpen('images-content')" x-transition.opacity.scale.origin.top>
                         @if ($lesson->image_path)
-                            @php
-                                $mainImageUrl = asset('storage/' . $lesson->image_path);
-                            @endphp
-                            <img src="{{ $mainImageUrl }}" alt="Lesson Image"
-                                class="mb-4 w-full cursor-pointer rounded-lg border border-line shadow-sm transition-shadow duration-200 hover:shadow-sm dark:border-gray-700"
-                                x-on:click='openImage(@js($mainImageUrl))'>
+                            <div class="mb-4">
+                                <img src="{{ route('files.content', ['lesson-main-image', $lesson->id, 0]) }}" alt="Lesson image"
+                                    class="w-full rounded-lg border border-line shadow-sm dark:border-gray-700">
+                                <div class="mt-3"><x-file-preview-link source="lesson-main-image" :record="$lesson->id" file="0" label="View image" mode="overlay" /></div>
+                            </div>
                         @endif
 
                         @if (count($lesson->getImagesArray()) > 0)
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                                @foreach ($lesson->getImagesArray() as $image)
-                                    @php
-                                        $imageUrl = asset('storage/' . $image['path']);
-                                    @endphp
+                                @foreach ($lesson->getImagesArray() as $imageIndex => $image)
                                     <div class="overflow-hidden rounded-lg border border-line bg-surface-muted shadow-sm transition-shadow duration-200  dark:border-gray-600 dark:bg-gray-700/50">
-                                        <img src="{{ $imageUrl }}" alt="Lesson Image"
-                                            class="h-48 w-full cursor-pointer object-cover transition-opacity duration-200 hover:opacity-90"
-                                            x-on:click='openImage(@js($imageUrl))'>
+                                        <img src="{{ route('files.content', ['lesson-image', $lesson->id, $imageIndex]) }}" alt="{{ $image['name'] ?? 'Lesson image' }}"
+                                            class="h-48 w-full object-cover">
                                         <div class="p-3">
                                             <p class="text-sm text-content dark:text-gray-300">{{ $image['name'] }}</p>
+                                            <div class="mt-3"><x-file-preview-link source="lesson-image" :record="$lesson->id" :file="$imageIndex" label="View image" mode="overlay" /></div>
                                         </div>
                                     </div>
                                 @endforeach
@@ -709,7 +595,7 @@
                     <div class="mt-3" x-show="isOpen('external-links')" x-transition.opacity.scale.origin.top>
                         <div class="space-y-2">
                             @foreach ($lesson->getExternalLinksArray() as $link)
-                                <a href="{{ $link['url'] }}" target="_blank"
+                                <a href="{{ $link['url'] }}" target="_blank" rel="noopener noreferrer"
                                     class="block rounded-lg border border-line bg-surface-muted p-4 shadow-sm transition-all duration-200 hover:bg-surface-muted  dark:border-gray-600 dark:bg-gray-700/50 dark:hover:bg-gray-700">
                                     <div class="flex items-center">
                                         <i aria-hidden="true" class="fas fa-external-link-alt mr-3 text-orange-500 dark:text-orange-400"></i>
@@ -726,40 +612,39 @@
             @endif
         </div>
 
-        <!-- Document Modal -->
-        <div x-cloak x-show="documentModalOpen" x-transition.opacity
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4"
-            @click.self="closeDocument()" x-trap.inert.noscroll="documentModalOpen" role="dialog" aria-modal="true" aria-label="Dialog" tabindex="-1" x-data="{}" @keydown.escape.stop="documentModalOpen = false">
-            <div class="flex h-[85vh] w-full max-w-6xl flex-col overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary shadow-sm">
-                <div class="flex items-center justify-between border-b border-themed-secondary p-4">
-                    <h3 class="text-lg font-semibold text-themed-primary" x-text="documentModalTitle"></h3>
-                    <button type="button" @click="closeDocument()"
-                        class="text-themed-secondary transition-colors hover:text-themed-primary" aria-label="Close">
-                        <i aria-hidden="true" class="fas fa-times text-xl"></i>
-                    </button>
+        <div class="mb-6 rounded-lg border border-themed-secondary bg-themed-tertiary p-4 xl:hidden">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.16em] text-themed-secondary">Lesson progress</p>
+                    <p class="mt-1 text-sm text-themed-primary">
+                        Lesson {{ $currentIndex + 1 }} of {{ $totalLessons }} · {{ $coursePosition }}% through the course
+                    </p>
                 </div>
-                <div class="flex-1 p-4">
-                    <iframe class="h-full w-full rounded bg-surface" frameborder="0" x-bind:src="documentModalUrl"></iframe>
-                </div>
-            </div>
-        </div>
 
-        <!-- Image Modal -->
-        <div x-cloak x-show="imageModalOpen" x-transition.opacity
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4"
-            @click.self="closeImage()" x-trap.inert.noscroll="imageModalOpen" role="dialog" aria-modal="true" aria-label="Image Preview" tabindex="-1" x-data="{}" @keydown.escape.stop="imageModalOpen = false">
-            <div class="flex h-[85vh] w-full max-w-6xl flex-col overflow-hidden rounded-[1.75rem] border border-themed-primary bg-themed-secondary shadow-sm">
-                <div class="flex items-center justify-between border-b border-themed-secondary p-4">
-                    <h3 class="text-lg font-semibold text-themed-primary">Image Preview</h3>
-                    <button type="button" @click="closeImage()"
-                        class="text-themed-secondary transition-colors hover:text-themed-primary" aria-label="Close">
-                        <i aria-hidden="true" class="fas fa-times text-xl"></i>
+                @if ($isCompleted)
+                    <button type="button" wire:click="markAsIncomplete" wire:loading.attr="disabled" wire:target="markAsIncomplete"
+                        class="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-600">
+                        <i aria-hidden="true" class="fas fa-undo"></i>
+                        Mark Incomplete
                     </button>
-                </div>
-                <div class="flex flex-1 items-center justify-center p-4">
-                    <img class="max-h-full max-w-full object-contain" x-bind:src="imageModalUrl" alt="">
+                @else
+                    <button type="button" wire:click="markAsCompleted" wire:loading.attr="disabled" wire:target="markAsCompleted"
+                        class="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+                        @if ($hasAssessments && !$allAssessmentsPassed) disabled @endif>
+                        <i aria-hidden="true" class="fas fa-check"></i>
+                        Mark Complete
+                    </button>
+                @endif
+            </div>
+
+            <div class="mt-3 h-2 overflow-hidden rounded-full bg-themed-secondary">
+                <div class="h-full rounded-full transition-all duration-500"
+                    style="width: {{ $coursePosition }}%; background: rgb(var(--accent-primary));">
                 </div>
             </div>
+            @if ($hasAssessments && !$allAssessmentsPassed)
+                <p class="mt-2 text-xs text-themed-secondary">Complete the required assessment before marking this lesson complete.</p>
+            @endif
         </div>
 
         <!-- Lesson Navigation -->
@@ -812,7 +697,7 @@
 
             <div class="flex flex-col gap-3 sm:flex-row xl:flex-col xl:justify-end">
                 @if ($previousLesson)
-                    <button wire:click="goToPreviousLesson"
+                    <button type="button" wire:click="goToPreviousLesson" wire:loading.attr="disabled" wire:target="goToPreviousLesson"
                         class="inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-lg border border-themed-secondary bg-themed-tertiary px-5 py-3 text-sm font-semibold text-themed-primary shadow-sm transition hover:-translate-y-0.5 hover:bg-themed-secondary sm:min-w-[14rem]">
                         <i aria-hidden="true" class="fas fa-arrow-left"></i>
                         Previous Lesson
@@ -826,10 +711,10 @@
 
                 @if ($nextLesson)
                     @if ($this->canProceedToNext())
-                        <button wire:click="goToNextLesson"
+                        <button type="button" wire:click="goToNextLesson" wire:loading.attr="disabled" wire:target="goToNextLesson"
                             class="inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 sm:min-w-[14rem]"
                             style="background: rgb(var(--bk-action)); color: rgb(var(--bk-action-text));">
-                            Continue
+                            Next Lesson
                             <i aria-hidden="true" class="fas fa-arrow-right"></i>
                         </button>
                     @else
@@ -839,7 +724,7 @@
                         </div>
                     @endif
                 @else
-                    <button wire:click="completeCourse"
+                    <button type="button" wire:click="completeCourse" wire:loading.attr="disabled" wire:target="completeCourse"
                         class="inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-lg bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-emerald-700 sm:min-w-[14rem] {{ !$this->canProceedToNext() ? 'cursor-not-allowed opacity-50' : '' }}"
                         @if (!$this->canProceedToNext()) disabled @endif>
                         <i aria-hidden="true" class="fas fa-trophy"></i>
@@ -853,7 +738,7 @@
     <script>
         window.bootkodeLessonViewer = window.bootkodeLessonViewer || {};
 
-        function initAudioPlayer(index) {
+        window.initAudioPlayer = function (index) {
             const audio = document.getElementById(`audio-${index}`);
             const durationElement = document.getElementById(`duration-${index}`);
             if (!audio || !durationElement || Number.isNaN(audio.duration)) {
@@ -862,9 +747,9 @@
             const minutes = Math.floor(audio.duration / 60);
             const seconds = Math.floor(audio.duration % 60);
             durationElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-        }
+        };
 
-        function togglePlayPause(index) {
+        window.togglePlayPause = function (index) {
             const audio = document.getElementById(`audio-${index}`);
             const playIcon = document.getElementById(`play-icon-${index}`);
             const pauseIcon = document.getElementById(`pause-icon-${index}`);
@@ -881,9 +766,9 @@
                 playIcon.classList.remove('hidden');
                 pauseIcon.classList.add('hidden');
             }
-        }
+        };
 
-        function updateProgress(index) {
+        window.updateProgress = function (index) {
             const audio = document.getElementById(`audio-${index}`);
             const progressBar = document.getElementById(`progress-bar-${index}`);
             const currentTimeElement = document.getElementById(`current-time-${index}`);
@@ -904,36 +789,19 @@
                 playIcon.classList.remove('hidden');
                 pauseIcon.classList.add('hidden');
             }
-        }
+        };
+
+        document.querySelectorAll('audio[id^="audio-"]').forEach((audio) => {
+            if (audio.readyState >= 1) {
+                window.initAudioPlayer(audio.id.replace('audio-', ''));
+            }
+        });
 
     </script>
 
     <style>
         .lesson-viewer [x-cloak] {
             display: none !important;
-        }
-
-        .lesson-content-display {
-            overflow-wrap: anywhere;
-        }
-
-        .lesson-content-display iframe,
-        .lesson-content-display img,
-        .lesson-content-display video,
-        .lesson-content-display table {
-            max-width: 100%;
-        }
-
-        .lesson-content-display table {
-            display: block;
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-
-        .lesson-content-display pre {
-            max-width: 100%;
-            overflow-x: auto;
-            white-space: pre-wrap;
         }
 
         .mini-player {

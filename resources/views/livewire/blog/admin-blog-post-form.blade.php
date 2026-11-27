@@ -27,6 +27,11 @@
                 {{ $isEdit ? 'Update your blog post' : 'Create a new blog post' }}
             </p>
         </div>
+        <button type="button" wire:click="openAiAssistForm"
+            class="inline-flex min-h-11 items-center gap-2 rounded-lg border border-brand px-4 py-2 font-semibold text-brand hover:bg-brand/10 focus-visible:ring-2 focus-visible:ring-brand/40">
+            <i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>
+            Generate complete article
+        </button>
         <a href="{{ route('admin.blog.posts.index') }}"
             class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
             <i aria-hidden="true" class="fas fa-arrow-left mr-2"></i>
@@ -42,9 +47,10 @@
                 <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm p-6">
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-medium text-content dark:text-gray-300 mb-2">
+                            <div class="flex items-center gap-2 text-sm font-medium text-content dark:text-gray-300 mb-2">
                                 Title <span class="text-red-500">*</span>
-                            </label>
+                                <x-ai-assist.button field="title" />
+                            </div>
                             <input aria-label="Enter post title" type="text" wire:model.blur="title"
                                 class="w-full px-4 py-3 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-lg"
                                 placeholder="Enter post title..." required>
@@ -53,9 +59,10 @@
 
                         <div>
                             <div class="flex items-center justify-between mb-2">
-                                <label class="block text-sm font-medium text-content dark:text-gray-300">
+                                <div class="flex items-center gap-2 text-sm font-medium text-content dark:text-gray-300">
                                     Slug <span class="text-red-500">*</span>
-                                </label>
+                                    <x-ai-assist.button field="slug" />
+                                </div>
                                 <button type="button" wire:click="generateSlug"
                                     class="text-sm text-brand hover:text-brand font-medium">
                                     <i aria-hidden="true" class="fas fa-sync mr-1"></i>
@@ -76,13 +83,14 @@
 
                 {{-- Content Editor - FIXED --}}
                 <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm p-6">
-                    <label class="block text-sm font-medium text-content dark:text-gray-300 mb-2">
+                    <div class="flex items-center gap-2 text-sm font-medium text-content dark:text-gray-300 mb-2">
                         Content <span class="text-red-500">*</span>
-                    </label>
+                        <x-ai-assist.button field="content" />
+                    </div>
                     <div class="mb-4">
                         <div wire:ignore>
                             <input id="trix-content" type="hidden" name="content" value="{{ $content }}">
-                            <trix-editor input="trix-content" aria-label="Post content" class="prose max-w-none trix-content"
+                            <trix-editor input="trix-content" data-ai-field="content" aria-label="Post content" class="prose max-w-none trix-content"
                                 style="min-height: 400px;" placeholder="Start writing your blog post...">
                             </trix-editor>
                         </div>
@@ -92,9 +100,10 @@
 
                 {{-- Excerpt --}}
                 <div class="bg-surface dark:bg-gray-800 rounded-lg shadow-sm p-6">
-                    <label class="block text-sm font-medium text-content dark:text-gray-300 mb-2">
+                    <div class="flex items-center gap-2 text-sm font-medium text-content dark:text-gray-300 mb-2">
                         Excerpt
-                    </label>
+                        <x-ai-assist.button field="excerpt" />
+                    </div>
                     <textarea aria-label="Brief description of your post" wire:model="excerpt" rows="3"
                         class="w-full px-4 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                         placeholder="Brief description of your post..."></textarea>
@@ -119,9 +128,10 @@
                     @if($showSeoSection)
                         <div class="px-6 pb-6 border-t border-line dark:border-gray-700 space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-content dark:text-gray-300 mb-2">
+                                <div class="flex items-center gap-2 text-sm font-medium text-content dark:text-gray-300 mb-2">
                                     Meta Title
-                                </label>
+                                    <x-ai-assist.button field="meta_title" />
+                                </div>
                                 <input aria-label="Auto-filled from post title" type="text" wire:model="meta_title"
                                     class="w-full px-4 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                     placeholder="Auto-filled from post title">
@@ -130,9 +140,10 @@
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-content dark:text-gray-300 mb-2">
+                                <div class="flex items-center gap-2 text-sm font-medium text-content dark:text-gray-300 mb-2">
                                     Meta Description
-                                </label>
+                                    <x-ai-assist.button field="meta_description" />
+                                </div>
                                 <textarea aria-label="Brief description for search engines" wire:model="meta_description" rows="3"
                                     class="w-full px-4 py-2 border border-line rounded-lg focus:ring-2 focus:ring-brand/30 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                     placeholder="Brief description for search engines..."></textarea>
@@ -141,9 +152,10 @@
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-content dark:text-gray-300 mb-2">
+                                <div class="flex items-center gap-2 text-sm font-medium text-content dark:text-gray-300 mb-2">
                                     Keywords
-                                </label>
+                                    <x-ai-assist.button field="meta_keywords" />
+                                </div>
                                 <div class="flex flex-wrap gap-2 mb-2">
                                     @foreach($meta_keywords as $index => $keyword)
                                         <span
@@ -242,10 +254,11 @@
     <div class="space-y-4">
         {{-- Multiple Category Selection --}}
         <div>
-            <label class="block text-sm font-medium text-content dark:text-gray-300 mb-2">
+            <div class="flex items-center gap-2 text-sm font-medium text-content dark:text-gray-300 mb-2">
                 Categories <span class="text-red-500">*</span>
                 <span class="text-xs text-content-muted font-normal">(Select one or more)</span>
-            </label>
+                <x-ai-assist.button field="category_ids" />
+            </div>
 
             {{-- Selected Categories Display --}}
             @if(count($category_ids) > 0)
@@ -299,9 +312,10 @@
 
         {{-- Tags --}}
         <div>
-            <label class="block text-sm font-medium text-content dark:text-gray-300 mb-2">
+            <div class="flex items-center gap-2 text-sm font-medium text-content dark:text-gray-300 mb-2">
                 Tags
-            </label>
+                <x-ai-assist.button field="tags" />
+            </div>
             <div class="flex flex-wrap gap-2 mb-2">
                 @foreach($tags as $index => $tag)
                     <span class="px-3 py-1 bg-surface-muted text-content rounded-full text-sm flex items-center">
@@ -478,6 +492,8 @@
             </div>
         </div>
     </form>
+
+    @include('components.ai-assist.modal')
 
     {{-- FIXED: Improved Trix Editor JavaScript --}}
     @script

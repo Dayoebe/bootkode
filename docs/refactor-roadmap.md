@@ -274,3 +274,36 @@ The application-controlled premium experience work is complete. The open items r
 - [x] Upgrade Laravel/Symfony through patched compatible lines without suppressing Composer advisories.
 - [ ] Continue extracting page authoring/media/template commands and newsletter campaign/subscriber commands from the remaining large Livewire classes. Each extraction must retain the access ability at its service boundary and add a role/ownership test.
 - [ ] Split the largest Blade workspaces into existing `ui.*` primitives by interaction boundary without changing public route contracts.
+
+## Context-aware AI form assistance — 25 November 2026
+
+- [x] Reuse the existing server-side `AiManager` provider boundary and usage model; expose no credential to Livewire or browser state.
+- [x] Add whitelisted field and multi-field draft flows with bounded context, structured output, separate quotas and safe provider failures.
+- [x] Require preview, explicit apply and confirmation before replacing existing content; never auto-save, approve or publish.
+- [x] Integrate course details, lessons, course sections, blog articles/SEO/categories/tags and announcements using their existing authorization guards.
+- [x] Keep Trix synchronization in `dashboard.js`; accept no provider HTML and load only server-converted, purified Markdown output.
+- [x] Support explicit append versus replace for eligible existing content, and render blog/lesson Markdown through a restricted server-side HTML purifier before Trix synchronization.
+- [ ] Design a sanitized newsletter-template drafting boundary before adding AI to campaign HTML.
+- [ ] Add course SEO/welcome/completion messages and blog image alt/caption assistance only if those fields become real persisted product capabilities.
+- [ ] Complete configured live-provider acceptance and authenticated multi-theme browser acceptance independently of mocked regression coverage.
+
+## Course learning workspace — 26 November 2026
+
+- [x] Preserve the existing enrolled-course route and server-side lesson, unlock, progress, assessment and certificate boundaries.
+- [x] Replace full dashboard chrome on the lesson route with a focused learning shell and named return paths.
+- [x] Provide an expandable mobile course map and a persisted collapsible desktop curriculum with completed, current, open and locked states.
+- [x] Establish one long-form content contract for headings, lists, quotes, callouts, media, tables, inline code and copyable code blocks.
+- [x] Move private notes and bookmarks into their own authenticated, lesson-authorized Livewire tool panel.
+- [x] Preserve assessments, attachments, external resources, offline packs, instructor messaging and learner reviews without decorative nonfunctional actions.
+- [x] Complete final isolated test execution and the 390/768/1024/1440 authenticated browser matrix after the pre-existing concurrent test process releases the shared `_test` database.
+- [ ] Treat physical-device, screen-reader, live media-provider and production performance acceptance as separate release gates.
+
+## Universal authenticated file viewer — 27 November 2026
+
+- [x] Centralize source resolution, ownership/enrollment authorization, storage-prefix checks, MIME inspection and OpenXML validation without accepting client storage paths.
+- [x] Add private inline/download routes with byte-range support, safe response headers and sanitized SVG delivery.
+- [x] Render PDF, DOCX, PPTX, XLSX, CSV, Markdown, text, image, audio and video through route-scoped browser modules.
+- [x] Reuse one View/Download primitive across course resources, learning materials, assessment files, support and feedback attachments.
+- [x] Provide both a dedicated workspace and accessible same-origin overlay with Escape dismissal and focus return.
+- [x] Cover access denial, path bounds, MIME mismatch, OpenXML signatures, SVG sanitization, legacy fallback, private records and real-file browser behavior on the dedicated test database.
+- [ ] Complete screen-reader/keyboard-only sessions, physical-device media behavior, representative 100 MB Office-file profiling and production field performance before treating those as certified.
