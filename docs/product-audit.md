@@ -374,6 +374,8 @@ The operational **Critical Thinking and Practical Problem Solving** course was s
 
 Lesson documents and course resources now invoke the existing authenticated file viewer as a bounded in-page popup, matching lesson images, audio and video. The lesson remains visible behind the modal at mobile and desktop widths; opening a PDF no longer replaces the learning workspace or creates a separate browser tab. The original download remains a separate explicit action, and the viewer repeats the existing file authorization checks.
 
+The lesson article's **Previous Lesson** and **Next Lesson** actions now bubble their navigation requests directly to the owning course workspace. Previous still records elapsed lesson time before moving; Next still passes through the existing assessment, completion, section-unlock and progress rules before selecting the following lesson. Successful navigation updates the canonical `lesson` query and focused lesson heading without reloading the dashboard shell.
+
 ## Universal in-browser document viewer — 27 November 2026
 
 The previous resource experience mixed direct downloads, browser-native media URLs and page-specific preview behavior. The new viewer centralizes real stored lesson/course files, learning materials, assessment submissions and support/feedback attachments behind source-specific authorization. It does not expose storage paths, infer access from menu visibility or make a public URL from a private attachment. View and Download both repeat the same current-user domain check.

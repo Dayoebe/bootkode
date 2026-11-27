@@ -369,8 +369,7 @@ class LessonContentViewer extends Component
             $this->isTransitioning = true;
             $lessonId = is_object($prevLesson) ? $prevLesson->id : $prevLesson['id'];
 
-            $this->dispatch('lesson-selected', lessonId: $lessonId)
-                ->to('student-management.course-view');
+            $this->dispatch('lesson-selected', lessonId: $lessonId);
         }
     }
 
@@ -391,8 +390,7 @@ class LessonContentViewer extends Component
 
         $nextLesson = $this->allLessons[$this->currentIndex + 1] ?? null;
         if ($nextLesson) {
-            $this->dispatch('advance-to-next-lesson', lessonId: $this->lesson->id)
-                ->to('student-management.course-view');
+            $this->dispatch('advance-to-next-lesson', lessonId: $this->lesson->id);
         }
     }
 

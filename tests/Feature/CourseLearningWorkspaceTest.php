@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Livewire\StudentManagement\CourseView\LessonContentViewer;
 use App\Livewire\StudentManagement\CourseView\LessonToolsPanel;
 use App\Models\Core\User;
 use App\Models\Learning\Course;
@@ -61,13 +62,46 @@ class CourseLearningWorkspaceTest extends TestCase
         $this->actingAs($student)
             ->get(route('course.view', ['course' => $course->slug]))
             ->assertOk()
-            ->assertSee($selectionUrl, escape: false);
+            ->assertSee($selectionUrl, escape: false)
+            ->assertSee('Next Lesson');
 
         $this->actingAs($student)
             ->get($selectionUrl)
             ->assertOk()
             ->assertSee('Second lesson article')
             ->assertSee('aria-current="step"', escape: false);
+    }
+
+    public function test_lesson_interface_dispatches_previous_and_next_navigation_to_its_parent(): void
+    {
+        [$student, , $firstLesson] = $this->createEnrolledCourse();
+        $secondLesson = Lesson::create([
+            'section_id' => $firstLesson->section_id,
+            'title' => 'Navigate through the interface',
+            'slug' => 'practical-laravel-foundations-navigate-through-the-interface',
+            'description' => 'Use the lesson navigation controls.',
+            'content' => '<h2>Navigation target</h2>',
+            'duration_minutes' => 8,
+            'order' => 2,
+            'published_at' => now(),
+        ]);
+        $lessons = [$firstLesson->fresh()->toArray(), $secondLesson->fresh()->toArray()];
+
+        Livewire::actingAs($student)
+            ->test(LessonContentViewer::class, [
+                'lesson' => $firstLesson->fresh(),
+                'allLessons' => $lessons,
+            ])
+            ->call('goToNextLesson')
+            ->assertDispatched('advance-to-next-lesson', lessonId: $firstLesson->id);
+
+        Livewire::actingAs($student)
+            ->test(LessonContentViewer::class, [
+                'lesson' => $secondLesson->fresh(),
+                'allLessons' => $lessons,
+            ])
+            ->call('goToPreviousLesson')
+            ->assertDispatched('lesson-selected', lessonId: $firstLesson->id);
     }
 
     public function test_course_without_published_lessons_has_an_honest_availability_state(): void

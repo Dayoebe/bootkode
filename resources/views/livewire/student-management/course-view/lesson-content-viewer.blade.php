@@ -714,7 +714,7 @@
                         <button type="button" wire:click="goToNextLesson" wire:loading.attr="disabled" wire:target="goToNextLesson"
                             class="inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 sm:min-w-[14rem]"
                             style="background: rgb(var(--bk-action)); color: rgb(var(--bk-action-text));">
-                            Continue
+                            Next Lesson
                             <i aria-hidden="true" class="fas fa-arrow-right"></i>
                         </button>
                     @else
