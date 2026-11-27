@@ -370,6 +370,8 @@ No schema migration or operational-database mutation is required. Enrollment and
 
 Selection follow-up on 27 November replaces the nested sidebar event with the existing canonical course URL plus `lesson` query. An unlocked lesson therefore remains selectable through ordinary navigation at mobile and desktop widths. A published course with no published learner-visible lessons now says that lessons are unavailable instead of presenting “No lesson selected” and a map action that cannot succeed. Draft lessons remain unpublished; the fix does not silently publish course content or weaken section locks.
 
+The operational **Critical Thinking and Practical Problem Solving** course was separately corrected after its six complete lessons were confirmed to have null publication timestamps. Their original rows were backed up privately before lesson IDs `79`–`84` were published in one guarded transaction. This was a targeted content-state correction for that already published and approved course, not a change to the learner access rule or a bulk publication of draft lessons.
+
 ## Universal in-browser document viewer — 27 November 2026
 
 The previous resource experience mixed direct downloads, browser-native media URLs and page-specific preview behavior. The new viewer centralizes real stored lesson/course files, learning materials, assessment submissions and support/feedback attachments behind source-specific authorization. It does not expose storage paths, infer access from menu visibility or make a public URL from a private attachment. View and Download both repeat the same current-user domain check.
