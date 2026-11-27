@@ -117,15 +117,22 @@
                 <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-lg border border-themed-secondary bg-themed-tertiary">
                     <i aria-hidden="true" class="fas fa-book-open text-2xl accent-themed-primary"></i>
                 </div>
-                <h3 class="mt-5 text-xl font-semibold text-themed-primary">No lesson selected</h3>
-                <p class="mt-2 text-sm leading-6 text-themed-secondary">
-                    Open the course map and choose any unlocked lesson to begin learning.
-                </p>
-                <button @click="openNav($event)" aria-controls="course-map-drawer" :aria-expanded="navOpen.toString()"
-                    class="mt-5 inline-flex items-center gap-2 rounded-lg border border-themed-secondary bg-themed-tertiary px-5 py-3 text-sm font-semibold text-themed-primary transition hover:bg-themed-secondary lg:hidden">
-                    <i aria-hidden="true" class="fas fa-compass"></i>
-                    Open Course Map
-                </button>
+                @if ($lessonCount === 0)
+                    <h3 class="mt-5 text-xl font-semibold text-themed-primary">Lessons are not available yet</h3>
+                    <p class="mt-2 text-sm leading-6 text-themed-secondary">
+                        This course does not currently have a published lesson available to learners. Please check back later or contact the instructor.
+                    </p>
+                @else
+                    <h3 class="mt-5 text-xl font-semibold text-themed-primary">No lesson selected</h3>
+                    <p class="mt-2 text-sm leading-6 text-themed-secondary">
+                        Open the course map and choose any unlocked lesson to begin learning.
+                    </p>
+                    <button @click="openNav($event)" aria-controls="course-map-drawer" :aria-expanded="navOpen.toString()"
+                        class="mt-5 inline-flex items-center gap-2 rounded-lg border border-themed-secondary bg-themed-tertiary px-5 py-3 text-sm font-semibold text-themed-primary transition hover:bg-themed-secondary lg:hidden">
+                        <i aria-hidden="true" class="fas fa-compass"></i>
+                        Open Course Map
+                    </button>
+                @endif
             </div>
         @endif
     </div>

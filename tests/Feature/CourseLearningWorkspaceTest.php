@@ -42,6 +42,46 @@ class CourseLearningWorkspaceTest extends TestCase
             ->assertForbidden();
     }
 
+    public function test_unlocked_lesson_links_select_the_requested_lesson(): void
+    {
+        [$student, $course, $firstLesson] = $this->createEnrolledCourse();
+        $secondLesson = Lesson::create([
+            'section_id' => $firstLesson->section_id,
+            'title' => 'Resolve a concrete service',
+            'slug' => 'practical-laravel-foundations-resolve-a-concrete-service',
+            'description' => 'Select another published lesson from the course map.',
+            'content' => '<h2>Second lesson article</h2><p>Bind the contract deliberately.</p>',
+            'duration_minutes' => 9,
+            'order' => 2,
+            'published_at' => now(),
+        ]);
+
+        $selectionUrl = route('course.view', ['course' => $course->slug, 'lesson' => $secondLesson->id]);
+
+        $this->actingAs($student)
+            ->get(route('course.view', ['course' => $course->slug]))
+            ->assertOk()
+            ->assertSee($selectionUrl, escape: false);
+
+        $this->actingAs($student)
+            ->get($selectionUrl)
+            ->assertOk()
+            ->assertSee('Second lesson article')
+            ->assertSee('aria-current="step"', escape: false);
+    }
+
+    public function test_course_without_published_lessons_has_an_honest_availability_state(): void
+    {
+        [$student, $course, $lesson] = $this->createEnrolledCourse();
+        $lesson->update(['published_at' => null]);
+
+        $this->actingAs($student)
+            ->get(route('course.view', ['course' => $course->slug]))
+            ->assertOk()
+            ->assertSee('Lessons are not available yet')
+            ->assertDontSee('No lesson selected');
+    }
+
     public function test_private_notes_and_bookmarks_are_scoped_to_the_authenticated_student(): void
     {
         [$student, , $lesson] = $this->createEnrolledCourse();

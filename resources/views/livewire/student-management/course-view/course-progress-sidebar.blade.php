@@ -114,20 +114,20 @@
                                 $isCurrentLesson = $currentLesson && $currentLesson->id == $lesson->id;
                             @endphp
 
-                            <button wire:click="selectLesson({{ $lesson->id }}, {{ $section->id }})"
-                                wire:loading.attr="disabled" wire:target="selectLesson({{ $lesson->id }}, {{ $section->id }})"
-                                @click="$dispatch('close-course-nav')"
-                                @if (!$isUnlocked) disabled @endif
-                                @if ($isCurrentLesson) aria-current="step" @endif
-                                class="flex w-full items-center justify-between gap-3 rounded-lg border px-3 py-3 text-left transition-all duration-200
+                            @if ($isUnlocked)
+                                <a href="{{ route('course.view', ['course' => $course->slug, 'lesson' => $lesson->id]) }}"
+                                    @if ($isCurrentLesson) aria-current="step" @endif
+                                    class="flex w-full items-center justify-between gap-3 rounded-lg border px-3 py-3 text-left transition-all duration-200
                                     {{ $isCurrentLesson
                                         ? 'border-transparent text-white shadow-lg'
-                                        : ($isUnlocked
-                                            ? 'border-themed-secondary bg-themed-secondary text-themed-primary hover:-translate-y-0.5 hover:shadow-md'
-                                            : 'border-themed-secondary bg-themed-secondary text-themed-tertiary cursor-not-allowed') }}"
-                                @if ($isCurrentLesson)
-                                    style="background: rgb(var(--bk-action)); color: rgb(var(--bk-action-text));"
-                                @endif>
+                                        : 'border-themed-secondary bg-themed-secondary text-themed-primary hover:-translate-y-0.5 hover:shadow-md' }}"
+                                    @if ($isCurrentLesson)
+                                        style="background: rgb(var(--bk-action)); color: rgb(var(--bk-action-text));"
+                                    @endif>
+                            @else
+                                <button type="button" disabled aria-disabled="true"
+                                    class="flex w-full cursor-not-allowed items-center justify-between gap-3 rounded-lg border border-themed-secondary bg-themed-secondary px-3 py-3 text-left text-themed-tertiary opacity-75">
+                            @endif
                                 <div class="flex min-w-0 items-center gap-3">
                                     <span
                                         class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg {{ $isCurrentLesson ? 'bg-white/20 text-white' : ($isLessonCompleted ? 'bg-green-500/15 text-green-500' : ($isUnlocked ? 'bg-themed-tertiary accent-themed-primary' : 'bg-themed-tertiary text-themed-tertiary')) }}">
@@ -170,7 +170,11 @@
                                 @if ($isCurrentLesson)
                                     <i aria-hidden="true" class="fas fa-arrow-right text-sm text-white"></i>
                                 @endif
-                            </button>
+                            @if ($isUnlocked)
+                                </a>
+                            @else
+                                </button>
+                            @endif
                         @endforeach
                     </div>
                 </div>
