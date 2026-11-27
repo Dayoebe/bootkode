@@ -372,7 +372,7 @@ Selection follow-up on 27 November replaces the nested sidebar event with the ex
 
 The operational **Critical Thinking and Practical Problem Solving** course was separately corrected after its six complete lessons were confirmed to have null publication timestamps. Their original rows were backed up privately before lesson IDs `79`–`84` were published in one guarded transaction. This was a targeted content-state correction for that already published and approved course, not a change to the learner access rule or a bulk publication of draft lessons.
 
-Lesson documents and course resources now invoke the existing authenticated file viewer as an in-page modal, matching lesson images, audio and video. Opening a PDF no longer replaces the learning workspace or creates a separate browser tab. The original download remains a separate explicit action, and the viewer repeats the existing file authorization checks.
+Lesson documents and course resources now invoke the existing authenticated file viewer as a bounded in-page popup, matching lesson images, audio and video. The lesson remains visible behind the modal at mobile and desktop widths; opening a PDF no longer replaces the learning workspace or creates a separate browser tab. The original download remains a separate explicit action, and the viewer repeats the existing file authorization checks.
 
 ## Universal in-browser document viewer — 27 November 2026
 

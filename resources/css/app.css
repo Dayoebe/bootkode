@@ -888,7 +888,7 @@
 .bk-file-viewer-sheet .bk-row-heading { position: sticky; left: 0; z-index: 3; min-width: 3.5rem; background: #f1f5f9; text-align: right; }
 .bk-file-viewer-load-more { position: sticky; left: 1rem; margin: 1rem; }
 
-.bk-file-preview-dialog { height: min(92dvh, 72rem); width: min(96vw, 90rem); max-height: none; max-width: none; overflow: hidden; border: 0; border-radius: .75rem; padding: 0; background: #0f172a; box-shadow: 0 24px 80px rgba(15, 23, 42, .42); }
+.bk-file-preview-dialog { height: min(84dvh, 54rem); width: min(84vw, 76rem); max-height: none; max-width: none; overflow: hidden; border: 0; border-radius: .75rem; padding: 0; background: #0f172a; box-shadow: 0 24px 80px rgba(15, 23, 42, .42); }
 .bk-file-preview-dialog::backdrop { background: rgba(15, 23, 42, .78); }
 .bk-file-preview-dialog-frame { position: relative; height: 100%; width: 100%; }
 .bk-file-preview-dialog iframe { height: 100%; width: 100%; border: 0; background: #f1f5f9; }
@@ -901,7 +901,7 @@
     .bk-file-viewer-toolbar { align-items: flex-start; }
     .bk-file-viewer-search { margin-left: 0; }
     .bk-file-viewer-surface { padding: .75rem; }
-    .bk-file-preview-dialog { height: 100dvh; width: 100vw; border-radius: 0; }
+    .bk-file-preview-dialog { height: 92dvh; width: 94vw; }
 }
 
 @media (prefers-reduced-motion: reduce) {
